@@ -7,7 +7,7 @@
         <div class="my-l">&nbsp;</div>
 
         <div class="card content-wrap auto-height">
-            <h1 class="list-heading">{{ title_case(trans('auth.log_in')) }}</h1>
+            <h1 class="list-heading h-test">{{ title_case(trans('auth.log_in')) }}</h1>
 
             <form action="{{ baseUrl('/login') }}" method="POST" id="login-form" class="mt-l">
                 {!! csrf_field() !!}
