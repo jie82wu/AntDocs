@@ -14,6 +14,12 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/recently-updated', 'PageController@showRecentlyUpdated');
     });
 
+    //space
+    Route::group(['prefix'=>'space'],function () {
+        Route::get('/', 'SpaceController@index');
+        Route::get('/create-space', 'SpaceController@create');
+        Route::post('/save-space', 'SpaceController@store');
+    });
     // Shelves
     Route::get('/create-shelf', 'BookshelfController@create');
     Route::group(['prefix' => 'shelves'], function() {

@@ -13,6 +13,7 @@ use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
+use BookStack\Orz\Space;
 
 class PermissionService
 {
@@ -418,14 +419,16 @@ class PermissionService
      * @param \BookStack\Entities\Entity $entity
      * @return array
      */
-    protected function getActions(Entity $entity)
+    protected function getActions(Entity $entity = null)
     {
         $baseActions = ['view', 'update', 'delete'];
-        if ($entity->isA('chapter') || $entity->isA('book')) {
-            $baseActions[] = 'page-create';
-        }
-        if ($entity->isA('book')) {
-            $baseActions[] = 'chapter-create';
+        if ($entity) {
+            if ($entity->isA('chapter') || $entity->isA('book')) {
+                $baseActions[] = 'page-create';
+            }
+            if ($entity->isA('book')) {
+                $baseActions[] = 'chapter-create';
+            }
         }
         return $baseActions;
     }
@@ -792,4 +795,46 @@ class PermissionService
         $this->userRoles = false;
         $this->isAdminUser = null;
     }
+    
+    /**
+     * Build joint permissions for space
+     * @param Entity $entity Space
+     * @param bool $deleteOld
+     * @throws \Throwable
+     */
+    public function buildJointPermissionsForSpace(Entity $entity, $deleteOld = false)
+    {
+        $roles=$this->role->newQuery()->get(); 
+        $rolePermissionMap = [];
+        foreach ($roles as $role) {
+            foreach ($role->permissions as $permission) {
+                $rolePermissionMap[$role->getRawAttribute('id') . ':' . $permission->getRawAttribute('name')] = true;
+            }
+        }
+        // Create Joint Permission Data
+        foreach ($roles as $role) {
+            foreach ($this->getActions() as $action) {
+                $permissionPrefix = (strpos($action, '-') === false ? ($entity->getType() . '-') : '') . $action;
+                $roleHasPermission = isset($rolePermissionMap[$role->getRawAttribute('id') . ':' . $permissionPrefix . '-all']);
+                $roleHasPermissionOwn = isset($rolePermissionMap[$role->getRawAttribute('id') . ':' . $permissionPrefix . '-own']);
+                $jointPermissions[] = $this->createJointPermissionDataArray(
+                    $entity,
+                    $role,
+                    $action,
+                    $roleHasPermission,
+                    $roleHasPermissionOwn
+                );
+            }
+        }
+        if ($deleteOld) {
+            $this->deleteManyJointPermissionsForEntities([$entity]);
+        }        
+        $this->db->transaction(function () use ($jointPermissions) {
+            foreach (array_chunk($jointPermissions, 1000) as $jointPermissionChunk) {
+                $this->db->table('joint_permissions')->insert($jointPermissionChunk);
+            }
+        });
+    
+    }
+
 }

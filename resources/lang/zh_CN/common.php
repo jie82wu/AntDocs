@@ -59,10 +59,18 @@ return [
      */
     'view_profile' => '查看资料',
     'edit_profile' => '编辑资料',
+    'quick_operation' => '快捷操作',
+    'new_space' => '新建空间',
+    'new_book' => '新建书籍',
+    'new_chapter' => '新建章节',
+    'new_page' => '新建页面',
+    'import' => '导入',
 
     /**
      * Email Content
      */
     'email_action_help' => '如果您无法点击“:actionText”按钮，请将下面的网址复制到您的浏览器中打开：',
     'email_rights' => 'All rights reserved',
+    
+    
 ];

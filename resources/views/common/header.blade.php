@@ -25,8 +25,9 @@
         <div class="text-right">
             <div class="header-links">
                 <div class="links text-center">
-                    @if (hasAppAccess())
+                    @if (hasAppAccess())                        
                         <a class="hide-over-l" href="{{ baseUrl('/search') }}">@icon('search'){{ trans('common.search') }}</a>
+                            <a href="{{ baseUrl('/space') }}">@icon('file'){{ trans('space.space') }}</a>
                         @if(userCanOnAny('view', \BookStack\Entities\Bookshelf::class) || userCan('bookshelf-view-all') || userCan('bookshelf-view-own'))
                             <a href="{{ baseUrl('/shelves') }}">@icon('bookshelf'){{ trans('entities.shelves') }}</a>
                         @endif
@@ -48,6 +49,33 @@
                 </div>
                 @if(signedInUser())
                     <?php $currentUser = user(); ?>
+                    <!--  quick operation   -->
+                    <div class="dropdown-container" dropdown>
+                        <span class="user-name hide-under-l" dropdown-toggle>
+                            <span class="name">{{ trans('common.quick_operation') }}</span> @icon('caret-down')
+                        </span>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="{{ baseUrl("/space/create-space") }}">{{ trans('common.new_space') }}</a>
+                            </li>
+                            <li>
+                                <a href="{{ baseUrl("/create-book") }}">{{ trans('common.new_book') }}</a>
+                            </li>
+                            @if(isset($book))
+                            <li>
+                                <a href="{{ $book->getUrl('/create-chapter')  }}">{{ trans('common.new_chapter') }}</a>
+                            </li>
+                            <li>
+                                <a href="{{ $book->getUrl('/create-page') }}">{{ trans('common.new_page') }}</a>
+                            </li>
+                            @endif
+                            <li><hr class="hr-no-margin"></li>
+                            <li>
+                                <a href="{{ baseUrl('/logout') }}">{{ trans('common.import') }}</a>
+                            </li>
+                        </ul>
+                    </div>
+                
                     <div class="dropdown-container" dropdown>
                         <span class="user-name hide-under-l" dropdown-toggle>
                             <img class="avatar" src="{{$currentUser->getAvatar(30)}}" alt="{{ $currentUser->name }}">

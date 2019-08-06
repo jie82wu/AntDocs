@@ -307,5 +307,6 @@ return [
      */
     'revision_delete_confirm' => '您确定要删除此修订版吗？',
     'revision_delete_success' => '修订删除',
-    'revision_cannot_delete_latest' => '无法删除最新版本。'
+    'revision_cannot_delete_latest' => '无法删除最新版本。',
+    
 ];

@@ -44,6 +44,15 @@ return [
     'bookshelf_update_notification'    => '书架已成功更新',
     'bookshelf_delete'                 => '删除了书架',
     'bookshelf_delete_notification'    => '书架已成功删除',
+    
+    //  space
+    'space_create'                 => '创建了空间',
+    'space_create_notification'    => '空间已创建成功',
+    'space_update'                 => '更新了空间',
+    'space_update_notification'    => '空间已更新成功',
+    'space_delete'                 => '删除了空间',
+    'space_delete_notification'    => '空间已删除成功',
+    'space_sort'                   => '排序了空间',
 
     // Other
     'commented_on'                => '评论',
