@@ -58,7 +58,7 @@ abstract class Repository implements RepositoryInterface, CriteriaInterface {
      */
     public function all($columns = array('*')) {
         $this->applyCriteria();
-        return $this->model->get($columns);
+        return $this->model->get($columns)->all();
     }
     
     /**

@@ -41,7 +41,7 @@
         <label for="tag-manager">{{ trans('space.space_add_user') }}</label>
     </div>
     <div class="collapse-content" collapsible-content>
-        @include('space.user-list', ['entity' => $users])
+        @include('space.add-space-user-list', ['entity' => $users])
     </div>
 </div>
 
@@ -51,11 +51,11 @@
         <label for="tag-manager">{{ trans('space.space_add_book') }}</label>
     </div>
     <div class="collapse-content" collapsible-content>
-        @include('space.book-list', ['entity' => $books])
+        @include('space.add-space-book-list', ['entity' => $books])
     </div>
 </div>
 
 <div class="form-group text-right">
-    <a href="{{ isset($book) ? $book->getUrl() : baseUrl('/books') }}" class="button outline">{{ trans('common.cancel') }}</a>
-    <button type="submit" class="button primary">{{ trans('entities.books_save') }}</button>
+    <a href="{{ baseUrl('/space') }}" class="button outline">{{ trans('common.cancel') }}</a>
+    <button type="submit" class="button primary">{{ trans('space.space_save') }}</button>
 </div>

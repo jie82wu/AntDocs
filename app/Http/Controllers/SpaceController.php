@@ -8,8 +8,10 @@ use BookStack\Entities\EntityContextManager;
 use BookStack\Entities\Repos\EntityRepo;
 use BookStack\Entities\ExportService;
 use BookStack\Uploads\ImageRepo;
+use BookStack\Orz\Criteria\ListAll;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Views;
 use BookStack\Orz\SpaceRepo;
 use BookStack\Orz\Space;
@@ -72,8 +74,11 @@ class SpaceController extends Controller
         $new = $this->entityRepo->getRecentlyCreated('book', 4, 0);
     
         $this->entityContextManager->clearShelfContext();
+        $this->spaceRepo->pushCriteria(new ListAll());
+        $share = $this->spaceRepo->all();
         $this->setPageTitle(trans('space.space'));
         return view('space.index', [
+            'share' => $share,
             'books' => $books,
             'recents' => $recents,
             'popular' => $popular,
@@ -90,7 +95,6 @@ class SpaceController extends Controller
      */
     public function create(Request $request)
     {
-        $space = $this->spaceRepo->createFromInput();
         $listDetails = [
             'order' => $request->get('order', 'asc'),
             'search' => $request->get('search', ''),
@@ -110,7 +114,7 @@ class SpaceController extends Controller
      */
     public function store(Request $request)
     {    
-        //$this->checkPermission('space-create-all');
+        $this->checkPermission('space-create-all');
         $this->validate($request, [
             'name' => 'required|string|max:255',
             'description' => 'string|max:1000',

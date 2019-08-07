@@ -5,19 +5,17 @@
 @stop
 
 @section('left')
-@if($recents)
-<div id="recents" class="mb-xl">
+<div id="private" class="mb-xl">
     <h5>{{ trans('space.private') }}</h5>
-    @include('space.left-private-space')
+    @include('space.list-space-left-private-space')
 </div>
-@endif
 
-<div id="popular" class="mb-xl">
+<div id="share" class="mb-xl">
     <h5>{{ trans('space.public') }}</h5>
-    @if(count($popular) > 0)
-    @include('partials.entity-list', ['entities' => $popular, 'style' => 'compact'])
+    @if($share)
+    @include('space.list-space-left-share-list',['share'=>$share])
     @else
-    <div class="body text-muted">{{ trans('entities.books_popular_empty') }}</div>
+    <div class="body text-muted">{{ trans('space.space_is_empty') }}</div>
     @endif
 </div>
 
