@@ -1,7 +1,6 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+<link rel="stylesheet" href="{{ versioned_asset('assets/js/jstree/style.css') }}" />
 
-
-<div id="space-books">
+<div id="space-books" style="display: none;">
     @if($share)
     <ul>
     @foreach($share as $index => $entity)
@@ -11,35 +10,14 @@
     @endif
 </div>
 
-<!--<div id="space-books">-->
-<!--    <ul>-->
-<!--        <li data-jstree='{"icon":"{{URL::asset("assets/imgs/users.png")}}"}'>space 1-->
-<!--            <ul>-->
-<!--                <li data-jstree='{"icon":"{{URL::asset("assets/imgs/book.png")}}"}'>book 1-->
-<!--                    <ul>-->
-<!--                        <li>chapter 1-->
-<!--                            <ul>-->
-<!--                                <li data-jstree='{"icon":"{{URL::asset("assets/imgs/file.png")}}"}'>-->
-<!--                                    <a href="#">page 1</a>-->
-<!--                                </li>-->
-<!--                                <li data-jstree='{"icon":"{{URL::asset("assets/imgs/file_reading.png")}}"}'>-->
-<!--                                    <a href="#">page 2</a>-->
-<!--                                </li>-->
-<!--                            </ul>-->
-<!--                        </li>-->
-<!--                    </ul>-->
-<!--                </li>-->
-<!--            </ul>-->
-<!--        </li>-->
-<!--    </ul>-->
-<!--</div>-->
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+<script src="{{ versioned_asset('assets/js/jstree/jstree.js') }}"></script>
 <script>
-
-        $('#space-books').jstree({
-            'plugins':["wholerow"],
-        });
-
+    $('#space-books').jstree({
+        'core': {
+            'themes': {
+                'dots': false
+            }
+        }
+    }).show();
 </script>

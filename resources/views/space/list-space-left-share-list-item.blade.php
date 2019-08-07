@@ -7,19 +7,19 @@
 <!--    </a>-->
 <!--</div>-->
 
-<li data-jstree='{"icon":"{{URL::asset("assets/imgs/users.png")}}"}'>{{ $entity->name }}
+<li icon="true" data-jstree='{"icon":"{{URL::asset("assets/imgs/users.png")}}"}'>{{ $entity->name }}
     @if($entity->books)
     <ul>
         @foreach($entity->books as $book)
-        <li data-jstree='{"icon":"{{URL::asset("assets/imgs/book.png")}}"}'>{{ $book->name }}
+        <li icon="true" data-jstree='{"icon":"{{URL::asset("assets/imgs/book.png")}}"}'>{{ $book->name }}
             @if($book->chapters)
             <ul>
                 @foreach($book->chapters as $chapter)
-                <li>{{ $chapter->name }}
+                <li data-jstree='{"icon":false}'>{{ $chapter->name }}
                     @if($chapter->pages)
                     <ul>
                         @foreach($chapter->pages as $page)
-                        <li data-jstree='{"icon":"{{URL::asset("assets/imgs/file.png")}}"}'>
+                        <li icon="true" data-jstree='{"icon":"{{URL::asset("assets/imgs/file.png")}}"}'>
                             <a href="#">{{ $page->name }}</a>
                         </li>
                         @endforeach
