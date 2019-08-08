@@ -8,7 +8,7 @@ use BookStack\Entities\EntityContextManager;
 use BookStack\Entities\Repos\EntityRepo;
 use BookStack\Entities\ExportService;
 use BookStack\Uploads\ImageRepo;
-use BookStack\Orz\Criteria\ListAll;
+use BookStack\Orz\Criteria\AllSpace;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -69,20 +69,12 @@ class SpaceController extends Controller
         ];
     
         $books = $this->entityRepo->getAllPaginated('book', 18, $sort, $order);
-        $recents = $this->signedIn ? $this->entityRepo->getRecentlyViewed('book', 4, 0) : false;
-        $popular = $this->entityRepo->getPopular('book', 4, 0);
-        $new = $this->entityRepo->getRecentlyCreated('book', 4, 0);
-    
-        $this->entityContextManager->clearShelfContext();
-        $this->spaceRepo->pushCriteria(new ListAll());
+        $this->spaceRepo->pushCriteria(new AllSpace());
         $share = $this->spaceRepo->all();
         $this->setPageTitle(trans('space.space'));
         return view('space.index', [
             'share' => $share,
             'books' => $books,
-            'recents' => $recents,
-            'popular' => $popular,
-            'new' => $new,
             'view' => $view,
             'sort' => $sort,
             'order' => $order,

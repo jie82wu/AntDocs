@@ -1,7 +1,7 @@
 @extends('tri-layout')
 
 @section('body')
-@include('space.list', ['books' => $books, 'view' => $view])
+@include('space.center-list', ['books' => $books, 'view' => $view])
 @stop
 
 @section('left')
@@ -26,10 +26,10 @@
 <div class="actions mb-xl">
     <h5>{{ trans('common.actions') }}</h5>
     <div class="icon-list text-primary">
-        @if($currentUser->can('book-create-all'))
-        <a href="{{ baseUrl("/create-book") }}" class="icon-list-item">
+        @if($currentUser->can('space-create-all'))
+        <a href="{{ baseUrl("/space/create-space") }}" class="icon-list-item">
         <span>@icon('add')</span>
-        <span>{{ trans('entities.books_create') }}</span>
+        <span>{{ trans('space.create') }}</span>
         </a>
         @endif
 

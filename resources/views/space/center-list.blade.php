@@ -1,13 +1,15 @@
 
 <div class="content-wrap mt-m card">
     <div class="grid half v-center no-row-gap">
-        <h1 class="list-heading">{{ trans('space.space') }}</h1>
+        <h1 class="list-heading">{{ trans('space.reading_is_empty') }}</h1>
+        
         <div class="text-m-right my-m">
 
-            @include('partials.sort', ['options' => $sortOptions, 'order' => $order, 'sort' => $sort, 'type' => 'books'])
+            {{-- @include('partials.sort', ['options' => $sortOptions, 'order' => $order, 'sort' => $sort, 'type' => 'books']) --}}
 
         </div>
     </div>
+    <hr>
     @if(count($books) > 0)
         @if($view === 'list')
             <div class="entity-list">

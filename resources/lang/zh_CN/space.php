@@ -17,5 +17,6 @@ return [
     'short_description' =>  '简介',
     'space_save' =>  '保存空间',
     'space_is_empty' =>  '您还没有创建任何空间',
+    'reading_is_empty' =>  '您还没有阅读过任何内容',
 
 ];

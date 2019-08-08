@@ -11,7 +11,7 @@
     @if($entity->books)
     <ul>
         @foreach($entity->books as $book)
-        <li icon="true" data-jstree='{"icon":"{{URL::asset("assets/imgs/book.png")}}"}'>{{ $book->name }}
+        <li icon="true" data-jstree='{"icon":"{{URL::asset("assets/imgs")}}/{{count($book->chapters)>0?"book.png":"book_empty.png"}}"}'>{{ $book->name }}
             @if($book->chapters)
             <ul>
                 @foreach($book->chapters as $chapter)
@@ -19,7 +19,7 @@
                     @if($chapter->pages)
                     <ul>
                         @foreach($chapter->pages as $page)
-                        <li icon="true" data-jstree='{"icon":"{{URL::asset("assets/imgs/file.png")}}"}'>
+                        <li icon="true" data-jstree='{"icon":"{{URL::asset("assets/imgs/file_24.png")}}"}'>
                             <a href="#">{{ $page->name }}</a>
                         </li>
                         @endforeach

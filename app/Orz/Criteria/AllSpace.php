@@ -2,7 +2,7 @@
 
 use BookStack\Orz\Contract\RepositoryInterface;
 
-class ListAll extends Criteria {
+class AllSpace extends Criteria {
     
     /**
      * @param $model
@@ -10,7 +10,8 @@ class ListAll extends Criteria {
      */
     public function apply($model, RepositoryInterface $repository)
     {
-        $query = $model->where(['type'=>1]);
+        //owned
+        $query = $model->where(['type'=>1])->where(['created_by'=>user()->id]);
         return $query;
     }
 }
