@@ -25,7 +25,7 @@
              </div>
         @endif
         <div>
-            {!! $books->render() !!}
+            {{-- !! $books->render() !! --}}
         </div>
     @else
         <p class="text-muted">{{ trans('entities.books_empty') }}</p>

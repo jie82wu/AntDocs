@@ -9,6 +9,7 @@ use BookStack\Entities\Repos\EntityRepo;
 use BookStack\Entities\ExportService;
 use BookStack\Uploads\ImageRepo;
 use BookStack\Orz\Criteria\AllSpace;
+use function GuzzleHttp\Promise\all;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -71,9 +72,14 @@ class SpaceController extends Controller
         $books = $this->entityRepo->getAllPaginated('book', 18, $sort, $order);
         $this->spaceRepo->pushCriteria(new AllSpace());
         $share = $this->spaceRepo->all();
+        $books = collect();
+        foreach ($share as $item) {
+            $books->push($item->books);
+        }
+        $books = $books->collapse()->take(12);
         $this->setPageTitle(trans('space.space'));
         return view('space.index', [
-            'share' => $share,
+            'share' => $share->where('type',1),
             'books' => $books,
             'view' => $view,
             'sort' => $sort,
