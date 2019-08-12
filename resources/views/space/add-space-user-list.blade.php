@@ -10,7 +10,7 @@
     @foreach($users as $user)
     <tr>
         <td class="text-center" style="line-height: 0;width:100px;">
-            @include('space.space-checkbox-com',['id'=>$user->id,'name'=>'users[]','checked'=>false])
+            @include('space.space-checkbox-com',['id'=>$user->id,'name'=>'users[]','checked'=>isset($uids)&&in_array($user->id,$uids)])
         </td>
         <td valign="middle">
             <img class="avatar med" style="width:25px;height:25px;" src="{{ $user->getAvatar(20)}}" alt="{{ $user->name }}">

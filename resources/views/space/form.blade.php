@@ -19,7 +19,7 @@
 
         @include('components.image-picker', [
             'defaultImage' => baseUrl('/book_default_cover.png'),
-            'currentImage' => (isset($model) && $model->cover) ? $model->getBookCover() : baseUrl('/book_default_cover.png') ,
+            'currentImage' => (isset($model) && $model->cover) ? $model->getCover() : baseUrl('/book_default_cover.png') ,
             'name' => 'image',
             'imageClass' => 'cover'
         ])
@@ -31,7 +31,7 @@
         <label for="tag-manager">{{ trans('space.space_tags') }}</label>
     </div>
     <div class="collapse-content" collapsible-content>
-        @include('components.tag-manager', ['entity' => isset($book)?$book:null, 'entityType' => 'chapter'])
+        @include('components.tag-manager', ['entity' => isset($space)?$space:null, 'entityType' => 'chapter'])
     </div>
 </div>
 

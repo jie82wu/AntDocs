@@ -312,9 +312,10 @@
   box-shadow: inset 0 0 1px #cccccc;
 }
 .jstree-default .jstree-clicked {
-  /* background: #beebff; */
+  background: #aaa;
   border-radius: 2px;
   /* box-shadow: inset 0 0 1px #999999; */
+  color:blue;
 }
 .jstree-default .jstree-no-icons .jstree-anchor > .jstree-themeicon {
   display: none;
@@ -1103,6 +1104,6 @@
   }
 }
 
-li[icon="true"]>.jstree-ocl {
+/* li[icon="true"]>.jstree-ocl {
   display: none !important;
-}
+} */

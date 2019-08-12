@@ -78,6 +78,29 @@ class SpaceRepo extends Repository
         return $space;
     }
     
+    public function updateFromInput(Space $space, $input = [])
+    {
+        $space->fill($input);
+        $space->updated_by = user()->id;
+        $space->save();
+    
+        if (isset($input['tags'])) {
+            $this->tagRepo->saveTagsToEntity($space, $input['tags']);
+        }
+    
+        if (isset($input['users'])) {
+            $this->saveUsersToSpace($space, $input['users']);
+        }
+    
+        if (isset($input['books'])) {
+            $this->saveBooksToSpace($space, $input['books']);
+        }
+    
+        $this->permissionService->buildJointPermissionsForSpace($space);
+        $this->searchService->indexEntity($space);
+        return $space;
+    }
+    
     public function saveUsersToSpace(Space $space, $users = [])
     {
         DB::table('space_user')
@@ -109,5 +132,35 @@ class SpaceRepo extends Repository
             ];
     
         DB::table('space_book')->insert($all);
+    }
+    
+    public function getUsersId(Space $space)
+    {
+        return DB::table('space_user')
+            ->where(['space_id'=>$space->id])
+            ->pluck('user_id')
+            ->all();
+    }
+    
+    public function getBooksId(Space $space)
+    {
+        return DB::table('space_book')
+            ->where(['space_id'=>$space->id])
+            ->pluck('book_id')
+            ->all();
+    }
+    
+    public function destroySpace(Space $space)
+    {
+        //delete users
+        DB::table('space_user')
+            ->where(['space_id'=>$space->id])
+            ->delete();
+        //delete books
+        DB::table('space_book')
+            ->where(['space_id'=>$space->id])
+            ->whereNull('user_id')
+            ->delete();
+        $space->delete();
     }
 }

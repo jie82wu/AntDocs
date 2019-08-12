@@ -14,12 +14,6 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/recently-updated', 'PageController@showRecentlyUpdated');
     });
 
-    //space
-    Route::group(['prefix'=>'space'],function () {
-        Route::get('/', 'SpaceController@index');
-        Route::get('/create-space', 'SpaceController@create');
-        Route::post('/save-space', 'SpaceController@store');
-    });
     // Shelves
     Route::get('/create-shelf', 'BookshelfController@create');
     Route::group(['prefix' => 'shelves'], function() {
@@ -200,6 +194,21 @@ Route::group(['middleware' => 'auth'], function () {
         Route::delete('/roles/delete/{id}', 'PermissionController@deleteRole');
         Route::get('/roles/{id}', 'PermissionController@editRole');
         Route::put('/roles/{id}', 'PermissionController@updateRole');
+    });
+    
+    //space
+    Route::group(['prefix'=>'space'],function () {
+        Route::get('/', 'SpaceController@index');
+        Route::get('/create-space', 'SpaceController@create');
+        Route::post('/save-space', 'SpaceController@store');
+        Route::get('/{id}/book/{oid}', 'SpaceController@showSpaceBook');
+        Route::get('/{id}/chapter/{oid}', 'SpaceController@showSpaceChapter');
+        Route::get('/{id}/page/{oid}', 'SpaceController@showSpacePage');
+        Route::get('/{id}', 'SpaceController@showSpace');
+        Route::get('/{id}/delete', 'SpaceController@showDelete');
+        Route::get('/{id}/edit', 'SpaceController@edit');
+        Route::delete('/{id}', 'SpaceController@destroy');
+        Route::put('/{id}', 'SpaceController@update');
     });
 
 });

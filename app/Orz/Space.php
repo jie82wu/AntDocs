@@ -2,6 +2,7 @@
 
 use BookStack\Entities\Entity;
 use BookStack\Entities\Book;
+use BookStack\Uploads\Image;
 
 class Space extends Entity
 {
@@ -21,14 +22,14 @@ class Space extends Entity
     public function getUrl($path = false)
     {
         if ($path !== false) {
-            return baseUrl('/books/' . urlencode($this->slug) . '/' . trim($path, '/'));
+            return baseUrl('/space/' . $this->id . '/' . trim($path, '/'));
         }
-        return baseUrl('/space');
+        return baseUrl('/space/' . $this->id);
     }
     
     public function cover()
     {
-        return $this->belongsTo(Space::class, 'image_id');
+        return $this->belongsTo(Image::class, 'image_id');
     }
     
     public function books()
@@ -36,7 +37,7 @@ class Space extends Entity
         return $this->belongsToMany(Book::class,'space_book','space_id','book_id');
     }
     
-    public function getBookCover($width = 440, $height = 250)
+    public function getCover($width = 440, $height = 250)
     {
         $default = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
         if (!$this->image_id) {

@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Views;
 use BookStack\Orz\SpaceRepo;
 use BookStack\Orz\Space;
+use BookStack\Entities\Repos\PageRepo;
 
 class SpaceController extends Controller
 {
@@ -26,6 +27,7 @@ class SpaceController extends Controller
     protected $entityContextManager;
     protected $imageRepo;
     protected $tagRepo;
+    protected $pageRepo;
 
     /**
      * SpaceController constructor.
@@ -42,6 +44,7 @@ class SpaceController extends Controller
         EntityContextManager $entityContextManager,
         ImageRepo $imageRepo,
         TagRepo $tagRepo,
+        PageRepo $pageRepo,
         SpaceRepo $spaceRepo
     ) {
         $this->entityRepo = $entityRepo;
@@ -51,6 +54,7 @@ class SpaceController extends Controller
         $this->imageRepo = $imageRepo;
         $this->tagRepo = $tagRepo;
         $this->spaceRepo = $spaceRepo;
+        $this->pageRepo = $pageRepo;
         parent::__construct();
     }
 
@@ -61,15 +65,6 @@ class SpaceController extends Controller
     public function index()
     {
         $view = setting()->getUser($this->currentUser, 'books_view_type', config('app.views.books'));
-        $sort = setting()->getUser($this->currentUser, 'books_sort', 'name');
-        $order = setting()->getUser($this->currentUser, 'books_sort_order', 'asc');
-        $sortOptions = [
-            'name' => trans('common.sort_name'),
-            'created_at' => trans('common.sort_created_at'),
-            'updated_at' => trans('common.sort_updated_at'),
-        ];
-    
-        $books = $this->entityRepo->getAllPaginated('book', 18, $sort, $order);
         $this->spaceRepo->pushCriteria(new AllSpace());
         $share = $this->spaceRepo->all();
         $books = collect();
@@ -79,15 +74,23 @@ class SpaceController extends Controller
         $books = $books->collapse()->take(12);
         $this->setPageTitle(trans('space.space'));
         return view('space.index', [
-            'share' => $share->where('type',1),
             'books' => $books,
             'view' => $view,
-            'sort' => $sort,
-            'order' => $order,
-            'sortOptions' => $sortOptions,
         ]);
     }
 
+    protected function getUserAndBookList(Request $request, $listDetails=[])
+    {
+        if (!$listDetails)
+            $listDetails = [
+                'order' => $request->get('order', 'asc'),
+                'search' => $request->get('search', ''),
+                'sort' => $request->get('sort', 'name'),
+            ];
+        $users = $this->userRepo->getAllUsersPaginatedAndSorted(20, $listDetails);
+        $books = $this->entityRepo->getAllPaginated('book', 18, 'name', 'asc');
+        return ['users'=>$users,'books'=>$books];
+    }
     /**
      * Show the form for creating space.
      */
@@ -98,12 +101,11 @@ class SpaceController extends Controller
             'search' => $request->get('search', ''),
             'sort' => $request->get('sort', 'name'),
         ];
-        $users = $this->userRepo->getAllUsersPaginatedAndSorted(20, $listDetails);
-        $books = $this->entityRepo->getAllPaginated('book', 18, 'name', 'asc');
+        $list = $this->getUserAndBookList($request, $listDetails);
         $this->setPageTitle(trans('space.create'));
         return view('space.create',[
-            'users'=>$users, 
-            'books'=>$books, 
+            'users'=>$list['users'], 
+            'books'=>$list['books'], 
             'listDetails' => $listDetails]);
     }
 
@@ -111,7 +113,7 @@ class SpaceController extends Controller
      * Store space
      */
     public function store(Request $request)
-    {    
+    {
         $this->checkPermission('space-create-all');
         $this->validate($request, [
             'name' => 'required|string|max:255',
@@ -126,6 +128,96 @@ class SpaceController extends Controller
 
         return redirect($space->getUrl());
     }
+    
+    /**
+     * show space by id
+     */
+    public function showSpace(Request $request, $id)
+    {
+        $space = $this->spaceRepo->find($id);
+        return view('space.show',[
+            'space'=>$space,
+            'spaceSel'=>true,
+        ]);
+    }
+
+    public function showSpaceBook(Request $request, $id, $oid)
+    {
+        $space = $this->spaceRepo->find($id);
+        $book = $this->entityRepo->getById('book', $oid);
+        $this->checkOwnablePermission('book-view', $book);
+    
+        $bookChildren = $this->entityRepo->getBookChildren($book);    
+        Views::add($book);  
+        $this->setPageTitle($book->getShortName());
+        return view('space.book-show', [
+            'space' => $space,
+            'book' => $book,
+            'current' => $book,
+            'bookChildren' => $bookChildren,
+            'bookSel' => true,
+            'activity' => Activity::entityActivity($book, 20, 1)
+        ]);
+    }
+    
+    public function showSpaceChapter(Request $request, $id, $oid)
+    {
+        $space = $this->spaceRepo->find($id);
+        $chapter = $this->entityRepo->getById('chapter', $oid);
+        $this->checkOwnablePermission('chapter-view', $chapter);
+        $sidebarTree = $this->entityRepo->getBookChildren($chapter->book);
+        Views::add($chapter);
+        $this->setPageTitle($chapter->getShortName());
+        $pages = $this->entityRepo->getChapterChildren($chapter);
+        return view('space.chapter-show', [
+            'chapterSel' => true,
+            'space' => $space,
+            'book' => $chapter->book,
+            'chapter' => $chapter,
+            'current' => $chapter,
+            'sidebarTree' => $sidebarTree,
+            'pages' => $pages
+        ]);
+    }
+    
+    public function showSpacePage(Request $request, $id, $oid)
+    {
+//        try {
+//            $page = $this->pageRepo->getPageBySlug($pageSlug, $bookSlug);
+//        } catch (NotFoundException $e) {
+//            $page = $this->pageRepo->getPageByOldSlug($pageSlug, $bookSlug);
+//            if ($page === null) {
+//                throw $e;
+//            }
+//            return redirect($page->getUrl());
+//        }
+        $space = $this->spaceRepo->find($id);
+        $page = $this->entityRepo->getById('page', $oid);
+        $this->checkOwnablePermission('page-view', $page);
+    
+        $page->html = $this->pageRepo->renderPage($page);
+        $sidebarTree = $this->pageRepo->getBookChildren($page->book);
+        $pageNav = $this->pageRepo->getPageNav($page->html);
+    
+        // check if the comment's are enabled
+        $commentsEnabled = !setting('app-disable-comments');
+        if ($commentsEnabled) {
+            $page->load(['comments.createdBy']);
+        }
+    
+        Views::add($page);
+        $this->setPageTitle($page->getShortName());
+        return view('space.page-show', [
+            'space'=>$space,
+            'pageSel'=>true,
+            'page' => $page,'book' => $page->book,
+            'current' => $page,
+            'sidebarTree' => $sidebarTree,
+            'commentsEnabled' => $commentsEnabled,
+            'pageNav' => $pageNav
+        ]);
+    }
+    
 
     /**
      * Display the specified book.
@@ -160,12 +252,23 @@ class SpaceController extends Controller
      * @param $slug
      * @return Response
      */
-    public function edit($slug)
+    public function edit(Request $request, $id)
     {
-        $book = $this->entityRepo->getBySlug('book', $slug);
-        $this->checkOwnablePermission('book-update', $book);
-        $this->setPageTitle(trans('entities.books_edit_named', ['bookName'=>$book->getShortName()]));
-        return view('books.edit', ['book' => $book, 'current' => $book]);
+        $list = $this->getUserAndBookList($request);
+        $this->setPageTitle(trans('space.create'));
+        $space = $this->spaceRepo->find($id);
+        $user_ids = $this->spaceRepo->getUsersId($space);
+        $book_ids = $this->spaceRepo->getBooksId($space);
+        $this->checkOwnablePermission('space-update', $space);
+        $this->setPageTitle(trans('space.books_edit_named', ['spaceName'=>$space->name]));
+        return view('space.edit', [
+            'space' => $space, 
+            'current' => $space,
+            'uids' => $user_ids,
+            'bids' => $book_ids,
+            'users'=>$list['users'],
+            'books'=>$list['books']
+            ]);
     }
 
     /**
@@ -176,22 +279,22 @@ class SpaceController extends Controller
      * @throws \BookStack\Exceptions\ImageUploadException
      * @throws \BookStack\Exceptions\NotFoundException
      */
-    public function update(Request $request, string $slug)
+    public function update(Request $request, $id)
     {
-        $book = $this->entityRepo->getBySlug('book', $slug);
-        $this->checkOwnablePermission('book-update', $book);
+        
+        $this->checkPermission('space-update-all');
         $this->validate($request, [
             'name' => 'required|string|max:255',
             'description' => 'string|max:1000',
             'image' => $this->imageRepo->getImageValidationRules(),
         ]);
-
-         $book = $this->entityRepo->updateFromInput('book', $book, $request->all());
-         $this->bookUpdateActions($book, $request);
-
-         Activity::add($book, 'book_update', $book->id);
-
-         return redirect($book->getUrl());
+        $input = $request->all();
+        $space = $this->spaceRepo->find($id);
+        $space = $this->spaceRepo->updateFromInput($space, $input);
+        $this->updateActions($space, $request);
+        Activity::add($space, 'space_update', $space->id);
+    
+        return redirect($space->getUrl());
     }
 
     /**
@@ -199,12 +302,12 @@ class SpaceController extends Controller
      * @param $bookSlug
      * @return \Illuminate\View\View
      */
-    public function showDelete($bookSlug)
+    public function showDelete($id)
     {
-        $book = $this->entityRepo->getBySlug('book', $bookSlug);
-        $this->checkOwnablePermission('book-delete', $book);
-        $this->setPageTitle(trans('entities.books_delete_named', ['bookName'=>$book->getShortName()]));
-        return view('books.delete', ['book' => $book, 'current' => $book]);
+        $space = $this->spaceRepo->find($id);
+        $this->checkOwnablePermission('space-delete', $space);
+        $this->setPageTitle(trans('space.space_delete_named', ['spaceName'=>$space->name]));
+        return view('space.delete', ['space' => $space, 'current' => $space]);
     }
 
     /**
@@ -309,22 +412,21 @@ class SpaceController extends Controller
     }
 
     /**
-     * Remove the specified book from storage.
-     * @param $bookSlug
+     * Remove the space.
      * @return Response
      */
-    public function destroy($bookSlug)
+    public function destroy($id)
     {
-        $book = $this->entityRepo->getBySlug('book', $bookSlug);
-        $this->checkOwnablePermission('book-delete', $book);
-        Activity::addMessage('book_delete', 0, $book->name);
+        $space = $this->spaceRepo->find($id);
+        $this->checkOwnablePermission('space-delete', $space);
+        Activity::addMessage('space_delete', 0, $space->name);
 
-        if ($book->cover) {
-            $this->imageRepo->destroyImage($book->cover);
+        if ($space->cover) {
+            $this->imageRepo->destroyImage($space->cover);
         }
-        $this->entityRepo->destroyBook($book);
+        $this->spaceRepo->destroySpace($space);
 
-        return redirect('/books');
+        return redirect('/space');
     }
 
     /**

@@ -10,8 +10,6 @@ class AllSpace extends Criteria {
      */
     public function apply($model, RepositoryInterface $repository)
     {
-        //owned
-//        $query = $model->where(['type'=>1])->where(['created_by'=>user()->id]);
         $query = $model->where(['created_by'=>user()->id]);
         return $query;
     }

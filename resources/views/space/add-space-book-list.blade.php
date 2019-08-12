@@ -8,7 +8,7 @@
     @foreach($entity as $item)
     <tr>
         <td class="text-center" style="line-height: 0;width:100px;" >
-            @include('space.space-checkbox-com',['id'=>$item->id,'name'=>'books[]','checked'=>false])
+            @include('space.space-checkbox-com',['id'=>$item->id,'name'=>'books[]','checked'=>isset($bids)&&in_array($item->id,$bids)])
         </td>
         <td width="20">
             <img style="width:150px;" src="{{ $item->getBookCover()}}" alt="{{ $item->name }}">

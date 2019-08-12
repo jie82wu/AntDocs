@@ -7,22 +7,22 @@
 <!--    </a>-->
 <!--</div>-->
 
-<li icon="true" data-jstree='{"selected":{{isset($spaceSel)&&request()->id==$entity->id?"true":"false"}},"icon":"{{URL::asset("assets/imgs/users.png")}}"}'>
+<li icon="true" data-jstree='{"icon":"{{URL::asset("assets/imgs/users.png")}}"}'>
     <a href="{{ baseUrl('/space/'.$entity->id) }}">{{ $entity->name }}</a>
     @if($entity->books)
     <ul>
         @foreach($entity->books as $book)
-        <li icon="true" data-jstree='{"selected":{{isset($bookSel)&&request()->oid==$book->id?"true":"false"}},"icon":"{{URL::asset("assets/imgs")}}/{{count($book->chapters)>0?"book.png":"book_empty.png"}}"}'>
+        <li icon="true" data-jstree='{"icon":"{{URL::asset("assets/imgs")}}/{{count($book->chapters)>0?"book.png":"book_empty.png"}}"}'>
             <a href="{{ baseUrl("/space/$entity->id/book/$book->id") }}">{{ $book->name }}</a>
             @if($book->chapters)
             <ul>
                 @foreach($book->chapters as $chapter)
-                <li data-jstree='{"selected":{{isset($chapterSel)&&request()->oid==$chapter->id?"true":"false"}},"icon":false}'>
+                <li data-jstree='{"icon":false}'>
                     <a href="{{ baseUrl("/space/$entity->id/chapter/$chapter->id") }}">{{ $chapter->name }}</a>
                     @if($chapter->pages)
                     <ul>
                         @foreach($chapter->pages as $page)
-                        <li icon="true" data-jstree='{"selected":{{isset($pageSel)&&request()->oid==$page->id?"true":"false"}},"icon":"{{URL::asset("assets/imgs/file_24.png")}}"}'>
+                        <li icon="true" data-jstree='{"selected" : false,"icon":"{{URL::asset("assets/imgs/file_24.png")}}"}'>
                             <a href="{{ baseUrl("/space/$entity->id/page/$page->id") }}">{{ $page->name }}</a>
                         </li>
                         @endforeach

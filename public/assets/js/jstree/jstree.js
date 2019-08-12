@@ -735,29 +735,34 @@
 						}
 					})
 				.on("mousedown.jstree", $.proxy(function (e) {
+					
 						if(e.target === this.element[0]) {
 							e.preventDefault(); // prevent losing focus when clicking scroll arrows (FF, Chrome)
 							was_click = +(new Date()); // ie does not allow to prevent losing focus
 						}
 					}, this))
 				.on("mousedown.jstree", ".jstree-ocl", function (e) {
+					
 						e.preventDefault(); // prevent any node inside from losing focus when clicking the open/close icon
 					})
 				.on("click.jstree", ".jstree-ocl", $.proxy(function (e) {
+					
 						this.toggle_node(e.target);
 					}, this))
+					// 关闭双击展开节点事件
 				//.on("dblclick.jstree", ".jstree-anchor", $.proxy(function (e) {
-				.on("click.jstree", ".jstree-anchor", $.proxy(function (e) {
-						if(e.target.tagName && e.target.tagName.toLowerCase() === "input") { return true; }
-						if(this.settings.core.dblclick_toggle) {
-							this.toggle_node(e.target);
-						}
-					}, this))
-				.on("click.jstree", ".jstree-anchor", $.proxy(function (e) {
-						e.preventDefault();
-						if(e.currentTarget !== document.activeElement) { $(e.currentTarget).focus(); }
-						this.activate_node(e.currentTarget, e);
-					}, this))
+					// 	if(e.target.tagName && e.target.tagName.toLowerCase() === "input") { return true; }
+					// 	if(this.settings.core.dblclick_toggle) {
+					// 		this.toggle_node(e.target);
+					// 	}
+					// }, this))
+
+				//关闭节点单击冒泡，使a标签生效
+				// .on("click.jstree", ".jstree-anchor", $.proxy(function (e) {
+				// 		e.preventDefault();
+				// 		if(e.currentTarget !== document.activeElement) { $(e.currentTarget).focus(); }
+				// 		this.activate_node(e.currentTarget, e);
+				// 	}, this))
 				.on('keydown.jstree', '.jstree-anchor', $.proxy(function (e) {
 						if(e.target.tagName && e.target.tagName.toLowerCase() === "input") { return true; }
 						if(this._data.core.rtl) {

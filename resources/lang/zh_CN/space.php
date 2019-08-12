@@ -5,6 +5,9 @@ return [
      */
     'space' =>  '空间',
     'create' =>  '新建空间',
+    'space_delete' => '删除空间',
+    'space_edit' => '编辑空间',
+    'new' =>  '新建',
     'private' =>  '私有空间',
     'public' =>  '共享空间',
     'my_space' =>  '我的空间',
@@ -18,5 +21,8 @@ return [
     'space_save' =>  '保存空间',
     'space_is_empty' =>  '您还没有创建任何空间',
     'reading_is_empty' =>  '您还没有阅读过任何内容',
-
+    'space_delete_named' => '删除空间「:spaceName」',
+    'space_delete_explain' => '这将删除空间「:spaceName」。所有收藏的图书和邀请的用户都会被取消关联。',
+    'space_delete_confirmation' => '您确定要删除此空间吗？',
+    'space_edit_named' => '编辑空间「:spaceName」',
 ];
