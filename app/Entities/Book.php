@@ -1,13 +1,16 @@
 <?php namespace BookStack\Entities;
 
 use BookStack\Uploads\Image;
+use BookStack\Auth\Permissions\PermissionService;
+use BookStack\Entities\EntityProvider;
 
 class Book extends Entity
 {
     public $searchFactor = 2;
 
     protected $fillable = ['name', 'description', 'image_id'];
-
+    
+    
     /**
      * Get the morph class for this model.
      * @return string
@@ -114,5 +117,19 @@ class Book extends Entity
     public function entityRawQuery()
     {
         return "'BookStack\\\\Book' as entity_type, id, id as entity_id, slug, name, {$this->textField} as text,'' as html, '0' as book_id, '0' as priority, '0' as chapter_id, '0' as draft, created_by, updated_by, updated_at, created_at";
+    }
+    
+    public function getChildren($filterDrafts = false, $renderPages = false)
+    {
+        $collect = collect();
+        foreach ($this->pages->where('chapter_id',0)->where('draft',0) as $key=>$value)
+            $collect->push($value);
+        
+        foreach ($this->chapters as $key=>$value)
+            $collect->push($value);
+    
+        $collect = $collect->sortBy('updated_at');
+
+        return $collect->values()->all();
     }
 }

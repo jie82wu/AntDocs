@@ -11,9 +11,9 @@
     <div class="mb-s">
         @include('partials.breadcrumbs', ['crumbs' => [
             '/space/'. $space->id =>[
-                'text'=>$space->name,
-                'icon'=>'file',
-            ],
+        'text'=>$space->name,
+        'icon'=>'file',
+        ],
             $book,
         ]])
     </div>

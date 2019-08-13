@@ -11,10 +11,10 @@
             @include('space.space-checkbox-com',['id'=>$item->id,'name'=>'books[]','checked'=>isset($bids)&&in_array($item->id,$bids)])
         </td>
         <td width="20">
-            <img style="width:150px;" src="{{ $item->getBookCover()}}" alt="{{ $item->name }}">
+<!--            <img style="width:150px;" src="{{ $item->getBookCover()}}" alt="{{ $item->name }}">-->
         </td>
         <td align="left" >
-            <h4 class="entity-list-item-name break-text">{{ $item->name }}</h4>
+            <h5 class="entity-list-item-name">{{ $item->name }} <span class="text-muted break-text mb-s"></span></h5>
             <div class="entity-item-snippet">
                 <p class="text-muted break-text mb-s">{{ $item->getExcerpt() }}</p>
             </div>

@@ -10,6 +10,7 @@ use BookStack\Uploads\ImageRepo;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Views;
+use BookStack\Orz\SpaceRepo;
 
 class BookController extends Controller
 {
@@ -19,6 +20,7 @@ class BookController extends Controller
     protected $exportService;
     protected $entityContextManager;
     protected $imageRepo;
+    protected $spaceRepo;
 
     /**
      * BookController constructor.
@@ -33,13 +35,15 @@ class BookController extends Controller
         UserRepo $userRepo,
         ExportService $exportService,
         EntityContextManager $entityContextManager,
-        ImageRepo $imageRepo
+        ImageRepo $imageRepo,
+        SpaceRepo $spaceRepo
     ) {
         $this->entityRepo = $entityRepo;
         $this->userRepo = $userRepo;
         $this->exportService = $exportService;
         $this->entityContextManager = $entityContextManager;
         $this->imageRepo = $imageRepo;
+        $this->spaceRepo = $spaceRepo;
         parent::__construct();
     }
 
@@ -91,11 +95,13 @@ class BookController extends Controller
             $bookshelf = $this->entityRepo->getBySlug('bookshelf', $shelfSlug);
             $this->checkOwnablePermission('bookshelf-update', $bookshelf);
         }
-
+    
+        $space = $this->spaceRepo->all();
         $this->checkPermission('book-create-all');
         $this->setPageTitle(trans('entities.books_create'));
         return view('books.create', [
-            'bookshelf' => $bookshelf
+            'bookshelf' => $bookshelf,
+            'options' => $space->all()
         ]);
     }
 
@@ -123,10 +129,13 @@ class BookController extends Controller
             $this->checkOwnablePermission('bookshelf-update', $bookshelf);
         }
 
-        $book = $this->entityRepo->createFromInput('book', $request->all());
+        $input = $request->all();
+        $book = $this->entityRepo->createFromInput('book', $input);
         $this->bookUpdateActions($book, $request);
         Activity::add($book, 'book_create', $book->id);
-
+        if (isset($input['space'])) {
+            $this->spaceRepo->saveBookToSpace($book, $input['space']);
+        }
         if ($bookshelf) {
             $this->entityRepo->appendBookToShelf($bookshelf, $book);
             Activity::add($bookshelf, 'bookshelf_update');
@@ -148,7 +157,7 @@ class BookController extends Controller
         $this->checkOwnablePermission('book-view', $book);
 
         $bookChildren = $this->entityRepo->getBookChildren($book);
-
+        
         Views::add($book);
         if ($request->has('shelf')) {
             $this->entityContextManager->setShelfContext(intval($request->get('shelf')));
@@ -171,9 +180,16 @@ class BookController extends Controller
     public function edit($slug)
     {
         $book = $this->entityRepo->getBySlug('book', $slug);
+        $space = $this->spaceRepo->all();
         $this->checkOwnablePermission('book-update', $book);
+        $spaceIds = $this->spaceRepo->getSpaceIdByBook($book);
         $this->setPageTitle(trans('entities.books_edit_named', ['bookName'=>$book->getShortName()]));
-        return view('books.edit', ['book' => $book, 'current' => $book]);
+        return view('books.edit', [
+            'book' => $book, 
+            'current' => $book,
+            'spaceIds' => $spaceIds,
+            'options' => $space->all()
+        ]);
     }
 
     /**
@@ -193,13 +209,17 @@ class BookController extends Controller
             'description' => 'string|max:1000',
             'image' => $this->imageRepo->getImageValidationRules(),
         ]);
+        $input = $request->all();
+        $book = $this->entityRepo->updateFromInput('book', $book, $input);
+        $this->bookUpdateActions($book, $request);
 
-         $book = $this->entityRepo->updateFromInput('book', $book, $request->all());
-         $this->bookUpdateActions($book, $request);
+        Activity::add($book, 'book_update', $book->id);
+    
+        if (isset($input['space'])) {
+            $this->spaceRepo->saveBookToSpace($book, $input['space']);
+        }
 
-         Activity::add($book, 'book_update', $book->id);
-
-         return redirect($book->getUrl());
+        return redirect($book->getUrl());
     }
 
     /**

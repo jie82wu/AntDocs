@@ -201,6 +201,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/', 'SpaceController@index');
         Route::get('/create-space', 'SpaceController@create');
         Route::post('/save-space', 'SpaceController@store');
+        Route::get('/myspace', 'SpaceController@showMySpace');
         Route::get('/{id}/book/{oid}', 'SpaceController@showSpaceBook');
         Route::get('/{id}/chapter/{oid}', 'SpaceController@showSpaceChapter');
         Route::get('/{id}/page/{oid}', ['uses'=>'SpaceController@showSpacePage', 'as'=>'space.page']);

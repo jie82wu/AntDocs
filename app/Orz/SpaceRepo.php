@@ -1,6 +1,8 @@
 <?php namespace BookStack\Orz;
 
 use BookStack\Actions\Tag;
+use BookStack\Entities\Book;
+use BookStack\Entities\Entity;
 use BookStack\Orz\Repos\Repository;
 use BookStack\Actions\TagRepo;
 use Illuminate\Support\Collection;
@@ -107,14 +109,34 @@ class SpaceRepo extends Repository
         
         DB::table('space_user')->insert($all);
     }
-    
+    //space select books
     public function saveBooksToSpace(Space $space, $books = [])
     {
         DB::table('space_book')->where(['space_id' => $space->id])->whereNull('user_id')->delete();
         
         $all = [];
-        foreach ($books as $key => $value) $all[] = ['book_id' => $value, 'space_id' => $space->id,];
+        foreach ($books as $key => $value) 
+            $all[] = [
+                'book_id' => $value, 
+                'space_id' => $space->id,
+                'user_id' => user()->id,
+            ];
         
+        DB::table('space_book')->insert($all);
+    }
+    
+    //book select space,will  be effect to [saveBooksToSpace]
+    public function saveBookToSpace(Book $book, $space = [])
+    {
+        DB::table('space_book')->where(['book_id' => $book->id])->delete();
+        
+        $all = [];
+        foreach ($space as $key => $value) 
+            $all[] = [
+                'book_id' => $book->id, 
+                'space_id' => $value,
+                'user_id' => user()->id,
+                ];
         DB::table('space_book')->insert($all);
     }
     
@@ -126,6 +148,20 @@ class SpaceRepo extends Repository
     public function getBooksId(Space $space)
     {
         return DB::table('space_book')->where(['space_id' => $space->id])->pluck('book_id')->all();
+    }
+    
+    public function getPrivateBooks()
+    {
+        return DB::table('space_book')
+            ->where(['space_id' => 0])
+            ->where(['user_id' => user()->id])
+            ->pluck('book_id')
+            ->all();
+    }
+    
+    public function getSpaceIdByBook(Book $book)
+    {
+        return DB::table('space_book')->where(['book_id' => $book->id])->pluck('space_id')->all();
     }
     
     public function destroySpace(Space $space)

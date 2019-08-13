@@ -144,6 +144,26 @@ class SpaceController extends Controller
         ]);
     }
 
+    /**
+     * show my space
+     */
+    public function showMySpace(Request $request)
+    {
+        $view = setting()->getUser($this->currentUser, 'books_view_type', config('app.views.books'));
+        $bookIds = $this->spaceRepo->getPrivateBooks();
+        $books = collect();
+        foreach ($bookIds as $id) {
+            $book = $this->entityRepo->getById('book', $id);
+            $books->push($book);
+        }
+        $allBooks = $this->entityRepo->getAllPaginated('book', 18, 'name', 'asc');
+        return view('space.show-my-space',[
+            'books'=>$books,
+            'view'=>$view,
+            'allBooks'=>$allBooks,
+        ]);
+    }
+
     public function showSpaceBook(Request $request, $id, $oid)
     {
         $space = $this->spaceRepo->find($id);

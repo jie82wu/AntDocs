@@ -20,6 +20,8 @@
                 'dots': false
             }
         }
-    }).show();
+    }).show(function(){
+        $('#loading_tree').hide();
+    });
 </script>
 
