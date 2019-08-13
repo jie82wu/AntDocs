@@ -9,10 +9,10 @@ use BookStack\Entities\Repos\EntityRepo;
 use BookStack\Entities\ExportService;
 use BookStack\Uploads\ImageRepo;
 use BookStack\Orz\Criteria\AllSpace;
-use function GuzzleHttp\Promise\all;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
 use Views;
 use BookStack\Orz\SpaceRepo;
 use BookStack\Orz\Space;
@@ -64,6 +64,9 @@ class SpaceController extends Controller
      */
     public function index()
     {
+        $r = $this->spaceRepo->checkReadHistory();
+        if ($r)
+            return redirect($r);
         $view = setting()->getUser($this->currentUser, 'books_view_type', config('app.views.books'));
         $this->spaceRepo->pushCriteria(new AllSpace());
         $share = $this->spaceRepo->all();
@@ -182,15 +185,6 @@ class SpaceController extends Controller
     
     public function showSpacePage(Request $request, $id, $oid)
     {
-//        try {
-//            $page = $this->pageRepo->getPageBySlug($pageSlug, $bookSlug);
-//        } catch (NotFoundException $e) {
-//            $page = $this->pageRepo->getPageByOldSlug($pageSlug, $bookSlug);
-//            if ($page === null) {
-//                throw $e;
-//            }
-//            return redirect($page->getUrl());
-//        }
         $space = $this->spaceRepo->find($id);
         $page = $this->entityRepo->getById('page', $oid);
         $this->checkOwnablePermission('page-view', $page);
@@ -204,6 +198,9 @@ class SpaceController extends Controller
         if ($commentsEnabled) {
             $page->load(['comments.createdBy']);
         }
+        
+        //record read history
+        $this->spaceRepo->recordReadHistory($id, $oid);
     
         Views::add($page);
         $this->setPageTitle($page->getShortName());

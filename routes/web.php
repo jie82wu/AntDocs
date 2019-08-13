@@ -203,7 +203,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/save-space', 'SpaceController@store');
         Route::get('/{id}/book/{oid}', 'SpaceController@showSpaceBook');
         Route::get('/{id}/chapter/{oid}', 'SpaceController@showSpaceChapter');
-        Route::get('/{id}/page/{oid}', 'SpaceController@showSpacePage');
+        Route::get('/{id}/page/{oid}', ['uses'=>'SpaceController@showSpacePage', 'as'=>'space.page']);
         Route::get('/{id}', 'SpaceController@showSpace');
         Route::get('/{id}/delete', 'SpaceController@showDelete');
         Route::get('/{id}/edit', 'SpaceController@edit');
