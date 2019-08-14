@@ -2,12 +2,12 @@
     td{padding:0 !important;}
 </style>
 <table class="table">
-    <tr>
-        <th class="text-center" colspan="3">搜索区</th>
+<!--    <tr>-->
+<!--        <th class="text-center" colspan="3">搜索区</th>-->
 <!--        <th>         {{ trans('space.cover_image') }}   </th>-->
 <!--        <th>         {{ trans('space.book_name') }}   </th>-->
 <!--        <th>         {{ trans('space.short_description') }}   </th>-->
-    </tr>
+<!--    </tr>-->
     @foreach($entity as $item)
     <tr>
         <td class="text-center" style="line-height: 0;width:100px;" >
