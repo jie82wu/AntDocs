@@ -1,8 +1,6 @@
 <?php namespace BookStack\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use BookStack\Orz\SpaceRepo;
-use Illuminate\Support\Facades\View;
 
 class DataServiceProvider extends ServiceProvider
 {
@@ -12,9 +10,7 @@ class DataServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(SpaceRepo $spaceRepo)
+    public function boot()
     {
-        $share = $spaceRepo->all();
-        View::share('share_space',$share->where('type',1));
     }
 }

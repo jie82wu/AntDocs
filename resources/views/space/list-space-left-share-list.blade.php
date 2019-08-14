@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="{{ versioned_asset('assets/js/jstree/style.css') }}" />
 
-<div id="space-books" style="display: none;">
+<div id="space-books" class="left-tree-div" style="display: none;">
     @if($share)
     <ul>
     @foreach($share as $index => $entity)
@@ -14,14 +14,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
 <script src="{{ versioned_asset('assets/js/jstree/jstree.js') }}"></script>
 <script>
-    $('#space-books').jstree({
+    $('div.left-tree-div').jstree({
         'core': {
             'themes': {
                 'dots': false
             }
         }
     }).show(function(){
-        $('#loading_tree').hide();
+        $('div.div-loading-tree').hide();
     });
 </script>
 

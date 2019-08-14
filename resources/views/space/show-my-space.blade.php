@@ -39,19 +39,23 @@
         <div class="mt-xl">
             <hr>
             <p class="text-muted italic mt-xl mb-m">{{ trans('space.my_space_is_empty') }}</p>
-
-            <form action="{{ baseUrl('/space/save-space') }}" method="POST" enctype="multipart/form-data">
+            <br>
+            
+            <form action="{{ baseUrl('/space/save-private-book') }}" method="POST" enctype="multipart/form-data">
+                {{ csrf_field() }}
                 <div class="form-group" collapsible id="select-user-control">
-                    <div class="collapse-title text-primary" collapsible-trigger>
+                    <div class="collapse-title text-primary text-neg" collapsible-trigger>
                         <label for="tag-manager" class="text-book">{{ trans('space.space_add_book') }}</label>
-                    </div>
+                    </div>                    
                     <div class="collapse-content" collapsible-content>
                         @include('space.add-space-book-list', ['entity' => $allBooks])
                         <button type="submit" class="button primary">{{ trans('space.save_book_to_private') }}</button>
                     </div>                    
                 </div>
-
             </form>
+            @if($errors->has('books'))
+            <div class="text-neg text-small">{{ $errors->first('books') }}</div>
+            @endif
         </div>
         @endif
     </div>

@@ -1,5 +1,6 @@
 <?php namespace BookStack\Orz;
 
+use BookStack\Auth\User;
 use BookStack\Entities\Entity;
 use BookStack\Entities\Book;
 use BookStack\Uploads\Image;
@@ -35,6 +36,11 @@ class Space extends Entity
     public function books()
     {
         return $this->belongsToMany(Book::class,'space_book','space_id','book_id');
+    }
+    
+    public function user()
+    {
+        return $this->belongsTo(User::class,'space_user','created_by');
     }
     
     public function getCover($width = 440, $height = 250)

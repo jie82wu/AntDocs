@@ -9,6 +9,8 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
+use BookStack\Orz\Message;
+use BookStack\Orz\Space;
 
 abstract class Controller extends BaseController
 {
@@ -40,6 +42,12 @@ abstract class Controller extends BaseController
             // Share variables with views
             view()->share('signedIn', $this->signedIn);
             view()->share('currentUser', $user);
+    
+            $space = Space::where(['created_by'=>$user->id])->get();
+            view()->share('all_space', $space);
+            
+            $message_count = Message::where(['to'=>$user->id])->where(['status'=>0])->count();
+            view()->share('message_count', $message_count);
 
             return $next($request);
         });

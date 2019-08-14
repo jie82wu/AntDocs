@@ -68,6 +68,7 @@ class SpaceController extends Controller
         if ($r)
             return redirect($r);
         $view = setting()->getUser($this->currentUser, 'books_view_type', config('app.views.books'));
+        //用户所有空间的books
         $this->spaceRepo->pushCriteria(new AllSpace());
         $share = $this->spaceRepo->all();
         $books = collect();
@@ -129,6 +130,23 @@ class SpaceController extends Controller
         $this->updateActions($space, $request);
         Activity::add($space, 'space_create', $space->id);
 
+        return redirect($space->getUrl());
+    }
+    
+    /**
+     * Store private book
+     */
+    public function storePrivateBook(Request $request)
+    {
+        $this->validate($request, [
+            'books' => 'required',
+            ]
+        );
+        $input = $request->all();        
+        if (isset($input['books'])) {
+            $space = $this->spaceRepo->storePrivateBook($input['books']);
+            Activity::add($space, 'book_add_favorite', $space->id);
+        }
         return redirect($space->getUrl());
     }
     
@@ -275,6 +293,7 @@ class SpaceController extends Controller
         $this->setPageTitle(trans('space.create'));
         $space = $this->spaceRepo->find($id);
         $user_ids = $this->spaceRepo->getUsersId($space);
+        $admin_ids = $this->spaceRepo->getAdminsId($space);
         $book_ids = $this->spaceRepo->getBooksId($space);
         $this->checkOwnablePermission('space-update', $space);
         $this->setPageTitle(trans('space.books_edit_named', ['spaceName'=>$space->name]));
@@ -282,6 +301,7 @@ class SpaceController extends Controller
             'space' => $space, 
             'current' => $space,
             'uids' => $user_ids,
+            'aids' => $admin_ids,
             'bids' => $book_ids,
             'users'=>$list['users'],
             'books'=>$list['books']

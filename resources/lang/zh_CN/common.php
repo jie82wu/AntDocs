@@ -65,6 +65,7 @@ return [
     'new_chapter' => '新建章节',
     'new_page' => '新建页面',
     'import' => '导入',
+    'message' => '消息',
 
     /**
      * Email Content

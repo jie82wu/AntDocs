@@ -48,6 +48,24 @@ class SpaceRepo extends Repository
         return 'BookStack\Orz\Space';
     }
     
+    public function checkPrivateSpace()
+    {
+        $space = $this->model
+            ->where('type',2)
+            ->where(['created_by'=>user()->id])->first();
+        if (!$space) {
+            $space = $this->model->create([
+                'name'=> trans('space.my_space'),
+                'description'=> trans('space.my_space'),
+            ]);
+            $space->type = 2;
+            $space->created_by = user()->id;
+            $space->updated_by = user()->id;
+            $space->save();
+        }
+        return $space;
+    }
+    
     /**
      * Create a new entity from request input.
      * @param array $input
@@ -100,19 +118,39 @@ class SpaceRepo extends Repository
         return $space;
     }
     
+    public function storePrivateBook($books)
+    {
+        $space = $this->checkPrivateSpace();
+        $this->saveBooksToSpace($space, $books);
+        return $space;
+    }
+    
+    //invite users
     public function saveUsersToSpace(Space $space, $users = [])
     {
         DB::table('space_user')->where(['space_id' => $space->id])->delete();
-        
-        $all = [];
-        foreach ($users as $key => $value) $all[] = ['user_id' => $value, 'space_id' => $space->id,];
+        //清除用户未处理的消息
+        DB::table('messages')->whereIn('to', $users)->where('status',0)->delete();
+        $all = $messages = [];
+        foreach ($users as $key => $value) {
+            $all[] = ['user_id' => $value['user_id'], 'space_id' => $space->id,'is_admin'=>isset($value['is_admin'])?1:0];
+            $messages[] = [
+              'type'=>'space_invite', 
+              'from'=>user()->id, 
+              'to'=>$value['user_id'], 
+              'content_key'=>isset($value['is_admin'])?'message.add_as_admin':'message.add_as_normal', 
+              'status'=>0, 
+              'rel_id'=>$space->id . '|' . $value['user_id'], 
+            ];
+        }
         
         DB::table('space_user')->insert($all);
+        DB::table('messages')->insert($messages);
     }
     //space select books
     public function saveBooksToSpace(Space $space, $books = [])
     {
-        DB::table('space_book')->where(['space_id' => $space->id])->whereNull('user_id')->delete();
+        DB::table('space_book')->where(['space_id' => $space->id])->delete();
         
         $all = [];
         foreach ($books as $key => $value) 
@@ -145,6 +183,11 @@ class SpaceRepo extends Repository
         return DB::table('space_user')->where(['space_id' => $space->id])->pluck('user_id')->all();
     }
     
+    public function getAdminsId(Space $space)
+    {
+        return DB::table('space_user')->where(['space_id' => $space->id])->where(['is_admin'=>1])->pluck('user_id')->all();
+    }
+    
     public function getBooksId(Space $space)
     {
         return DB::table('space_book')->where(['space_id' => $space->id])->pluck('book_id')->all();
@@ -169,7 +212,7 @@ class SpaceRepo extends Repository
         //delete users
         DB::table('space_user')->where(['space_id' => $space->id])->delete();
         //delete books
-        DB::table('space_book')->where(['space_id' => $space->id])->whereNull('user_id')->delete();
+        DB::table('space_book')->where(['space_id' => $space->id])->delete();
         $space->delete();
     }
     

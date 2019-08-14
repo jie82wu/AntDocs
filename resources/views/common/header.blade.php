@@ -76,6 +76,25 @@
                         </ul>
                     </div>
                 
+                    <!-- message -->
+                    <div class="links text-center">
+                        <a href="{{ baseUrl('/message') }}">@icon('message') {{ trans('common.message') }}@if($message_count>0)({{$message_count}}) @endif</a>
+                    </div>
+<!--                    <div class="dropdown-container" dropdown>-->
+<!--                            <span class="user-name hide-under-l" dropdown-toggle>-->
+<!--                                <a href="{{ baseUrl('/message') }}"><span class="name">@icon('message') {{ trans('common.message') }}</span>-->
+<!--                            </span></a>-->
+<!--                        <ul class="dropdown-menu">-->
+<!--                            <li>-->
+<!--                                <a href="{{ baseUrl("/create-book") }}">{{ trans('common.new_book') }}</a>-->
+<!--                            </li>-->
+<!--                            <li><hr class="hr-no-margin"></li>-->
+<!--                            <li>-->
+<!--                                <a href="{{ baseUrl('/message') }}">{{ trans('common.all_message') }}</a>-->
+<!--                            </li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+                
                     <div class="dropdown-container" dropdown>
                         <span class="user-name hide-under-l" dropdown-toggle>
                             <img class="avatar" src="{{$currentUser->getAvatar(30)}}" alt="{{ $currentUser->name }}">

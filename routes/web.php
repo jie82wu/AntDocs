@@ -196,11 +196,18 @@ Route::group(['middleware' => 'auth'], function () {
         Route::put('/roles/{id}', 'PermissionController@updateRole');
     });
     
+    //message
+    Route::group(['prefix'=>'message'],function () {
+        Route::get('/', 'MessageController@index');
+        Route::get('/{id}/status/{status}', 'MessageController@handleMessage');
+    });
+
     //space
     Route::group(['prefix'=>'space'],function () {
         Route::get('/', 'SpaceController@index');
         Route::get('/create-space', 'SpaceController@create');
         Route::post('/save-space', 'SpaceController@store');
+        Route::post('/save-private-book', 'SpaceController@storePrivateBook');
         Route::get('/myspace', 'SpaceController@showMySpace');
         Route::get('/{id}/book/{oid}', 'SpaceController@showSpaceBook');
         Route::get('/{id}/chapter/{oid}', 'SpaceController@showSpaceChapter');

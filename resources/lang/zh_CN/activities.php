@@ -53,6 +53,10 @@ return [
     'space_delete'                 => '删除了空间',
     'space_delete_notification'    => '空间已删除成功',
     'space_sort'                   => '排序了空间',
+    'book_add_favorite'            => '图书已收藏',
+    
+    //message
+    'message_handle'               => '消息已处理',
 
     // Other
     'commented_on'                => '评论',
