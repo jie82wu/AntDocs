@@ -6,6 +6,7 @@ use BookStack\Entities\Book;
 use BookStack\Entities\EntityContextManager;
 use BookStack\Entities\Repos\EntityRepo;
 use BookStack\Entities\ExportService;
+use BookStack\Orz\Space;
 use BookStack\Uploads\ImageRepo;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -96,12 +97,12 @@ class BookController extends Controller
             $this->checkOwnablePermission('bookshelf-update', $bookshelf);
         }
     
-        $space = $this->spaceRepo->all();
+        $space = Space::where(['created_by'=>user()->id])->orderBy('type','desc')->get();
         $this->checkPermission('book-create-all');
         $this->setPageTitle(trans('entities.books_create'));
         return view('books.create', [
             'bookshelf' => $bookshelf,
-            'options' => $space->all()
+            'options' => $space
         ]);
     }
 
