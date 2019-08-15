@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use BookStack\Orz\Message;
 use BookStack\Orz\Space;
+use Illuminate\Support\Facades\DB;
 
 abstract class Controller extends BaseController
 {
@@ -45,6 +46,11 @@ abstract class Controller extends BaseController
     
             $space = Space::where(['created_by'=>$user->id])->get();
             view()->share('all_space', $space);
+            //invited space
+            $ids = DB::table('space_user')->where('user_id',$user->id)->pluck('space_id')->all();
+            $invited_space = Space::whereIn('id',$ids)->get();
+            view()->share('invited_space', $invited_space);
+            
             
             $message_count = Message::where(['to'=>$user->id])->where(['status'=>0])->count();
             view()->share('message_count', $message_count);

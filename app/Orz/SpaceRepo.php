@@ -195,9 +195,9 @@ class SpaceRepo extends Repository
     
     public function getPrivateBooks()
     {
+        $space = Space::where('created_by', user()->id)->where('type',2)->first();
         return DB::table('space_book')
-            ->where(['space_id' => 0])
-            ->where(['user_id' => user()->id])
+            ->where(['space_id' => $space->id])
             ->pluck('book_id')
             ->all();
     }

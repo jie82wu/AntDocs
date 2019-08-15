@@ -10,9 +10,13 @@
             </div>
             <div class="left-tree-div" style="display: none;">
                 <ul>
+                    <li icon="true" data-jstree='{"selected":{{isset($spaceSel)&&request()->id==$private->id?"true":"false"}},"icon":"{{URL::asset("assets/imgs/lock.png")}}"}'>
+                        <a href="{{ baseUrl('/space/myspace') }}" title="{{ $private->name }}">{{ $private->name }}</a>
+                <ul>
                     @foreach($private->books as $book)
                         @include('space.book-tree', ['book'=>$book,'entity'=>$private])
                     @endforeach
+                </ul></li>
                 </ul>
             </div>
         @else            
@@ -30,7 +34,14 @@
     @include('space.list-space-left-share-list',[
         'share'=>$all_space->where('type',1)
     ])
-    @else
+    @endif
+    @if($invited_space)
+    @include('space.list-space-left-share-list',[
+        'share'=>$invited_space
+    ])
+    @endif
+
+    @if(!$all_space&&!$invited_space)
     <div class="body text-muted">{{ trans('space.space_is_empty') }}</div>
     @endif
 </div>
