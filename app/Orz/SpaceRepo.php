@@ -135,6 +135,9 @@ class SpaceRepo extends Repository
         DB::table('messages')->whereIn('to', $users)->where('status',0)->delete();
         $all = $messages = [];
         foreach ($users as $key => $value) {
+            //omit self
+            if ($value['user_id'] == user()->id)
+                continue;
             $all[] = ['user_id' => $value['user_id'], 'space_id' => $space->id,'is_admin'=>isset($value['is_admin'])?1:0];
             $messages[] = [
               'type'=>'space_invite', 
