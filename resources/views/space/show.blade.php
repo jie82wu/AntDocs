@@ -54,21 +54,21 @@
 
         <hr class="primary-background">
 
-        @if(userCan('space-update', $space))
+        @if(shareCan($space,'admin')||userCan('space-update', $space))
         <a href="{{ $space->getUrl('/edit') }}" class="icon-list-item">
             <span>@icon('edit')</span>
             <span>{{ trans('common.edit') }}</span>
         </a>
         @endif
 
-        @if(userCan('restrictions-manage', $space))
+        @if(shareCan($space,'admin')||userCan('restrictions-manage', $space))
         <a href="{{ $space->getUrl('/permissions') }}" class="icon-list-item">
             <span>@icon('lock')</span>
             <span>{{ trans('entities.permissions') }}</span>
         </a>
         @endif
 
-        @if(userCan('space-delete', $space))
+        @if(shareCan($space,'admin')||userCan('space-delete', $space))
         <a href="{{ $space->getUrl('/delete') }}" class="icon-list-item">
             <span>@icon('delete')</span>
             <span>{{ trans('common.delete') }}</span>

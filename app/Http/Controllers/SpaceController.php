@@ -283,8 +283,8 @@ class SpaceController extends Controller
     }
 
     /**
-     * Show the form for editing the specified book.
-     * @param $slug
+     * edit.
+     * @param $id
      * @return Response
      */
     public function edit(Request $request, $id)
@@ -295,7 +295,9 @@ class SpaceController extends Controller
         $user_ids = $this->spaceRepo->getUsersId($space);
         $admin_ids = $this->spaceRepo->getAdminsId($space);
         $book_ids = $this->spaceRepo->getBooksId($space);
-        $this->checkOwnablePermission('space-update', $space);
+        //如果是共享space管理者
+        $this->spaceRepo->checkUserPermission($space, 'admin') ||
+            $this->checkOwnablePermission('space-update', $space);
         $this->setPageTitle(trans('space.books_edit_named', ['spaceName'=>$space->name]));
         return view('space.edit', [
             'space' => $space, 
@@ -309,7 +311,7 @@ class SpaceController extends Controller
     }
 
     /**
-     * Update the specified book in storage.
+     * Update  .
      * @param Request $request
      * @param          $id
      * @return Response
@@ -321,8 +323,12 @@ class SpaceController extends Controller
         $space = $this->spaceRepo->find($id);
         if (!$space)
             throw new PermissionsException(trans('errors.space_not_found'));
-        if ($space->created_by != user()->id)
-            $this->checkPermission('space-update-all');
+        
+        //if not creator
+        //if ($space->created_by != user()->id) {
+        $this->spaceRepo->checkUserPermission($space, 'admin') ||
+                $this->checkPermission('space-update-all');
+        //}
         $this->validate($request, [
             'name' => 'required|string|max:255',
             'description' => 'string|max:1000',
@@ -344,7 +350,8 @@ class SpaceController extends Controller
     public function showDelete($id)
     {
         $space = $this->spaceRepo->find($id);
-        $this->checkOwnablePermission('space-delete', $space);
+        $this->spaceRepo->checkUserPermission($space, 'admin') ||
+            $this->checkOwnablePermission('space-delete', $space);
         $this->setPageTitle(trans('space.space_delete_named', ['spaceName'=>$space->name]));
         return view('space.delete', ['space' => $space, 'current' => $space]);
     }
@@ -457,7 +464,8 @@ class SpaceController extends Controller
     public function destroy($id)
     {
         $space = $this->spaceRepo->find($id);
-        $this->checkOwnablePermission('space-delete', $space);
+        $this->spaceRepo->checkUserPermission($space, 'admin') ||
+            $this->checkOwnablePermission('space-delete', $space);
         Activity::addMessage('space_delete', 0, $space->name);
 
         if ($space->cover) {
@@ -476,6 +484,7 @@ class SpaceController extends Controller
     public function showPermissions($id)
     {
         $space = $this->spaceRepo->find($id);
+        $this->spaceRepo->checkUserPermission($space, 'admin') ||
         $this->checkOwnablePermission('restrictions-manage', $space);
         $roles = $this->userRepo->getRestrictableRoles();
         return view('space.permissions', [
@@ -495,6 +504,7 @@ class SpaceController extends Controller
     public function permissions($id, Request $request)
     {
         $space = $this->spaceRepo->find($id);
+        $this->spaceRepo->checkUserPermission($space, 'admin') ||
         $this->checkOwnablePermission('restrictions-manage', $space);
         $this->entityRepo->updateEntityPermissionsFromRequest($request, $space);
         session()->flash('success', trans('space.space_permissions_updated'));

@@ -232,4 +232,23 @@ class SpaceRepo extends Repository
         $read = DB::table('spacext')->where('user_id', user()->id)->where('key', 'current_read')->first();
         return $read && $read->value ? $read->value : false;
     }
+
+
+    //被邀请用户权限判断 role [viewer,admin]
+    public function checkUserPermission(Space $space, $role)
+    {
+        $user_id = user()->id;
+        $space_user = DB::table('space_user')
+            ->where(['space_id' => $space->id])
+            ->where('user_id', $user_id)
+            ->where('status', 1)
+            ->first();
+        if (!$space_user)
+            return false;
+        if ($role=='viewer')
+            return true;
+        if ($role=='admin')
+            return $space_user->is_admin>0;
+    }
+
 }

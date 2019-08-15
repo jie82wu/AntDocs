@@ -76,6 +76,13 @@ function userCan(string $permission, Ownable $ownable = null)
     return $permissionService->checkOwnableUserAccess($ownable, $permission);
 }
 
+//被邀请用户权限判断 role [viewer,admin]
+function shareCan(\BookStack\Orz\Space $space, $share_role)
+{
+    $permissionService = app(\BookStack\Orz\SpaceRepo::class);
+    return $permissionService->checkUserPermission($space, $share_role);
+}
+
 /**
  * Check if the current user has the given permission
  * on any item in the system.

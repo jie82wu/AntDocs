@@ -18,7 +18,7 @@
                 {{--@include('space.space-checkbox-com',['id'=>1,'name'=>'users[]','checked'=>isset($uids)&&in_array($user->id,$uids)])--}}
             </td>
             <td>
-                {{ trans($message->content_key, ['userName'=>$message->fromUser->name, 'spaceName'=>$message->space()->name]) }}
+                {{ trans($message->content_key, ['userName'=>$message->fromUser->name, 'spaceName'=>$message->spaceName()]) }}
             </td>
             <td >
                 <a href="{{ baseUrl('/message/'.$message->id.'/status/1')}}">{{ trans('message.allow') }}</a>

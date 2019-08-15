@@ -29,11 +29,11 @@ class Message extends Entity
         return $this->belongsTo(User::class, 'to');
     }
     
-    public function space()
+    public function spaceName()
     {
-        $spaceIdAndUserId = explode('|', $this->rel_id);
-        $space_id = DB::table('space_user')->where(['space_id'=>$spaceIdAndUserId[0]])->where(['user_id'=>$spaceIdAndUserId[1]])->value('space_id');
-        return Space::find($space_id);
+        $spaceIdAndUserId = explode('|', $this->rel_id);//message rel_id:space_id|user_id
+        $space = Space::find($spaceIdAndUserId[0]);
+        return $space?$space->name:'unkown';
     }
     
 }

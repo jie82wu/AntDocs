@@ -56,7 +56,7 @@ return [
     'book_add_favorite'            => '图书已收藏',
     
     //message
-    'message_handle'               => '消息已处理',
+    'message_handle_notification'  => '消息已处理',
 
     // Other
     'commented_on'                => '评论',
