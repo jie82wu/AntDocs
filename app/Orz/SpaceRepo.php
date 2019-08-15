@@ -90,7 +90,8 @@ class SpaceRepo extends Repository
             $this->saveBooksToSpace($space, $input['books']);
         }
         
-        $this->permissionService->buildJointPermissionsForSpace($space);
+        //$this->permissionService->buildJointPermissionsForSpace($space);
+        $this->permissionService->buildJointPermissionsForEntity($space);
         $this->searchService->indexEntity($space);
         return $space;
     }
@@ -113,7 +114,8 @@ class SpaceRepo extends Repository
             $this->saveBooksToSpace($space, $input['books']);
         }
         
-        $this->permissionService->buildJointPermissionsForSpace($space);
+        //$this->permissionService->buildJointPermissionsForSpace($space);
+        $this->permissionService->buildJointPermissionsForEntity($space);
         $this->searchService->indexEntity($space);
         return $space;
     }

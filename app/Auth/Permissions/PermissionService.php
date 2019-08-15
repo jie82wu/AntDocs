@@ -460,7 +460,7 @@ class PermissionService
             return $this->createJointPermissionDataArray($entity, $role, $action, $hasAccess, $hasAccess);
         }
 
-        if ($entity->isA('book') || $entity->isA('bookshelf')) {
+        if ($entity->isA('book') || $entity->isA('bookshelf') || $entity->isA('space')) {
             return $this->createJointPermissionDataArray($entity, $role, $action, $roleHasPermission, $roleHasPermissionOwn);
         }
 
@@ -533,7 +533,6 @@ class PermissionService
     public function checkOwnableUserAccess(Ownable $ownable, $permission)
     {
         $explodedPermission = explode('-', $permission);
-
         $baseQuery = $ownable->where('id', '=', $ownable->id);
         $action = end($explodedPermission);
         $this->currentAction = $action;

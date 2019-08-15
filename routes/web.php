@@ -209,6 +209,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/save-space', 'SpaceController@store');
         Route::post('/save-private-book', 'SpaceController@storePrivateBook');
         Route::get('/myspace', 'SpaceController@showMySpace');
+        Route::get('/{id}/permissions', 'SpaceController@showPermissions');
+        Route::put('/{id}/permissions', 'SpaceController@permissions');
         Route::get('/{id}/book/{oid}', 'SpaceController@showSpaceBook');
         Route::get('/{id}/chapter/{oid}', 'SpaceController@showSpaceChapter');
         Route::get('/{id}/page/{oid}', ['uses'=>'SpaceController@showSpacePage', 'as'=>'space.page']);

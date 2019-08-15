@@ -81,4 +81,7 @@ return [
     'error_occurred' => '出现错误',
     'app_down' => ':appName现在正在关闭',
     'back_soon' => '请耐心等待网站的恢复。',
+    
+    //space
+    'space_not_found' => '空间资源不存在。',
 ];

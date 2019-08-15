@@ -311,22 +311,24 @@ class SpaceController extends Controller
     /**
      * Update the specified book in storage.
      * @param Request $request
-     * @param          $slug
+     * @param          $id
      * @return Response
      * @throws \BookStack\Exceptions\ImageUploadException
      * @throws \BookStack\Exceptions\NotFoundException
      */
     public function update(Request $request, $id)
     {
-        
-        $this->checkPermission('space-update-all');
+        $space = $this->spaceRepo->find($id);
+        if (!$space)
+            throw new PermissionsException(trans('errors.space_not_found'));
+        if ($space->created_by != user()->id)
+            $this->checkPermission('space-update-all');
         $this->validate($request, [
             'name' => 'required|string|max:255',
             'description' => 'string|max:1000',
             'image' => $this->imageRepo->getImageValidationRules(),
         ]);
-        $input = $request->all();
-        $space = $this->spaceRepo->find($id);
+        $input = $request->all();        
         $space = $this->spaceRepo->updateFromInput($space, $input);
         $this->updateActions($space, $request);
         Activity::add($space, 'space_update', $space->id);
@@ -468,71 +470,35 @@ class SpaceController extends Controller
 
     /**
      * Show the Restrictions view.
-     * @param $bookSlug
+     * @param $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function showPermissions($bookSlug)
+    public function showPermissions($id)
     {
-        $book = $this->entityRepo->getBySlug('book', $bookSlug);
-        $this->checkOwnablePermission('restrictions-manage', $book);
+        $space = $this->spaceRepo->find($id);
+        $this->checkOwnablePermission('restrictions-manage', $space);
         $roles = $this->userRepo->getRestrictableRoles();
-        return view('books.permissions', [
-            'book' => $book,
+        return view('space.permissions', [
+            'space' => $space,
             'roles' => $roles
         ]);
     }
 
     /**
      * Set the restrictions for this book.
-     * @param $bookSlug
+     * @param $id
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      * @throws \BookStack\Exceptions\NotFoundException
      * @throws \Throwable
      */
-    public function permissions($bookSlug, Request $request)
+    public function permissions($id, Request $request)
     {
-        $book = $this->entityRepo->getBySlug('book', $bookSlug);
-        $this->checkOwnablePermission('restrictions-manage', $book);
-        $this->entityRepo->updateEntityPermissionsFromRequest($request, $book);
-        session()->flash('success', trans('entities.books_permissions_updated'));
-        return redirect($book->getUrl());
-    }
-
-    /**
-     * Export a book as a PDF file.
-     * @param string $bookSlug
-     * @return mixed
-     */
-    public function exportPdf($bookSlug)
-    {
-        $book = $this->entityRepo->getBySlug('book', $bookSlug);
-        $pdfContent = $this->exportService->bookToPdf($book);
-        return $this->downloadResponse($pdfContent, $bookSlug . '.pdf');
-    }
-
-    /**
-     * Export a book as a contained HTML file.
-     * @param string $bookSlug
-     * @return mixed
-     */
-    public function exportHtml($bookSlug)
-    {
-        $book = $this->entityRepo->getBySlug('book', $bookSlug);
-        $htmlContent = $this->exportService->bookToContainedHtml($book);
-        return $this->downloadResponse($htmlContent, $bookSlug . '.html');
-    }
-
-    /**
-     * Export a book as a plain text file.
-     * @param $bookSlug
-     * @return mixed
-     */
-    public function exportPlainText($bookSlug)
-    {
-        $book = $this->entityRepo->getBySlug('book', $bookSlug);
-        $textContent = $this->exportService->bookToPlainText($book);
-        return $this->downloadResponse($textContent, $bookSlug . '.txt');
+        $space = $this->spaceRepo->find($id);
+        $this->checkOwnablePermission('restrictions-manage', $space);
+        $this->entityRepo->updateEntityPermissionsFromRequest($request, $space);
+        session()->flash('success', trans('space.space_permissions_updated'));
+        return redirect($space->getUrl());
     }
 
     /**

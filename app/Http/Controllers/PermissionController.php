@@ -68,7 +68,7 @@ class PermissionController extends Controller
         $this->checkPermission('user-roles-manage');
         $role = $this->permissionsRepo->getRoleById($id);
         if ($role->hidden) {
-            throw new PermissionsException(trans('errors.role_cannot_be_edited'));
+            throw new PermissionsException(trans('errors.space_not_found'));
         }
         return view('settings.roles.edit', ['role' => $role]);
     }

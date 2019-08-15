@@ -28,9 +28,9 @@
                     @if (hasAppAccess())                        
                         <a class="hide-over-l" href="{{ baseUrl('/search') }}">@icon('search'){{ trans('common.search') }}</a>
                             <a href="{{ baseUrl('/space') }}">@icon('file'){{ trans('space.space') }}</a>
-                        @if(userCanOnAny('view', \BookStack\Entities\Bookshelf::class) || userCan('bookshelf-view-all') || userCan('bookshelf-view-own'))
+                        {{--@if(userCanOnAny('view', \BookStack\Entities\Bookshelf::class) || userCan('bookshelf-view-all') || userCan('bookshelf-view-own'))
                             <a href="{{ baseUrl('/shelves') }}">@icon('bookshelf'){{ trans('entities.shelves') }}</a>
-                        @endif
+                        @endif--}}
                         <a href="{{ baseUrl('/books') }}">@icon('books'){{ trans('entities.books') }}</a>
                         @if(signedInUser() && userCan('settings-manage'))
                             <a href="{{ baseUrl('/settings') }}">@icon('settings'){{ trans('settings.settings') }}</a>
@@ -80,21 +80,7 @@
                     <div class="links text-center">
                         <a href="{{ baseUrl('/message') }}">@icon('message') {{ trans('common.message') }}@if($message_count>0)({{$message_count}}) @endif</a>
                     </div>
-<!--                    <div class="dropdown-container" dropdown>-->
-<!--                            <span class="user-name hide-under-l" dropdown-toggle>-->
-<!--                                <a href="{{ baseUrl('/message') }}"><span class="name">@icon('message') {{ trans('common.message') }}</span>-->
-<!--                            </span></a>-->
-<!--                        <ul class="dropdown-menu">-->
-<!--                            <li>-->
-<!--                                <a href="{{ baseUrl("/create-book") }}">{{ trans('common.new_book') }}</a>-->
-<!--                            </li>-->
-<!--                            <li><hr class="hr-no-margin"></li>-->
-<!--                            <li>-->
-<!--                                <a href="{{ baseUrl('/message') }}">{{ trans('common.all_message') }}</a>-->
-<!--                            </li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
-                
+              
                     <div class="dropdown-container" dropdown>
                         <span class="user-name hide-under-l" dropdown-toggle>
                             <img class="avatar" src="{{$currentUser->getAvatar(30)}}" alt="{{ $currentUser->name }}">

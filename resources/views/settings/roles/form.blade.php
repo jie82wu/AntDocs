@@ -60,7 +60,7 @@
                     <th width="20%" permissions-table-toggle-all-in-column>{{ trans('common.edit') }}</th>
                     <th width="20%" permissions-table-toggle-all-in-column>{{ trans('common.delete') }}</th>
                 </tr>
-                <tr>
+                {{--<tr>
                     <td>
                         <div>{{ trans('entities.shelves_long') }}</div>
                         <a href="#" permissions-table-toggle-all-in-row class="text-small text-primary">{{ trans('common.toggle_all') }}</a>
@@ -82,6 +82,30 @@
                         @include('settings.roles.checkbox', ['permission' => 'bookshelf-delete-own', 'label' => trans('settings.role_own')])
                         <br>
                         @include('settings.roles.checkbox', ['permission' => 'bookshelf-delete-all', 'label' => trans('settings.role_all')])
+                    </td>
+                </tr>--}}
+                <tr>
+                    <td>
+                        <div>{{ trans('space.space') }}</div>
+                        <a href="#" permissions-table-toggle-all-in-row class="text-small text-primary">{{ trans('common.toggle_all') }}</a>
+                    </td>
+                    <td>
+                        @include('settings.roles.checkbox', ['permission' => 'space-create-all', 'label' => trans('settings.role_all')])
+                    </td>
+                    <td>
+                        @include('settings.roles.checkbox', ['permission' => 'space-view-own', 'label' => trans('settings.role_own')])
+                        <br>
+                        @include('settings.roles.checkbox', ['permission' => 'space-view-all', 'label' => trans('settings.role_all')])
+                    </td>
+                    <td>
+                        @include('settings.roles.checkbox', ['permission' => 'space-update-own', 'label' => trans('settings.role_own')])
+                        <br>
+                        @include('settings.roles.checkbox', ['permission' => 'space-update-all', 'label' => trans('settings.role_all')])
+                    </td>
+                    <td>
+                        @include('settings.roles.checkbox', ['permission' => 'space-delete-own', 'label' => trans('settings.role_own')])
+                        <br>
+                        @include('settings.roles.checkbox', ['permission' => 'space-delete-all', 'label' => trans('settings.role_all')])
                     </td>
                 </tr>
                 <tr>

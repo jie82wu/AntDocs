@@ -12,7 +12,9 @@ return [
     'private' =>  '私有空间',
     'public' =>  '共享空间',
     'my_space' =>  '我的空间',
+    'space_permissions' =>  '空间权限',
     'my_space_is_empty' =>  '您的私有空间还没有收藏过图书',
+    'space_has_no_book' =>  '这个空间还没有收藏过图书',
     'cover_image' =>  '空间图片',
     'space_tags' =>  '空间标签',
     'space_add_user' =>  '添加用户',
@@ -28,4 +30,5 @@ return [
     'space_delete_explain' => '这将删除空间「:spaceName」。所有收藏的图书和邀请的用户都会被取消关联。',
     'space_delete_confirmation' => '您确定要删除此空间吗？',
     'space_edit_named' => '编辑空间「:spaceName」',
+    'space_permissions_updated' => '空间权限已更新',
 ];

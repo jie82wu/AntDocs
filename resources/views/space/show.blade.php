@@ -28,21 +28,7 @@
         @else
         <div class="mt-xl">
             <hr>
-            <p class="text-muted italic mt-xl mb-m">{{ trans('entities.shelves_empty_contents') }}</p>
-            <div class="icon-list inline block">
-                @if(userCan('space-create-all') && userCan('space-update', $space))
-                <a href="{{ $space->getUrl('/create-space') }}" class="icon-list-item text-book">
-                    <span class="icon">@icon('add')</span>
-                    <span>{{ trans('space.space_create') }}</span>
-                </a>
-                @endif
-                @if(userCan('space-update', $space))
-                <a href="{{ $space->getUrl('/edit') }}" class="icon-list-item text-bookshelf">
-                    <span class="icon">@icon('edit')</span>
-                    <span>{{ trans('entities.shelves_edit_and_assign') }}</span>
-                </a>
-                @endif
-            </div>
+            <p class="text-muted italic mt-xl mb-m">{{ trans('space.space_has_no_book') }}</p>
         </div>
         @endif
     </div>
