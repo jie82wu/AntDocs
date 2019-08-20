@@ -13,7 +13,7 @@
         <td class="text-center" style="line-height: 0;width:100px;" >
             @include('space.space-checkbox-com',['id'=>$item->id,'name'=>'books[]','checked'=>isset($bids)&&in_array($item->id,$bids)])
         </td>
-        <td width="130">
+        <td width="130" style="overflow:hidden;">
             <img style="width:100px;height:3.5rem;" src="{{ $item->getBookCover()}}" alt="{{ $item->name }}">
         </td>
         <td align="left" >

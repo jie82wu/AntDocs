@@ -173,6 +173,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/maintenance', 'SettingController@showMaintenance');
         Route::delete('/maintenance/cleanup-images', 'SettingController@cleanupImages');
 
+       /**
         // Users
         Route::get('/users', 'UserController@index');
         Route::get('/users/create', 'UserController@create');
@@ -194,6 +195,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::delete('/roles/delete/{id}', 'PermissionController@deleteRole');
         Route::get('/roles/{id}', 'PermissionController@editRole');
         Route::put('/roles/{id}', 'PermissionController@updateRole');
+       */
     });
     
     //message

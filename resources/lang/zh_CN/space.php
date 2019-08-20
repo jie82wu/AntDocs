@@ -31,4 +31,5 @@ return [
     'space_delete_confirmation' => '您确定要删除此空间吗？',
     'space_edit_named' => '编辑空间「:spaceName」',
     'space_permissions_updated' => '空间权限已更新',
+    'content_market' => '内容集市',
 ];
