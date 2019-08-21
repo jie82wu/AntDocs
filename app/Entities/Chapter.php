@@ -47,7 +47,11 @@ class Chapter extends Entity
         }
         return baseUrl('/books/' . urlencode($bookSlug) . '/chapter/' . urlencode($this->slug));
     }
-
+    
+    public function getSpaceUrl($space)
+    {
+        return baseUrl('/space/' . $space->id . '/chapter/' . $this->id);
+    }
     /**
      * Get an excerpt of this chapter's description to the specified length or less.
      * @param int $length

@@ -12,6 +12,7 @@ use Illuminate\Routing\Controller as BaseController;
 use BookStack\Orz\Message;
 use BookStack\Orz\Space;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 abstract class Controller extends BaseController
 {
@@ -26,6 +27,7 @@ abstract class Controller extends BaseController
      */
     protected $signedIn;
 
+    protected $cache_expire = 600;
     /**
      * Controller constructor.
      */
@@ -44,11 +46,21 @@ abstract class Controller extends BaseController
             view()->share('signedIn', $this->signedIn);
             view()->share('currentUser', $user);
     
-            $space = Space::where(['created_by'=>$user->id])->get();
+            //my private space and created by myself
+            $space = Cache::get('all_space');
+            if (!$space) {
+                $space = Space::where(['created_by' => $user->id])->get();
+                Cache::put('all_space', $space, $this->cache_expire);
+            }
             view()->share('all_space', $space);
+            
             //invited space
-            $ids = DB::table('space_user')->where('user_id',$user->id)->pluck('space_id')->all();
-            $invited_space = Space::whereIn('id',$ids)->get();
+            $invited_space = Cache::get('invited_space');
+            if (!$invited_space) {
+                $ids = DB::table('space_user')->where('user_id', $user->id)->pluck('space_id')->all();
+                $invited_space = Space::whereIn('id', $ids)->get();
+                Cache::put('invited_space', $invited_space, $this->cache_expire);
+            }
             view()->share('invited_space', $invited_space);
             
             

@@ -33,6 +33,11 @@ class Book extends Entity
         return baseUrl('/books/' . urlencode($this->slug));
     }
 
+    public function getSpaceUrl($space)
+    {
+        return baseUrl('/space/' . $space->id . '/book/' . $this->id);
+    }
+
     /**
      * Returns book cover image, if book cover not exists return default cover image.
      * @param int $width - Width of the image

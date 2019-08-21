@@ -22,7 +22,7 @@
         @if(count($space->books) > 0)
         <div class="entity-list">
             @foreach($space->books as $book)
-            @include('books.list-item', ['book' => $book])
+            @include('books.list-item', ['book' => $book,'space'=>$space])
             @endforeach
         </div>
         @else

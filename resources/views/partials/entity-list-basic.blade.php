@@ -1,7 +1,7 @@
 <div class="entity-list {{ $style ?? '' }}">
     @if(count($entities) > 0)
         @foreach($entities as $index => $entity)
-            @include('partials.entity-list-item-basic', ['entity' => $entity])
+            @include('partials.entity-list-item-basic', ['entity' => $entity, 'space'=>$space])
         @endforeach
     @else
         <p class="text-muted empty-text">

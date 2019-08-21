@@ -1,4 +1,4 @@
-<a href="{{ $book->getUrl() }}" class="book entity-list-item" data-entity-type="book" data-entity-id="{{$book->id}}">
+<a href="{{ $book->getSpaceUrl($space) }}" class="book entity-list-item" data-entity-type="book" data-entity-id="{{$book->id}}">
     <div class="entity-list-item-image bg-book" style="background-image: url('{{ $book->getBookCover() }}')">
         @icon('book')
     </div>

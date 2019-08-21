@@ -101,7 +101,13 @@ class Page extends Entity
 
         return baseUrl('/books/' . urlencode($bookSlug) . $midText . $idComponent);
     }
-
+    
+    public function getSpaceUrl($space = null)
+    {
+        if ($space)
+            return baseUrl('/space/' . $space->id . '/page/' . $this->id);
+        return $this->getUrl();
+    }
     /**
      * Return a generalised, common raw query that can be 'unioned' across entities.
      * @param bool $withContent
