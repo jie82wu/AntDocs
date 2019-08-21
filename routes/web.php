@@ -173,7 +173,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/maintenance', 'SettingController@showMaintenance');
         Route::delete('/maintenance/cleanup-images', 'SettingController@cleanupImages');
 
-       /**
+       
         // Users
         Route::get('/users', 'UserController@index');
         Route::get('/users/create', 'UserController@create');
@@ -195,7 +195,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::delete('/roles/delete/{id}', 'PermissionController@deleteRole');
         Route::get('/roles/{id}', 'PermissionController@editRole');
         Route::put('/roles/{id}', 'PermissionController@updateRole');
-       */
+       
     });
     
     //message
@@ -212,6 +212,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/save-private-book', 'SpaceController@storePrivateBook');
         Route::get('/myspace', 'SpaceController@showMySpace');
         Route::get('/{id}/permissions', 'SpaceController@showPermissions');
+        Route::get('/{id}/roles', 'SpaceController@showRoles');
         Route::put('/{id}/permissions', 'SpaceController@permissions');
         Route::get('/{id}/book/{oid}', 'SpaceController@showSpaceBook');
         Route::get('/{id}/chapter/{oid}', 'SpaceController@showSpaceChapter');

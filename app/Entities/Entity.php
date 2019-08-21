@@ -255,4 +255,11 @@ class Entity extends Ownable
     {
         return $path;
     }
+    
+    public function getSpaceUrl($space = null)
+    {
+        if ($space)
+            return baseUrl('/space/' . $space->id . '/'.static::getClassName().'/' . $this->id);
+        return $this->getUrl();
+    }
 }

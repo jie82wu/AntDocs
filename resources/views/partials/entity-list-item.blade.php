@@ -1,4 +1,4 @@
-@component('partials.entity-list-item-basic', ['entity' => $entity, 'space'=>$space])
+@component('partials.entity-list-item-basic', ['entity' => $entity, 'space'=>$space??null])
 <div class="entity-item-snippet">
 
     @if($showPath ?? false)

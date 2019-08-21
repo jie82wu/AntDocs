@@ -151,7 +151,7 @@ class SpaceController extends Controller
     }
     
     /**
-     * show space by id
+     * show share space by id
      */
     public function showSpace(Request $request, $id)
     {
@@ -510,7 +510,20 @@ class SpaceController extends Controller
         session()->flash('success', trans('space.space_permissions_updated'));
         return redirect($space->getUrl());
     }
-
+    
+    
+    public function showRoles($id)
+    {
+        $space = $this->spaceRepo->find($id);
+        
+        //permissions check
+        //$this->spaceRepo->checkUserPermission($space, 'admin') || $this->checkOwnablePermission('restrictions-manage', $space);
+        
+        //$roles = $this->userRepo->getRestrictableRoles();
+        return view('space.roles', [
+            'space' => $space,
+        ]);
+    }
     /**
      * Handles updating the cover image.
      * @param Space $space

@@ -13,6 +13,7 @@ return [
     'public' =>  '共享空间',
     'my_space' =>  '我的空间',
     'space_permissions' =>  '空间权限',
+    'space_settings' =>  '空间设置',
     'my_space_is_empty' =>  '您的私有空间还没有收藏过图书',
     'space_has_no_book' =>  '这个空间还没有收藏过图书',
     'cover_image' =>  '空间图片',
@@ -31,5 +32,10 @@ return [
     'space_delete_confirmation' => '您确定要删除此空间吗？',
     'space_edit_named' => '编辑空间「:spaceName」',
     'space_permissions_updated' => '空间权限已更新',
+    
+    //market
     'content_market' => '内容集市',
+    
+    //settings
+    'space_roles' => '空间角色',
 ];

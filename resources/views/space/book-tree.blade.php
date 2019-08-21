@@ -1,10 +1,10 @@
-<li icon="true" data-jstree='{"selected":{{isset($bookSel)&&request()->id==$entity->id&&request()->oid==$book->id?"true":"false"}},"icon":"{{URL::asset("assets/imgs")}}/{{count($book->chapters)>0?"book_color.png":"book_empty.png"}}"}'>
+<li icon="true" data-jstree='{@if(isset($bookSel)&&request()->id==$entity->id&&request()->oid==$book->id) "selected":true,"opened":true,@endif "icon":"{{URL::asset("assets/imgs")}}/{{count($book->chapters)>0?"book_color.png":"book_empty.png"}}"}'>
     <a href="{{ baseUrl("/space/$entity->id/book/$book->id") }}" title="{{ $book->name }}">{{ $book->getShortName() }}</a>
 
     <ul>
         @foreach($book->getChildren() as $item)
         @if($item->isA('chapter'))
-        <li data-jstree='{"selected":{{isset($chapterSel)&&request()->id==$entity->id&&request()->oid==$item->id?"true":"false"}},"icon":"{{URL::asset("assets/imgs/chapter.png")}}"}'>
+        <li data-jstree='{@if(isset($chapterSel)&&request()->id==$entity->id&&request()->oid==$item->id) "selected":true,"opened":true,@endif "icon":"{{URL::asset("assets/imgs/chapter.png")}}"}'>
             <a href="{{ baseUrl("/space/$entity->id/chapter/$item->id") }}" title="{{ $item->name }}">{{ $item->getShortName() }}</a>
             @if($item->pages)
             <ul>
