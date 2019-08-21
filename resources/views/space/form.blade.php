@@ -36,14 +36,14 @@
 </div>
 
 <!--add user-->
-<div class="form-group" collapsible id="select-user-control">
+{{--<div class="form-group" collapsible id="select-user-control">
     <div class="collapse-title text-primary" collapsible-trigger>
         <label for="tag-manager">{{ trans('space.space_add_user') }}</label>
     </div>
     <div class="collapse-content" collapsible-content>
         @include('space.add-space-user-list', ['entity' => $users])
     </div>
-</div>
+</div>--}}
 
 <!--add book-->
 <div class="form-group" collapsible id="select-user-control">

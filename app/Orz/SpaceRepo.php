@@ -82,9 +82,9 @@ class SpaceRepo extends Repository
             $this->tagRepo->saveTagsToEntity($space, $input['tags']);
         }
         
-        if (isset($input['users'])) {
-            $this->saveUsersToSpace($space, $input['users']);
-        }
+//        if (isset($input['users'])) {
+//            $this->saveUsersToSpace($space, $input['users']);
+//        }
         
         if (isset($input['books'])) {
             $this->saveBooksToSpace($space, $input['books']);
@@ -106,9 +106,9 @@ class SpaceRepo extends Repository
             $this->tagRepo->saveTagsToEntity($space, $input['tags']);
         }
         
-        if (isset($input['users'])) {
-            $this->saveUsersToSpace($space, $input['users']);
-        }
+//        if (isset($input['users'])) {
+//            $this->saveUsersToSpace($space, $input['users']);
+//        }
         
         if (isset($input['books'])) {
             $this->saveBooksToSpace($space, $input['books']);
