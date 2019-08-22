@@ -3,7 +3,7 @@
 use BookStack\Auth\User;
 use BookStack\Entities\Entity;
 use BookStack\Entities\Book;
-use BookStack\Auth\SpaceRole;
+use BookStack\Auth\Role;
 use BookStack\Uploads\Image;
 
 class Space extends Entity
@@ -41,7 +41,7 @@ class Space extends Entity
     
     public function roles()
     {
-        return $this->hasMany(SpaceRole::class);
+        return $this->hasMany(Role::class);
     }
     
     public function user()

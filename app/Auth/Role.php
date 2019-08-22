@@ -3,6 +3,7 @@
 use BookStack\Auth\Permissions\JointPermission;
 use BookStack\Auth\Permissions\RolePermission;
 use BookStack\Model;
+use BookStack\Orz\Space;
 
 class Role extends Model
 {
@@ -15,6 +16,11 @@ class Role extends Model
     public function users()
     {
         return $this->belongsToMany(User::class)->orderBy('name', 'asc');
+    }
+    
+    public function space()
+    {
+        return $this->belongsTo(Space::class);
     }
 
     /**

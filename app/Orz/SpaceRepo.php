@@ -235,7 +235,7 @@ class SpaceRepo extends Repository
 
 
     //被邀请用户权限判断 role [viewer,admin]
-    public function checkUserPermission(Space $space, $role)
+    public function checkUserPermission(Space $space, $role='')
     {
         $user_id = user()->id;
         $space_user = DB::table('space_user')
@@ -249,6 +249,14 @@ class SpaceRepo extends Repository
             return true;
         if ($role=='admin')
             return $space_user->is_admin>0;
+    }
+    
+    public function checkIsAdmin(Space $space)
+    {
+        if ($space->created_by != user()->id) {
+            $this->showPermissionError();
+        }
+        return true;
     }
 
 }

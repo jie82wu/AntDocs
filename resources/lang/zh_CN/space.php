@@ -38,4 +38,6 @@ return [
     
     //settings
     'space_roles' => '空间角色',
+    'create_space_roles' => '创建空间角色',
+    'space_role_edit' => '编辑空间角色',
 ];

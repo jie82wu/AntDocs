@@ -14,7 +14,7 @@
             <h1 class="list-heading">{{ trans('space.space_roles') }}</h1>
 
             <div class="text-right">
-                <a href="{{ baseUrl("/settings/roles/new") }}" class="button outline">{{ trans('settings.role_create') }}</a>
+                <a href="{{ baseUrl("/space/".$space->id."/roles/new") }}" class="button outline">{{ trans('settings.role_create') }}</a>
             </div>
         </div>
 

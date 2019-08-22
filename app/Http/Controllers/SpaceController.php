@@ -17,10 +17,12 @@ use Views;
 use BookStack\Orz\SpaceRepo;
 use BookStack\Orz\Space;
 use BookStack\Entities\Repos\PageRepo;
+use BookStack\Auth\Permissions\PermissionsRepo;
 
 class SpaceController extends Controller
 {
-
+    
+    protected $permissionsRepo;
     protected $entityRepo;
     protected $userRepo;
     protected $exportService;
@@ -45,6 +47,7 @@ class SpaceController extends Controller
         ImageRepo $imageRepo,
         TagRepo $tagRepo,
         PageRepo $pageRepo,
+        PermissionsRepo $permissionsRepo,
         SpaceRepo $spaceRepo
     ) {
         $this->entityRepo = $entityRepo;
@@ -55,6 +58,7 @@ class SpaceController extends Controller
         $this->tagRepo = $tagRepo;
         $this->spaceRepo = $spaceRepo;
         $this->pageRepo = $pageRepo;
+        $this->permissionsRepo = $permissionsRepo;
         parent::__construct();
     }
 
@@ -524,12 +528,84 @@ class SpaceController extends Controller
             'space' => $space,
         ]);
     }
-    /**
-     * Handles updating the cover image.
-     * @param Space $space
-     * @param Request $request
-     * @throws \BookStack\Exceptions\ImageUploadException
-     */
+    
+    public function createRole(Request $request, $id)
+    {
+        $space = $this->spaceRepo->find($id);
+        $this->checkPermission('user-roles-manage');
+        return view('space.roles.create',['space'=>$space]);   
+    }
+    
+    public function storeRole(Request $request, $id)
+    {
+        $space = $this->spaceRepo->find($id);
+        $this->spaceRepo->checkIsAdmin($space);
+        $this->validate($request, [
+            'display_name' => 'required|min:3|max:200',
+            'description' => 'max:250'
+        ]);
+    
+        $this->permissionsRepo->saveNewRole($request->all(), $space->id);
+        session()->flash('success', trans('settings.role_create_success'));
+        return redirect('/space/'.$space->id.'/roles');
+    }
+
+    public function editRole($id,$role_id)
+    {
+        $space = $this->spaceRepo->find($id);
+        $this->spaceRepo->checkIsAdmin($space);
+        $role = $this->permissionsRepo->getRoleById($role_id);
+        if ($role->hidden) {
+            throw new PermissionsException(trans('errors.space_not_found'));
+        }
+        return view('space.roles.edit', ['role' => $role, 'space'=>$space]);
+    }
+
+    public function updateRole($id, $role_id, Request $request)
+    {
+        $space = $this->spaceRepo->find($id);
+        $this->spaceRepo->checkIsAdmin($space);
+        //$this->checkPermission('user-roles-manage');
+        $this->validate($request, [
+            'display_name' => 'required|min:3|max:200',
+            'description' => 'max:250'
+        ]);
+        
+        $role = $this->permissionsRepo->updateRole($role_id, $request->all());
+        session()->flash('success', trans('settings.role_update_success'));
+        return redirect('/space/'.$role->space_id.'/roles');
+    }
+    
+    public function showDeleteRole($id)
+    { 
+        //$this->checkPermission('user-roles-manage');
+        $role = $this->permissionsRepo->getRoleById($id);
+        $space = $role->space;
+        $this->spaceRepo->checkIsAdmin($space);
+        $roles = $this->permissionsRepo->getAllRolesExcept($role, ['space_id'=>$space->id]);
+        $blankRole = $role->newInstance(['display_name' => trans('settings.role_delete_no_migration')]);
+        $roles->prepend($blankRole);
+        return view('space.roles.delete', ['role' => $role, 'roles' => $roles,
+                'space'=>$space
+            ]);
+    }
+
+    public function deleteRole($id, Request $request)
+    {
+        //$this->checkPermission('user-roles-manage');
+        $role = $this->permissionsRepo->getRoleById($id);
+        $this->spaceRepo->checkIsAdmin($role->space);
+        try {
+            $role = $this->permissionsRepo->deleteRole($id, $request->get('migrate_role_id'));
+        } catch (PermissionsException $e) {
+            session()->flash('error', $e->getMessage());
+            return redirect()->back();
+        }
+        
+        session()->flash('success', trans('settings.role_delete_success'));
+        return redirect('/space/'.$role->space_id.'/roles');
+    }
+    
     protected function updateActions(Space $space, Request $request)
     {
         // Update the cover image if in request

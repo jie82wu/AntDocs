@@ -40,9 +40,9 @@ class PermissionsRepo
      * @param Role $role
      * @return mixed
      */
-    public function getAllRolesExcept(Role $role)
+    public function getAllRolesExcept(Role $role, $where = [])
     {
-        return $this->role->where('id', '!=', $role->id)->get();
+        return $this->role->where('id', '!=', $role->id)->where($where)->get();
     }
 
     /**
@@ -60,12 +60,13 @@ class PermissionsRepo
      * @param array $roleData
      * @return Role
      */
-    public function saveNewRole($roleData)
+    public function saveNewRole($roleData, $id = 0)
     {
         $role = $this->role->newInstance($roleData);
         $role->name = str_replace(' ', '-', strtolower($roleData['display_name']));
+        $role->space_id = $id;
         // Prevent duplicate names
-        while ($this->role->where('name', '=', $role->name)->count() > 0) {
+        while ($this->role->where('name', '=', $role->name)->where('space_id',$id)->count() > 0) {
             $role->name .= strtolower(str_random(2));
         }
         $role->save();
@@ -103,6 +104,7 @@ class PermissionsRepo
         $role->fill($roleData);
         $role->save();
         $this->permissionService->buildJointPermissionForRole($role);
+        return $role;
     }
 
     /**
@@ -149,6 +151,8 @@ class PermissionsRepo
         }
 
         $this->permissionService->deleteJointPermissionsForRole($role);
+        $copy_role = clone $role;
         $role->delete();
+        return $copy_role;
     }
 }
