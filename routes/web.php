@@ -219,6 +219,12 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/{id}/roles/new', 'SpaceController@storeRole');
         Route::get('/{id}/roles/{role_id}', 'SpaceController@editRole');
         Route::put('/{id}/roles/{role_id}', 'SpaceController@updateRole');
+        Route::get('/{id}/users', 'SpaceController@showUsers');
+        Route::put('/{id}/users', 'SpaceController@saveUsers');
+        Route::get('/{id}/users/create', 'SpaceController@createUsers');
+        Route::post('/{id}/users/create', 'SpaceController@storeUsers');
+        Route::get('/{id}/users/{uid}', 'SpaceController@editUsers');
+        Route::put('/{id}/users/{uid}', 'SpaceController@updateUsers');
         Route::put('/{id}/permissions', 'SpaceController@permissions');
         Route::get('/{id}/book/{oid}', 'SpaceController@showSpaceBook');
         Route::get('/{id}/chapter/{oid}', 'SpaceController@showSpaceChapter');

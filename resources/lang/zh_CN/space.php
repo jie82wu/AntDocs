@@ -40,4 +40,9 @@ return [
     'space_roles' => '空间角色',
     'create_space_roles' => '创建空间角色',
     'space_role_edit' => '编辑空间角色',
+    'space_users' => '空间用户',
+    'space_save_users' => '保存空间用户',
+    'user_create_success' => '空间用户已创建',
+    'user_roles_edit_success' => '空间用户角色已更新',
+    'user_add_success' => '空间用户已更新',
 ];

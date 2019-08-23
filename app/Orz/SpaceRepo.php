@@ -152,6 +152,13 @@ class SpaceRepo extends Repository
         DB::table('space_user')->insert($all);
         DB::table('messages')->insert($messages);
     }
+    
+    //add user
+    public function saveUserToSpace(Space $space, $user_id)
+    {
+        $user = ['user_id' => $user_id, 'space_id' => $space->id];        
+        DB::table('space_user')->insert($user);
+    }
     //space select books
     public function saveBooksToSpace(Space $space, $books = [])
     {

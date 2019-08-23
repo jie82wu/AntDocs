@@ -18,6 +18,7 @@ use BookStack\Orz\SpaceRepo;
 use BookStack\Orz\Space;
 use BookStack\Entities\Repos\PageRepo;
 use BookStack\Auth\Permissions\PermissionsRepo;
+use BookStack\Auth\User;
 
 class SpaceController extends Controller
 {
@@ -30,6 +31,7 @@ class SpaceController extends Controller
     protected $imageRepo;
     protected $tagRepo;
     protected $pageRepo;
+    protected $user;
 
     /**
      * SpaceController constructor.
@@ -48,6 +50,7 @@ class SpaceController extends Controller
         TagRepo $tagRepo,
         PageRepo $pageRepo,
         PermissionsRepo $permissionsRepo,
+        User $user,
         SpaceRepo $spaceRepo
     ) {
         $this->entityRepo = $entityRepo;
@@ -59,6 +62,7 @@ class SpaceController extends Controller
         $this->spaceRepo = $spaceRepo;
         $this->pageRepo = $pageRepo;
         $this->permissionsRepo = $permissionsRepo;
+        $this->user = $user;
         parent::__construct();
     }
 
@@ -622,5 +626,116 @@ class SpaceController extends Controller
             $space->image_id = 0;
             $space->save();
         }
+    }
+    
+    public function showUsers(Request $request, $id)
+    {
+        $space = $this->spaceRepo->find($id);
+        $this->spaceRepo->checkIsAdmin($space);
+        $listDetails = [
+            'order' => $request->get('order', 'asc'),
+            'search' => $request->get('search', ''),
+            'sort' => $request->get('sort', 'name'),
+        ];
+        $users = $this->userRepo->getAllUsersPaginatedAndSorted(20, $listDetails);
+        $this->setPageTitle(trans('settings.users'));
+        $users->appends($listDetails);
+        $user_ids = $this->spaceRepo->getUsersId($space);
+        return view('space.users.index', [
+            'space'=>$space,
+            'uids'=>$user_ids,
+            'users' => $users, 'listDetails' => $listDetails]);
+    }
+    
+    //select users
+    public function saveUsers(Request $request, $id)
+    {
+        $space = $this->spaceRepo->find($id);
+        $this->spaceRepo->checkIsAdmin($space);
+        $input = $request->all();
+        $this->spaceRepo->saveUsersToSpace($space, isset($input['users'])?$input['users']:[]);
+        session()->flash('success', trans('space.user_add_success'));    
+        return redirect('/space/'.$space->id.'/users');
+    }
+    
+    public function createUsers(Request $request, $id)
+    {
+        $space = $this->spaceRepo->find($id);
+        $this->spaceRepo->checkIsAdmin($space);
+        $authMethod = config('auth.method');
+        return view('space.users.create', [
+            'space' => $space,
+            'authMethod' => $authMethod,
+            'roles' => $space->roles
+        ]);
+    }
+    
+    //add user
+    public function storeUsers(Request $request, $id)
+    {
+        $space = $this->spaceRepo->find($id);
+        $this->spaceRepo->checkIsAdmin($space);
+        $validationRules = [
+            'name'             => 'required',
+            'email'            => 'required|email|unique:users,email'
+        ];
+        
+        $authMethod = config('auth.method');
+        if ($authMethod === 'standard') {
+            $validationRules['password'] = 'required|min:5';
+            $validationRules['password-confirm'] = 'required|same:password';
+        } elseif ($authMethod === 'ldap') {
+            $validationRules['external_auth_id'] = 'required';
+        }
+        $this->validate($request, $validationRules);
+        
+        $user = $this->user->fill($request->all());
+        
+        if ($authMethod === 'standard') {
+            $user->password = bcrypt($request->get('password'));
+        } elseif ($authMethod === 'ldap') {
+            $user->external_auth_id = $request->get('external_auth_id');
+        }
+        
+        $user->save();
+        
+        if ($request->filled('roles')) {
+            $roles = $request->get('roles');
+            $this->userRepo->setUserRoles($user, $roles);
+        }
+        
+        $this->userRepo->downloadAndAssignUserAvatar($user);
+    
+        $this->spaceRepo->saveUserToSpace($space, $user->id);
+        
+        session()->flash('success', trans('space.user_create_success'));
+        
+        return redirect('/space/'.$space->id.'/users');
+    }
+    
+    public function editUsers(Request $request, $id, $uid)
+    {
+        $space = $this->spaceRepo->find($id);
+        $this->spaceRepo->checkIsAdmin($space);
+        $user = $this->userRepo->getById($uid);
+        $authMethod = config('auth.method');
+        return view('space.users.edit', [
+            'space' => $space,
+            'user' => $user,
+            'authMethod' => $authMethod,
+            'roles' => $space->roles
+        ]);
+    }
+    
+    public function updateUsers(Request $request, $id, $uid)
+    {
+        $space = $this->spaceRepo->find($id);
+        $this->spaceRepo->checkIsAdmin($space);
+        $roles = $request->get('roles');
+        $user = $this->userRepo->getById($uid);
+        $this->userRepo->setUserRoles($user, $roles);
+        session()->flash('success', trans('space.user_roles_edit_success'));
+        session()->flash('select_user_id', $uid);
+        return redirect('/space/'.$space->id.'/users');
     }
 }
