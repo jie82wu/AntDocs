@@ -62,7 +62,7 @@
         @endif
 
         @if(shareCan($space,'admin')||userCan('restrictions-manage', $space))
-        <a href="{{ $space->getUrl('/permissions') }}" class="icon-list-item">
+        <a href="{{ $space->getUrl('/users') }}" class="icon-list-item">
             <span>@icon('settings')</span>
             <span>{{ trans('settings.settings') }}</span>
         </a>
