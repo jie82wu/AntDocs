@@ -1,14 +1,18 @@
-@extends('base')
+@extends('tri-layout2')
 
 @section('head')
     <script src="{{ baseUrl('/libs/tinymce/tinymce.min.js?ver=4.9.4') }}"></script>
 @stop
 
-@section('body-class', 'flexbox')
 
-@section('content')
 
-    <div class="flex-fill flex">
+@section('left')
+@include('space.left-tree')
+@stop
+
+@section('body')
+
+    <div class="actions mb-xl">
         <form action="{{ $page->getUrl() }}" autocomplete="off" data-page-id="{{ $page->id }}" method="POST" class="flex flex-fill">
             @if(!isset($isDraft))
                 <input type="hidden" name="_method" value="PUT">

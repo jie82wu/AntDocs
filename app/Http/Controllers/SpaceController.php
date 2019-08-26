@@ -238,7 +238,7 @@ class SpaceController extends Controller
     public function showSpacePage(Request $request, $id, $oid)
     {
         $space = $this->spaceRepo->find($id);
-        $page = $this->entityRepo->getById('page', $oid);
+        $page = $this->entityRepo->getById('page', $oid, 1);
         $this->checkOwnablePermission('page-view', $page);
     
         $page->html = $this->pageRepo->renderPage($page);

@@ -100,7 +100,9 @@ class ChapterController extends Controller
         $chapter = $this->entityRepo->getBySlug('chapter', $chapterSlug, $bookSlug);
         $this->checkOwnablePermission('chapter-update', $chapter);
         $this->setPageTitle(trans('entities.chapters_edit_named', ['chapterName' => $chapter->getShortName()]));
-        return view('chapters.edit', ['book' => $chapter->book, 'chapter' => $chapter, 'current' => $chapter]);
+        return view('chapters.edit', ['book' => $chapter->book, 'chapter' => $chapter,
+            'chapterSel' => true,
+            'current' => $chapter]);
     }
 
     /**

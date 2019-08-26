@@ -111,6 +111,7 @@ class PageController extends Controller
 
         $draftsEnabled = $this->signedIn;
         return view('pages.edit', [
+            'pageSel' => 1,
             'page' => $draft,
             'book' => $draft->book,
             'isDraft' => true,
@@ -243,6 +244,7 @@ class PageController extends Controller
 
         $draftsEnabled = $this->signedIn;
         return view('pages.edit', [
+            'pageSel' => true,
             'page' => $page,
             'book' => $page->book,
             'current' => $page,

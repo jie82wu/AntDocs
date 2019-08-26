@@ -90,6 +90,20 @@
         <h5>Actions</h5>
 
         <div class="icon-list text-primary">
+            @if($page->draft)
+                @if(userCan('page-update', $page))
+                <a href="{{ $page->getUrl('') }}" class="icon-list-item">
+                    <span>@icon('edit')</span>
+                    <span>{{ trans('common.edit') }}</span>
+                </a>
+                @endif
+                @if(userCan('page-delete', $page))
+                <a href="{{ $page->getUrl('/delete') }}" class="icon-list-item">
+                    <span>@icon('delete')</span>
+                    <span>{{ trans('common.delete') }}</span>
+                </a>
+                @endif
+            @else
 
             {{--User Actions--}}
             @if(userCan('page-update', $page))
@@ -143,6 +157,9 @@
                     <li><a href="{{ $page->getUrl('/export/plaintext') }}" target="_blank">{{ trans('entities.export_text') }} <span class="text-muted float right">.txt</span></a></li>
                 </ul>
             </div>
+            
+            @endif
+            
         </div>
 
     </div>
