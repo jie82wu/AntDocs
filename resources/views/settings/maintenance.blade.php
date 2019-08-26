@@ -7,10 +7,10 @@
         <div class="py-m">
             @include('settings.navbar', ['selected' => 'maintenance'])
         </div>
-        <div class="text-right mb-l px-m">
+        {{--<div class="text-right mb-l px-m">
             <br>
             BookStack @if(strpos($version, 'v') !== 0) version @endif {{ $version }}
-        </div>
+        </div>--}}
     </div>
 
 

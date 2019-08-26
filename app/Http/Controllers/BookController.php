@@ -141,6 +141,8 @@ class BookController extends Controller
             $this->entityRepo->appendBookToShelf($bookshelf, $book);
             Activity::add($bookshelf, 'bookshelf_update');
         }
+    
+        $this->checkIfRedirect($book);
 
         return redirect($book->getUrl());
     }
@@ -155,6 +157,9 @@ class BookController extends Controller
     public function show($slug, Request $request)
     {
         $book = $this->entityRepo->getBySlug('book', $slug);
+    
+        $this->checkIfRedirect($book);
+        
         $this->checkOwnablePermission('book-view', $book);
 
         $bookChildren = $this->entityRepo->getBookChildren($book);
@@ -219,7 +224,9 @@ class BookController extends Controller
         if (isset($input['space'])) {
             $this->spaceRepo->saveBookToSpace($book, $input['space']);
         }
-
+    
+        $this->checkIfRedirect($book);
+        
         return redirect($book->getUrl());
     }
 
@@ -333,6 +340,8 @@ class BookController extends Controller
             $this->entityRepo->buildJointPermissionsForBook($book);
             Activity::add($book, 'book_sort', $book->id);
         });
+    
+        $this->checkIfRedirect($book);
 
         return redirect($book->getUrl());
     }
@@ -352,7 +361,9 @@ class BookController extends Controller
             $this->imageRepo->destroyImage($book->cover);
         }
         $this->entityRepo->destroyBook($book);
-
+    
+        $this->checkIfRedirect();
+        
         return redirect('/books');
     }
 
@@ -386,6 +397,9 @@ class BookController extends Controller
         $this->checkOwnablePermission('restrictions-manage', $book);
         $this->entityRepo->updateEntityPermissionsFromRequest($request, $book);
         session()->flash('success', trans('entities.books_permissions_updated'));
+    
+        $this->checkIfRedirect($book);
+        
         return redirect($book->getUrl());
     }
 

@@ -3,6 +3,7 @@
 namespace BookStack\Http\Controllers;
 
 use BookStack\Auth\User;
+use BookStack\Entities\Entity;
 use BookStack\Ownable;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -203,5 +204,20 @@ abstract class Controller extends BaseController
             'Content-Type'        => 'application/octet-stream',
             'Content-Disposition' => 'attachment; filename="' . $fileName . '"'
         ]);
+    }
+    
+    public function checkIfRedirect(Entity $entity = null)
+    {
+        $url = '';
+        $space = cache('current_space');
+        if ($space) {
+            $url .= '/space/'.$space->id;
+            if ($entity) 
+                $url .= '/'.$entity->getClassName().'/'.$entity->id;
+    
+            $response = redirect($url);
+            throw new HttpResponseException($response);
+        }
+    
     }
 }

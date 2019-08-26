@@ -19,6 +19,7 @@ use BookStack\Orz\Space;
 use BookStack\Entities\Repos\PageRepo;
 use BookStack\Auth\Permissions\PermissionsRepo;
 use BookStack\Auth\User;
+use Illuminate\Support\Facades\Cache;
 
 class SpaceController extends Controller
 {
@@ -32,6 +33,7 @@ class SpaceController extends Controller
     protected $tagRepo;
     protected $pageRepo;
     protected $user;
+    protected $space;
 
     /**
      * SpaceController constructor.
@@ -63,6 +65,13 @@ class SpaceController extends Controller
         $this->pageRepo = $pageRepo;
         $this->permissionsRepo = $permissionsRepo;
         $this->user = $user;
+        $space_id=request('id');
+        if ($space_id) {
+            $space = $this->spaceRepo->find($space_id);
+            $this->space = $space;
+            view()->share('space', $space);
+            Cache::forever('current_space', $space);
+        }
         parent::__construct();
     }
 
@@ -165,7 +174,6 @@ class SpaceController extends Controller
     {
         $space = $this->spaceRepo->find($id);
         return view('space.show',[
-            'space'=>$space,
             'spaceSel'=>true,
         ]);
     }
@@ -200,7 +208,6 @@ class SpaceController extends Controller
         Views::add($book);  
         $this->setPageTitle($book->getShortName());
         return view('space.book-show', [
-            'space' => $space,
             'book' => $book,
             'current' => $book,
             'bookChildren' => $bookChildren,
@@ -220,7 +227,6 @@ class SpaceController extends Controller
         $pages = $this->entityRepo->getChapterChildren($chapter);
         return view('space.chapter-show', [
             'chapterSel' => true,
-            'space' => $space,
             'book' => $chapter->book,
             'chapter' => $chapter,
             'current' => $chapter,
@@ -251,7 +257,6 @@ class SpaceController extends Controller
         Views::add($page);
         $this->setPageTitle($page->getShortName());
         return view('space.page-show', [
-            'space'=>$space,
             'pageSel'=>true,
             'page' => $page,'book' => $page->book,
             'current' => $page,
@@ -308,7 +313,6 @@ class SpaceController extends Controller
             $this->checkOwnablePermission('space-update', $space);
         $this->setPageTitle(trans('space.books_edit_named', ['spaceName'=>$space->name]));
         return view('space.edit', [
-            'space' => $space, 
             'current' => $space,
             'uids' => $user_ids,
             'aids' => $admin_ids,
@@ -361,7 +365,8 @@ class SpaceController extends Controller
         $this->spaceRepo->checkUserPermission($space, 'admin') ||
             $this->checkOwnablePermission('space-delete', $space);
         $this->setPageTitle(trans('space.space_delete_named', ['spaceName'=>$space->name]));
-        return view('space.delete', ['space' => $space, 'current' => $space]);
+        return view('space.delete', [
+            'current' => $space]);
     }
 
     /**
@@ -496,7 +501,6 @@ class SpaceController extends Controller
         $this->checkOwnablePermission('restrictions-manage', $space);
         $roles = $this->userRepo->getRestrictableRoles();
         return view('space.permissions', [
-            'space' => $space,
             'roles' => $roles
         ]);
     }
@@ -529,7 +533,6 @@ class SpaceController extends Controller
         
         //$roles = $this->userRepo->getRestrictableRoles();
         return view('space.roles', [
-            'space' => $space,
         ]);
     }
     
@@ -537,7 +540,8 @@ class SpaceController extends Controller
     {
         $space = $this->spaceRepo->find($id);
         $this->checkPermission('user-roles-manage');
-        return view('space.roles.create',['space'=>$space]);   
+        return view('space.roles.create',[
+        ]);   
     }
     
     public function storeRole(Request $request, $id)
@@ -562,7 +566,9 @@ class SpaceController extends Controller
         if ($role->hidden) {
             throw new PermissionsException(trans('errors.space_not_found'));
         }
-        return view('space.roles.edit', ['role' => $role, 'space'=>$space]);
+        return view('space.roles.edit', [
+            'role' => $role, 
+        ]);
     }
 
     public function updateRole($id, $role_id, Request $request)
@@ -589,8 +595,9 @@ class SpaceController extends Controller
         $roles = $this->permissionsRepo->getAllRolesExcept($role, ['space_id'=>$space->id]);
         $blankRole = $role->newInstance(['display_name' => trans('settings.role_delete_no_migration')]);
         $roles->prepend($blankRole);
-        return view('space.roles.delete', ['role' => $role, 'roles' => $roles,
-                'space'=>$space
+        return view('space.roles.delete', [
+            'role' => $role, 
+            'roles' => $roles,
             ]);
     }
 
@@ -642,7 +649,6 @@ class SpaceController extends Controller
         $users->appends($listDetails);
         $user_ids = $this->spaceRepo->getUsersId($space);
         return view('space.users.index', [
-            'space'=>$space,
             'uids'=>$user_ids,
             'users' => $users, 'listDetails' => $listDetails]);
     }
@@ -664,7 +670,6 @@ class SpaceController extends Controller
         $this->spaceRepo->checkIsAdmin($space);
         $authMethod = config('auth.method');
         return view('space.users.create', [
-            'space' => $space,
             'authMethod' => $authMethod,
             'roles' => $space->roles
         ]);
@@ -720,7 +725,6 @@ class SpaceController extends Controller
         $user = $this->userRepo->getById($uid);
         $authMethod = config('auth.method');
         return view('space.users.edit', [
-            'space' => $space,
             'user' => $user,
             'authMethod' => $authMethod,
             'roles' => $space->roles

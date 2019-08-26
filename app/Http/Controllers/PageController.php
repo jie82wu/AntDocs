@@ -147,6 +147,7 @@ class PageController extends Controller
         $page = $this->pageRepo->publishPageDraft($draftPage, $input);
 
         Activity::add($page, 'page_create', $book->id);
+        $this->checkIfRedirect($page);
         return redirect($page->getUrl());
     }
 
@@ -167,9 +168,11 @@ class PageController extends Controller
             if ($page === null) {
                 throw $e;
             }
+            $this->checkIfRedirect($page);
             return redirect($page->getUrl());
         }
-
+    
+        $this->checkIfRedirect($page);
         $this->checkOwnablePermission('page-view', $page);
 
         $page->html = $this->pageRepo->renderPage($page);
@@ -263,6 +266,7 @@ class PageController extends Controller
         $this->checkOwnablePermission('page-update', $page);
         $this->pageRepo->updatePage($page, $page->book->id, $request->all());
         Activity::add($page, 'page_update', $page->book->id);
+        $this->checkIfRedirect($page);
         return redirect($page->getUrl());
     }
 
@@ -303,6 +307,7 @@ class PageController extends Controller
     public function redirectFromLink($pageId)
     {
         $page = $this->pageRepo->getById('page', $pageId);
+        $this->checkIfRedirect($page);
         return redirect($page->getUrl());
     }
 
@@ -352,6 +357,7 @@ class PageController extends Controller
 
         Activity::addMessage('page_delete', $book->id, $page->name);
         session()->flash('success', trans('entities.pages_delete_success'));
+        $this->checkIfRedirect($book);
         return redirect($book->getUrl());
     }
 
@@ -369,6 +375,7 @@ class PageController extends Controller
         $this->checkOwnablePermission('page-update', $page);
         session()->flash('success', trans('entities.pages_delete_draft_success'));
         $this->pageRepo->destroyPage($page);
+        $this->checkIfRedirect($book);
         return redirect($book->getUrl());
     }
 
@@ -455,6 +462,7 @@ class PageController extends Controller
         $this->checkOwnablePermission('page-update', $page);
         $page = $this->pageRepo->restorePageRevision($page, $page->book, $revisionId);
         Activity::add($page, 'page_restore', $page->book->id);
+        $this->checkIfRedirect($page);
         return redirect($page->getUrl());
     }
 
@@ -602,7 +610,8 @@ class PageController extends Controller
         $this->pageRepo->changePageParent($page, $parent);
         Activity::add($page, 'page_move', $page->book->id);
         session()->flash('success', trans('entities.pages_move_success', ['parentName' => $parent->name]));
-
+    
+        $this->checkIfRedirect($page);
         return redirect($page->getUrl());
     }
 
@@ -659,7 +668,8 @@ class PageController extends Controller
 
         Activity::add($pageCopy, 'page_create', $pageCopy->book->id);
         session()->flash('success', trans('entities.pages_copy_success'));
-
+    
+        $this->checkIfRedirect($pageCopy);
         return redirect($pageCopy->getUrl());
     }
 
@@ -696,6 +706,7 @@ class PageController extends Controller
         $this->checkOwnablePermission('restrictions-manage', $page);
         $this->pageRepo->updateEntityPermissionsFromRequest($request, $page);
         session()->flash('success', trans('entities.pages_permissions_success'));
+        $this->checkIfRedirect($page);
         return redirect($page->getUrl());
     }
 }

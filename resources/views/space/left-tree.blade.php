@@ -6,7 +6,7 @@
         @endphp
         @if($private&&$private->books)
             <div class="div-loading-tree">
-                <img src='{{URL::asset("assets/imgs/loading1.gif")}}' width="25"/>
+                <img src='{{URL::asset("assets/imgs/loading1.gif")}}' width="20"/>
             </div>
             <div class="left-tree-div" style="display: none;">
                 <ul>
@@ -28,7 +28,7 @@
 <div id="share" class="mb-xl">
     <h5>{{ trans('space.public') }}</h5>
     <div class="div-loading-tree">
-        <img src='{{URL::asset("assets/imgs/loading1.gif")}}' width="25"/>
+        <img src='{{URL::asset("assets/imgs/loading1.gif")}}' width="20"/>
     </div>
     @if($all_space)
     @include('space.list-space-left-share-list',[

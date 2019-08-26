@@ -18,10 +18,12 @@
         'core': {
             'themes': {
                 'dots': false
-            }
+            }            
         }
-    }).show(function(){
+    }).ready(function () {
         $('div.div-loading-tree').hide();
+        $('div.left-tree-div').show();
     });
+
 </script>
 

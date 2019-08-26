@@ -1,4 +1,4 @@
-@component('partials.entity-list-item-basic', ['entity' => $page, 'space'=>$space])
+@component('partials.entity-list-item-basic', ['entity' => $page, 'space'=>cache('space')])
     <div class="entity-item-snippet">
         <p class="text-muted break-text">{{ $page->getExcerpt() }}</p>
     </div>

@@ -61,6 +61,7 @@ class ChapterController extends Controller
         $input['priority'] = $this->entityRepo->getNewBookPriority($book);
         $chapter = $this->entityRepo->createFromInput('chapter', $input, $book);
         Activity::add($chapter, 'chapter_create', $book->id);
+        $this->checkIfRedirect($chapter);
         return redirect($chapter->getUrl());
     }
 
@@ -73,6 +74,7 @@ class ChapterController extends Controller
     public function show($bookSlug, $chapterSlug)
     {
         $chapter = $this->entityRepo->getBySlug('chapter', $chapterSlug, $bookSlug);
+        $this->checkIfRedirect($chapter);        
         $this->checkOwnablePermission('chapter-view', $chapter);
         $sidebarTree = $this->entityRepo->getBookChildren($chapter->book);
         Views::add($chapter);
@@ -116,6 +118,7 @@ class ChapterController extends Controller
 
         $this->entityRepo->updateFromInput('chapter', $chapter, $request->all());
         Activity::add($chapter, 'chapter_update', $chapter->book->id);
+        $this->checkIfRedirect($chapter);
         return redirect($chapter->getUrl());
     }
 
@@ -146,6 +149,7 @@ class ChapterController extends Controller
         $this->checkOwnablePermission('chapter-delete', $chapter);
         Activity::addMessage('chapter_delete', $book->id, $chapter->name);
         $this->entityRepo->destroyChapter($chapter);
+        $this->checkIfRedirect($book);
         return redirect($book->getUrl());
     }
 
@@ -205,7 +209,9 @@ class ChapterController extends Controller
         $this->entityRepo->changeBook('chapter', $parent->id, $chapter, true);
         Activity::add($chapter, 'chapter_move', $chapter->book->id);
         session()->flash('success', trans('entities.chapter_move_success', ['bookName' => $parent->name]));
-
+    
+        $this->checkIfRedirect($chapter);
+        
         return redirect($chapter->getUrl());
     }
 
@@ -242,6 +248,7 @@ class ChapterController extends Controller
         $this->checkOwnablePermission('restrictions-manage', $chapter);
         $this->entityRepo->updateEntityPermissionsFromRequest($request, $chapter);
         session()->flash('success', trans('entities.chapters_permissions_success'));
+        $this->checkIfRedirect($chapter);
         return redirect($chapter->getUrl());
     }
 
