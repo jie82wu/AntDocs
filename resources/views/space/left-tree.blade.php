@@ -19,9 +19,11 @@
                 </ul></li>
                 </ul>
             </div>
-        @else            
+        @else
             @include('space.list-space-left-private-space')
         @endif
+    @else
+        @include('space.list-space-left-private-space')
     @endif
 </div>
 
@@ -45,3 +47,4 @@
     <div class="body text-muted">{{ trans('space.space_is_empty') }}</div>
     @endif
 </div>
+

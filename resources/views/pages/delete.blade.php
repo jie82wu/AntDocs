@@ -36,7 +36,7 @@
                             <a href="{{ $page->getSpaceUrl(cache('current_space')) }}" class="button outline">{{ trans('common.cancel') }}</a>
                             <button type="submit" class="button primary">{{ trans('common.confirm') }}</button>
                         </div>
-                    </form>
+                    </form> 
                 </div>
             </div>
         </div>

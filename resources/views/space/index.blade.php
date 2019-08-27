@@ -8,7 +8,7 @@
 @include('space.left-tree')
 @stop
 
-@section('content')
+@section('right')
 
 <div class="actions mb-xl">
     <h5>{{ trans('common.actions') }}</h5>
