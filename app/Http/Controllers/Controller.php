@@ -48,20 +48,20 @@ abstract class Controller extends BaseController
             view()->share('currentUser', $user);
     
             //my private space and created by myself
-            $space = Cache::get('all_space');
-            if (!$space) {
+            //$space = Cache::get('all_space');
+            //if (!$space) {
                 $space = Space::where(['created_by' => $user->id])->get();
-                Cache::put('all_space', $space, $this->cache_expire);
-            }
+                //Cache::put('all_space', $space, $this->cache_expire);
+            //}
             view()->share('all_space', $space);
             
             //invited space
-            $invited_space = Cache::get('invited_space');
-            if (!$invited_space) {
+            //$invited_space = Cache::get('invited_space');
+            //if (!$invited_space) {
                 $ids = DB::table('space_user')->where('user_id', $user->id)->pluck('space_id')->all();
                 $invited_space = Space::whereIn('id', $ids)->get();
-                Cache::put('invited_space', $invited_space, $this->cache_expire);
-            }
+                //Cache::put('invited_space', $invited_space, $this->cache_expire);
+            //}
             view()->share('invited_space', $invited_space);
             
             
