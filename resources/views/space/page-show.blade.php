@@ -87,7 +87,7 @@
     </div>
 
     <div class="actions mb-xl">
-        <h5>Actions</h5>
+        <h5>{{ trans('common.actions') }}</h5>
 
         <div class="icon-list text-primary">
             @if($page->draft)
@@ -146,6 +146,7 @@
             <hr class="primary-background"/>
 
             {{--Export--}}
+            @if(userCan('page-view', $page))
             <div dropdown class="dropdown-container block">
                 <div dropdown-toggle class="icon-list-item">
                     <span>@icon('export')</span>
@@ -157,6 +158,7 @@
                     <li><a href="{{ $page->getUrl('/export/plaintext') }}" target="_blank">{{ trans('entities.export_text') }} <span class="text-muted float right">.txt</span></a></li>
                 </ul>
             </div>
+            @endif
             
             @endif
             

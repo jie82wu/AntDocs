@@ -127,6 +127,7 @@
 
             <hr class="primary-background"/>
 
+            @if(userCan('chapter-view', $chapter))
             <div dropdown class="dropdown-container">
                 <div dropdown-toggle class="icon-list-item">
                     <span>@icon('export')</span>
@@ -138,6 +139,7 @@
                     <li><a href="{{ $chapter->getUrl('/export/plaintext') }}" target="_blank">{{ trans('entities.export_text') }} <span class="text-muted float right">.txt</span></a></li>
                 </ul>
             </div>
+            @endif
         </div>
     </div>
 @stop

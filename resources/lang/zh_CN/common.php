@@ -73,5 +73,7 @@ return [
     'email_action_help' => '如果您无法点击“:actionText”按钮，请将下面的网址复制到您的浏览器中打开：',
     'email_rights' => 'All rights reserved',
     
+    'no_permissions' => '无权限',
+    
     
 ];

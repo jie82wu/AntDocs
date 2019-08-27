@@ -201,8 +201,8 @@ class SpaceController extends Controller
     public function showSpaceBook(Request $request, $id, $oid)
     {
         $space = $this->spaceRepo->find($id);
-        $book = $this->entityRepo->getById('book', $oid);
-        $this->checkOwnablePermission('book-view', $book);
+        $book = $this->entityRepo->getById('book', $oid, true, true);
+        //$this->checkOwnablePermission('book-view', $book);
     
         $bookChildren = $this->entityRepo->getBookChildren($book);    
         Views::add($book);  
@@ -219,8 +219,8 @@ class SpaceController extends Controller
     public function showSpaceChapter(Request $request, $id, $oid)
     {
         $space = $this->spaceRepo->find($id);
-        $chapter = $this->entityRepo->getById('chapter', $oid);
-        $this->checkOwnablePermission('chapter-view', $chapter);
+        $chapter = $this->entityRepo->getById('chapter', $oid, true, true);
+        //$this->checkOwnablePermission('chapter-view', $chapter);
         $sidebarTree = $this->entityRepo->getBookChildren($chapter->book);
         Views::add($chapter);
         $this->setPageTitle($chapter->getShortName());
@@ -238,8 +238,8 @@ class SpaceController extends Controller
     public function showSpacePage(Request $request, $id, $oid)
     {
         $space = $this->spaceRepo->find($id);
-        $page = $this->entityRepo->getById('page', $oid, 1);
-        $this->checkOwnablePermission('page-view', $page);
+        $page = $this->entityRepo->getById('page', $oid, 1,1);
+        //$this->checkOwnablePermission('page-view', $page);
     
         $page->html = $this->pageRepo->renderPage($page);
         $sidebarTree = $this->pageRepo->getBookChildren($page->book);

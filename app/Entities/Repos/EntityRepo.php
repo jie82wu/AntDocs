@@ -149,7 +149,6 @@ class EntityRepo
     public function getBySlug($type, $slug, $bookSlug = false)
     {
         $q = $this->entityQuery($type)->where('slug', '=', $slug);
-
         if (strtolower($type) === 'chapter' || strtolower($type) === 'page') {
             $q = $q->where('book_id', '=', function ($query) use ($bookSlug) {
                 $query->select('id')
