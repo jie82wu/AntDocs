@@ -107,7 +107,7 @@ class LoginController extends Controller
         }
 
         $path = session()->pull('url.intended', '/');
-        $path = baseUrl($path, true);
+        $path = baseUrl($path, 1);
         return redirect($path);
     }
 

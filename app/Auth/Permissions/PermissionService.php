@@ -618,6 +618,8 @@ class PermissionService
      */
     protected function entityRestrictionQuery($query)
     {
+        //todo maybe change
+        return $query->whereNotNull('created_by');
         $q = $query->where(function ($parentQuery) {
             $parentQuery->whereHas('jointPermissions', function ($permissionQuery) {
                 $permissionQuery->whereIn('role_id', $this->getRoles())
@@ -689,7 +691,9 @@ class PermissionService
                 $query->where('draft', '=', false);
                 if ($this->currentUser()) {
                     $query->orWhere(function ($query) {
-                        $query->where('draft', '=', true)->where('created_by', '=', $this->currentUser()->id);
+                        $query->where('draft', '=', true)
+                            ->where('created_by', '=', $this->currentUser()->id)
+                        ;
                     });
                 }
             });

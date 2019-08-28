@@ -11,8 +11,8 @@
     <a href="{{ baseUrl('/space/'.$entity->id) }}" title="{{ $entity->name }}">{{ $entity->getShortName() }}</a>
     @if($entity->books)
     <ul>
-        @foreach($entity->books as $book)
-            @include('space.book-tree', ['book'=>$book])
+        @foreach($entity->books as $share_item_book)
+            @include('space.book-tree', ['left_book'=>$share_item_book])
         @endforeach
     </ul>
     @endif

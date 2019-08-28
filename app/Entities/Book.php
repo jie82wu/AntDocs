@@ -122,7 +122,7 @@ class Book extends Entity
     public function getChildren($filterDrafts = false, $renderPages = false)
     {
         $collect = collect();
-        foreach ($this->pages->where('chapter_id',0)->where('draft',0) as $key=>$value)
+        foreach ($this->pages->where('chapter_id',0) as $key=>$value)
             $collect->push($value);
         
         foreach ($this->chapters as $key=>$value)

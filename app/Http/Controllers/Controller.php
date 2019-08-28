@@ -101,10 +101,9 @@ abstract class Controller extends BaseController
         if (request()->wantsJson()) {
             $response = response()->json(['error' => trans('errors.permissionJson')], 403);
         } else {
-            $response = redirect('/');
+            $response = redirect()->back()->withInput();
             session()->flash('error', trans('errors.permission'));
         }
-
         throw new HttpResponseException($response);
     }
 

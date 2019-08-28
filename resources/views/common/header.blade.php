@@ -63,7 +63,7 @@
                             <li>
                                 <a href="{{ baseUrl("/create-book") }}">{{ trans('common.new_book') }}</a>
                             </li>
-                            @if(isset($book))
+                            @if(isset($book) && ($book->created_by == $currentUser->id || $space->type==1 && userCan('book-update', $book)) )
                             <li>
                                 <a href="{{ $book->getUrl('/create-chapter')  }}">{{ trans('common.new_chapter') }}</a>
                             </li>

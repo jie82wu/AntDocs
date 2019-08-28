@@ -94,11 +94,11 @@ class BookController extends Controller
         $bookshelf = null;
         if ($shelfSlug !== null) {
             $bookshelf = $this->entityRepo->getBySlug('bookshelf', $shelfSlug);
-            $this->checkOwnablePermission('bookshelf-update', $bookshelf);
+            //$this->checkOwnablePermission('bookshelf-update', $bookshelf);
         }
     
         $space = Space::where(['created_by'=>user()->id])->orderBy('type','desc')->get();
-        $this->checkPermission('book-create-all');
+        //$this->checkPermission('book-create-own');
         $this->setPageTitle(trans('entities.books_create'));
         return view('books.create', [
             'bookshelf' => $bookshelf,

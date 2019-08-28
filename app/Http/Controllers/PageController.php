@@ -42,12 +42,14 @@ class PageController extends Controller
      */
     public function create($bookSlug, $chapterSlug = null)
     {
+        $add = [];
         if ($chapterSlug !== null) {
             $chapter = $this->pageRepo->getBySlug('chapter', $chapterSlug, $bookSlug);
             $book = $chapter->book;
         } else {
             $chapter = null;
             $book = $this->pageRepo->getBySlug('book', $bookSlug);
+            $add = ['bookSel'=>1];
         }
 
         $parent = $chapter ? $chapter : $book;
@@ -61,7 +63,7 @@ class PageController extends Controller
 
         // Otherwise show the edit view if they're a guest
         $this->setPageTitle(trans('entities.pages_new'));
-        return view('pages.guest-create', ['parent' => $parent]);
+        return view('pages.guest-create', ['parent' => $parent] + $add);
     }
 
     /**

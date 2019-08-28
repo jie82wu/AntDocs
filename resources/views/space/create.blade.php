@@ -1,4 +1,8 @@
-@extends('simple-layout')
+@extends('new-simple-layout')
+
+@section('left')
+@include('space.left-tree')
+@stop
 
 @section('body')
     <div class="container small">

@@ -13,8 +13,8 @@
                     <li icon="true" data-jstree='{"selected":{{isset($spaceSel)&&request()->id==$private->id?"true":"false"}},"icon":"{{URL::asset("assets/imgs/lock.png")}}"}'>
                         <a href="{{ baseUrl('/space/myspace') }}" title="{{ $private->name }}">{{ $private->name }}</a>
                 <ul>
-                    @foreach($private->books as $book)
-                        @include('space.book-tree', ['book'=>$book,'entity'=>$private])
+                    @foreach($private->books as $private_item_book)
+                        @include('space.book-tree', ['left_book'=>$private_item_book,'entity'=>$private])
                     @endforeach
                 </ul></li>
                 </ul>

@@ -25,6 +25,7 @@ class HomeController extends Controller
      */
     public function index()
     {
+        return redirect('/space');
         $activity = Activity::latest(10);
         $draftPages = $this->signedIn ? $this->entityRepo->getUserDraftPages(6) : [];
         $recentFactor = count($draftPages) > 0 ? 0.5 : 1;

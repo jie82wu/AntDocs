@@ -39,7 +39,7 @@ class ChapterController extends Controller
         $book = $this->entityRepo->getBySlug('book', $bookSlug);
         $this->checkOwnablePermission('chapter-create', $book);
         $this->setPageTitle(trans('entities.chapters_create'));
-        return view('chapters.create', ['book' => $book, 'current' => $book]);
+        return view('chapters.create', ['book' => $book, 'current' => $book, 'bookSel'=>true]);
     }
 
     /**

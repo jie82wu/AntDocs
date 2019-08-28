@@ -181,7 +181,7 @@
                 {!! csrf_field() !!}
 
                 <div class="setting-list">
-                    <div class="grid half gap-xl">
+                    {{--<div class="grid half gap-xl">
                         <div>
                             <label class="setting-list-label">{{ trans('settings.reg_enable') }}</label>
                             <p class="small">{!! trans('settings.reg_enable_desc') !!}</p>
@@ -204,7 +204,7 @@
                                 @endforeach
                             </select>
                         </div>
-                    </div>
+                    </div>--}}
 
                     <div class="grid half gap-xl">
                         <div>
