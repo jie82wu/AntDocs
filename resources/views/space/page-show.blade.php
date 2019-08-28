@@ -86,6 +86,8 @@
         </div>
     </div>
 
+<!--共享空间或私有空间创作者有操作权限-->
+@if($space->type==1 || $space->type==2 && $book->created_by == $space->created_by)
     <div class="actions mb-xl">
         <h5>{{ trans('common.actions') }}</h5>
 
@@ -165,4 +167,5 @@
         </div>
 
     </div>
+@endif
 @stop
