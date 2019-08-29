@@ -280,5 +280,14 @@ class SpaceRepo extends Repository
         }
         return true;
     }
+    
+    public function checkSelfEntity(Entity $entity)
+    {
+        if ($entity->created_by != user()->id) {
+            //$this->showPermissionError();
+            return false;
+        }
+        return true;
+    }
 
 }

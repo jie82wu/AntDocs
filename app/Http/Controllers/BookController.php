@@ -127,7 +127,7 @@ class BookController extends Controller
         $bookshelf = null;
         if ($shelfSlug !== null) {
             $bookshelf = $this->entityRepo->getBySlug('bookshelf', $shelfSlug);
-            $this->checkOwnablePermission('bookshelf-update', $bookshelf);
+            //$this->checkOwnablePermission('bookshelf-update', $bookshelf);
         }
 
         $input = $request->all();
@@ -161,8 +161,8 @@ class BookController extends Controller
         $book = $this->entityRepo->getBySlug('book', $slug);
     
         $this->checkIfRedirect($book);
-        
-        $this->checkOwnablePermission('book-view', $book);
+    
+        isCreator($book) || $this->checkOwnablePermission('book-view', $book);
 
         $bookChildren = $this->entityRepo->getBookChildren($book);
         
@@ -189,7 +189,7 @@ class BookController extends Controller
     {
         $book = $this->entityRepo->getBySlug('book', $slug);
         $space = $this->spaceRepo->all();
-        //$this->checkOwnablePermission('book-update', $book);
+        isCreator($book) || $this->checkOwnablePermission('book-update', $book);
         $spaceIds = $this->spaceRepo->getSpaceIdByBook($book);
         $this->setPageTitle(trans('entities.books_edit_named', ['bookName'=>$book->getShortName()]));
         return view('books.edit', [
@@ -211,7 +211,7 @@ class BookController extends Controller
     public function update(Request $request, string $slug)
     {
         $book = $this->entityRepo->getBySlug('book', $slug);
-        $this->checkOwnablePermission('book-update', $book);
+        isCreator($book) ||$this->checkOwnablePermission('book-update', $book);
         $this->validate($request, [
             'name' => 'required|string|max:255',
             'description' => 'string|max:1000',
@@ -240,7 +240,7 @@ class BookController extends Controller
     public function showDelete($bookSlug)
     {
         $book = $this->entityRepo->getBySlug('book', $bookSlug);
-        //$this->checkOwnablePermission('book-delete', $book);
+        isCreator($book) ||  $this->checkOwnablePermission('book-delete', $book);
         $this->setPageTitle(trans('entities.books_delete_named', ['bookName'=>$book->getShortName()]));
         return view('books.delete', ['book' => $book, 'current' => $book]);
     }
@@ -254,7 +254,7 @@ class BookController extends Controller
     public function sort($bookSlug)
     {
         $book = $this->entityRepo->getBySlug('book', $bookSlug);
-        //$this->checkOwnablePermission('book-update', $book);
+        isCreator($book) ||  $this->checkOwnablePermission('book-update', $book);
 
         $bookChildren = $this->entityRepo->getBookChildren($book, true);
 
@@ -284,7 +284,7 @@ class BookController extends Controller
     public function saveSort($bookSlug, Request $request)
     {
         $book = $this->entityRepo->getBySlug('book', $bookSlug);
-        //$this->checkOwnablePermission('book-update', $book);
+        isCreator($book) ||  $this->checkOwnablePermission('book-update', $book);
 
         // Return if no map sent
         if (!$request->filled('sort-tree')) {
@@ -356,7 +356,7 @@ class BookController extends Controller
     public function destroy($bookSlug)
     {
         $book = $this->entityRepo->getBySlug('book', $bookSlug);
-        //$this->checkOwnablePermission('book-delete', $book);
+        isCreator($book) ||  $this->checkOwnablePermission('book-delete', $book);
         Activity::addMessage('book_delete', 0, $book->name);
 
         if ($book->cover) {
@@ -377,7 +377,7 @@ class BookController extends Controller
     public function showPermissions($bookSlug)
     {
         $book = $this->entityRepo->getBySlug('book', $bookSlug);
-        $this->checkOwnablePermission('restrictions-manage', $book);
+        isCreator($book) ||  $this->checkOwnablePermission('restrictions-manage', $book);
         $roles = $this->userRepo->getRestrictableRoles();
         return view('books.permissions', [
             'book' => $book,
@@ -396,7 +396,7 @@ class BookController extends Controller
     public function permissions($bookSlug, Request $request)
     {
         $book = $this->entityRepo->getBySlug('book', $bookSlug);
-        $this->checkOwnablePermission('restrictions-manage', $book);
+        isCreator($book) ||  $this->checkOwnablePermission('restrictions-manage', $book);
         $this->entityRepo->updateEntityPermissionsFromRequest($request, $book);
         session()->flash('success', trans('entities.books_permissions_updated'));
     

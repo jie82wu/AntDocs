@@ -53,7 +53,7 @@ class PageController extends Controller
         }
 
         $parent = $chapter ? $chapter : $book;
-        $this->checkOwnablePermission('page-create', $parent);
+        isCreator($book) ||  $this->checkOwnablePermission('page-create', $parent);
 
         // Redirect to draft edit screen if signed in
         if ($this->signedIn) {
@@ -89,7 +89,7 @@ class PageController extends Controller
         }
 
         $parent = $chapter ? $chapter : $book;
-        $this->checkOwnablePermission('page-create', $parent);
+        isCreator($book) ||  $this->checkOwnablePermission('page-create', $parent);
 
         $page = $this->pageRepo->getDraftPage($book, $chapter);
         $this->pageRepo->publishPageDraft($page, [
@@ -108,7 +108,7 @@ class PageController extends Controller
     public function editDraft($bookSlug, $pageId)
     {
         $draft = $this->pageRepo->getById('page', $pageId, true);
-        $this->checkOwnablePermission('page-create', $draft->parent);
+        isCreator($draft->book) ||  $this->checkOwnablePermission('page-create', $draft->parent);
         $this->setPageTitle(trans('entities.pages_edit_draft'));
 
         $draftsEnabled = $this->signedIn;
@@ -139,7 +139,7 @@ class PageController extends Controller
         $book = $draftPage->book;
 
         $parent = $draftPage->parent;
-        $this->checkOwnablePermission('page-create', $parent);
+        isCreator($book) ||  $this->checkOwnablePermission('page-create', $parent);
 
         if ($parent->isA('chapter')) {
             $input['priority'] = $this->pageRepo->getNewChapterPriority($parent);
@@ -176,7 +176,7 @@ class PageController extends Controller
         }
     
         $this->checkIfRedirect($page);
-        $this->checkOwnablePermission('page-view', $page);
+        isCreator($page->book) ||  $this->checkOwnablePermission('page-view', $page);
 
         $page->html = $this->pageRepo->renderPage($page);
         $sidebarTree = $this->pageRepo->getBookChildren($page->book);
@@ -220,7 +220,7 @@ class PageController extends Controller
     public function edit($bookSlug, $pageSlug)
     {
         $page = $this->pageRepo->getPageBySlug($pageSlug, $bookSlug);
-        $this->checkOwnablePermission('page-update', $page);
+        isCreator($page->book) ||  $this->checkOwnablePermission('page-update', $page);
         $this->setPageTitle(trans('entities.pages_editing_named', ['pageName'=>$page->getShortName()]));
         $page->isDraft = false;
 
@@ -267,7 +267,7 @@ class PageController extends Controller
             'name' => 'required|string|max:255'
         ]);
         $page = $this->pageRepo->getPageBySlug($pageSlug, $bookSlug);
-        $this->checkOwnablePermission('page-update', $page);
+        isCreator($page->book) ||  $this->checkOwnablePermission('page-update', $page);
         $this->pageRepo->updatePage($page, $page->book->id, $request->all());
         Activity::add($page, 'page_update', $page->book->id);
         $this->checkIfRedirect($page);
@@ -283,7 +283,7 @@ class PageController extends Controller
     public function saveDraft(Request $request, $pageId)
     {
         $page = $this->pageRepo->getById('page', $pageId, true);
-        $this->checkOwnablePermission('page-update', $page);
+        isCreator($page->book) ||  $this->checkOwnablePermission('page-update', $page);
 
         if (!$this->signedIn) {
             return response()->json([
@@ -324,7 +324,7 @@ class PageController extends Controller
     public function showDelete($bookSlug, $pageSlug)
     {
         $page = $this->pageRepo->getPageBySlug($pageSlug, $bookSlug);
-        $this->checkOwnablePermission('page-delete', $page);
+        isCreator($page->book) ||  $this->checkOwnablePermission('page-delete', $page);
         $this->setPageTitle(trans('entities.pages_delete_named', ['pageName'=>$page->getShortName()]));
         return view('pages.delete', ['book' => $page->book, 'page' => $page, 'current' => $page]);
     }
@@ -340,7 +340,7 @@ class PageController extends Controller
     public function showDeleteDraft($bookSlug, $pageId)
     {
         $page = $this->pageRepo->getById('page', $pageId, true);
-        $this->checkOwnablePermission('page-update', $page);
+        isCreator($page->book) ||  $this->checkOwnablePermission('page-update', $page);
         $this->setPageTitle(trans('entities.pages_delete_draft_named', ['pageName'=>$page->getShortName()]));
         return view('pages.delete', ['book' => $page->book, 'page' => $page, 'current' => $page]);
     }
@@ -356,7 +356,7 @@ class PageController extends Controller
     {
         $page = $this->pageRepo->getPageBySlug($pageSlug, $bookSlug);
         $book = $page->book;
-        $this->checkOwnablePermission('page-delete', $page);
+        isCreator($page->book) ||  $this->checkOwnablePermission('page-delete', $page);
         $this->pageRepo->destroyPage($page);
 
         Activity::addMessage('page_delete', $book->id, $page->name);
@@ -376,7 +376,7 @@ class PageController extends Controller
     {
         $page = $this->pageRepo->getById('page', $pageId, true);
         $book = $page->book;
-        $this->checkOwnablePermission('page-update', $page);
+        isCreator($page->book) || $this->checkOwnablePermission('page-update', $page);
         session()->flash('success', trans('entities.pages_delete_draft_success'));
         $this->pageRepo->destroyPage($page);
         $this->checkIfRedirect($book);
@@ -463,7 +463,7 @@ class PageController extends Controller
     public function restoreRevision($bookSlug, $pageSlug, $revisionId)
     {
         $page = $this->pageRepo->getPageBySlug($pageSlug, $bookSlug);
-        $this->checkOwnablePermission('page-update', $page);
+        isCreator($page->book) || $this->checkOwnablePermission('page-update', $page);
         $page = $this->pageRepo->restorePageRevision($page, $page->book, $revisionId);
         Activity::add($page, 'page_restore', $page->book->id);
         $this->checkIfRedirect($page);
@@ -483,7 +483,7 @@ class PageController extends Controller
     public function destroyRevision($bookSlug, $pageSlug, $revId)
     {
         $page = $this->pageRepo->getPageBySlug($pageSlug, $bookSlug);
-        $this->checkOwnablePermission('page-delete', $page);
+        isCreator($page->book) || $this->checkOwnablePermission('page-delete', $page);
 
         $revision = $page->revisions()->where('id', '=', $revId)->first();
         if ($revision === null) {
@@ -570,8 +570,8 @@ class PageController extends Controller
     public function showMove($bookSlug, $pageSlug)
     {
         $page = $this->pageRepo->getPageBySlug($pageSlug, $bookSlug);
-        $this->checkOwnablePermission('page-update', $page);
-        $this->checkOwnablePermission('page-delete', $page);
+        isCreator($page->book) || $this->checkOwnablePermission('page-update', $page);
+        isCreator($page->book) || $this->checkOwnablePermission('page-delete', $page);
         return view('pages.move', [
             'book' => $page->book,
             'page' => $page
@@ -589,8 +589,8 @@ class PageController extends Controller
     public function move($bookSlug, $pageSlug, Request $request)
     {
         $page = $this->pageRepo->getPageBySlug($pageSlug, $bookSlug);
-        $this->checkOwnablePermission('page-update', $page);
-        $this->checkOwnablePermission('page-delete', $page);
+        isCreator($page->book) || $this->checkOwnablePermission('page-update', $page);
+        isCreator($page->book) || $this->checkOwnablePermission('page-delete', $page);
 
         $entitySelection = $request->get('entity_selection', null);
         if ($entitySelection === null || $entitySelection === '') {
@@ -629,7 +629,7 @@ class PageController extends Controller
     public function showCopy($bookSlug, $pageSlug)
     {
         $page = $this->pageRepo->getPageBySlug($pageSlug, $bookSlug);
-        $this->checkOwnablePermission('page-view', $page);
+        isCreator($page->book) || $this->checkOwnablePermission('page-view', $page);
         session()->flashInput(['name' => $page->name]);
         return view('pages.copy', [
             'book' => $page->book,
@@ -648,7 +648,7 @@ class PageController extends Controller
     public function copy($bookSlug, $pageSlug, Request $request)
     {
         $page = $this->pageRepo->getPageBySlug($pageSlug, $bookSlug);
-        $this->checkOwnablePermission('page-view', $page);
+        isCreator($page->book) || $this->checkOwnablePermission('page-view', $page);
 
         $entitySelection = $request->get('entity_selection', null);
         if ($entitySelection === null || $entitySelection === '') {
@@ -665,8 +665,8 @@ class PageController extends Controller
                 return redirect()->back();
             }
         }
-
-        $this->checkOwnablePermission('page-create', $parent);
+    
+        isCreator($page->book) || $this->checkOwnablePermission('page-create', $parent);
 
         $pageCopy = $this->pageRepo->copyPage($page, $parent, $request->get('name', ''));
 
@@ -687,7 +687,8 @@ class PageController extends Controller
     public function showPermissions($bookSlug, $pageSlug)
     {
         $page = $this->pageRepo->getPageBySlug($pageSlug, $bookSlug);
-        $this->checkOwnablePermission('restrictions-manage', $page);
+        isCreator($page->book) || $this->checkOwnablePermission('page-update', $page);
+        //isCreator($page->book) || $this->checkOwnablePermission('restrictions-manage', $page);
         $roles = $this->userRepo->getRestrictableRoles();
         return view('pages.permissions', [
             'page'  => $page,
@@ -707,7 +708,8 @@ class PageController extends Controller
     public function permissions($bookSlug, $pageSlug, Request $request)
     {
         $page = $this->pageRepo->getPageBySlug($pageSlug, $bookSlug);
-        $this->checkOwnablePermission('restrictions-manage', $page);
+        //isCreator($page->book) || $this->checkOwnablePermission('restrictions-manage', $page);
+        isCreator($page->book) || $this->checkOwnablePermission('page-update', $page);
         $this->pageRepo->updateEntityPermissionsFromRequest($request, $page);
         session()->flash('success', trans('entities.pages_permissions_success'));
         $this->checkIfRedirect($page);

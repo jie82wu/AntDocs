@@ -70,10 +70,10 @@ function userCan(string $permission, Ownable $ownable = null)
     if ($ownable === null) {
         return user() && user()->can($permission);
     }
-
+    
     // Check permission on ownable item
     $permissionService = app(PermissionService::class);
-    return $permissionService->checkOwnableUserAccess($ownable, $permission);
+    return isCreator($ownable) || $permissionService->checkOwnableUserAccess($ownable, $permission);
 }
 
 //被邀请用户权限判断 role [viewer,admin]
@@ -83,6 +83,27 @@ function shareCan(\BookStack\Orz\Space $space, $share_role)
     return $permissionService->checkUserPermission($space, $share_role);
 }
 
+//self entity
+function isCreator($entity)
+{
+    if (!($entity instanceof Entity))
+        return true;
+    
+    if ($entity->isA('chapter') || $entity->isA('page'))
+        $entity = $entity->book;
+
+    $permissionService = app(\BookStack\Orz\SpaceRepo::class);
+    return $permissionService->checkSelfEntity($entity);
+}
+
+//self private
+function isSpaceCreator($space)
+{
+    if ($space->created_by != user()->id) {
+        return false;
+    }
+    return true;
+}
 /**
  * Check if the current user has the given permission
  * on any item in the system.

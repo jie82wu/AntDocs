@@ -37,7 +37,7 @@ class ChapterController extends Controller
     public function create($bookSlug)
     {
         $book = $this->entityRepo->getBySlug('book', $bookSlug);
-        $this->checkOwnablePermission('chapter-create', $book);
+        isCreator($book) || $this->checkOwnablePermission('chapter-create', $book);
         $this->setPageTitle(trans('entities.chapters_create'));
         return view('chapters.create', ['book' => $book, 'current' => $book, 'bookSel'=>true]);
     }
@@ -55,7 +55,7 @@ class ChapterController extends Controller
         ]);
 
         $book = $this->entityRepo->getBySlug('book', $bookSlug);
-        $this->checkOwnablePermission('chapter-create', $book);
+        isCreator($book) || $this->checkOwnablePermission('chapter-create', $book);
 
         $input = $request->all();
         $input['priority'] = $this->entityRepo->getNewBookPriority($book);
@@ -74,8 +74,8 @@ class ChapterController extends Controller
     public function show($bookSlug, $chapterSlug)
     {
         $chapter = $this->entityRepo->getBySlug('chapter', $chapterSlug, $bookSlug);
-        $this->checkIfRedirect($chapter);        
-        $this->checkOwnablePermission('chapter-view', $chapter);
+        $this->checkIfRedirect($chapter);
+        isCreator($chapter->book) || $this->checkOwnablePermission('chapter-view', $chapter);
         $sidebarTree = $this->entityRepo->getBookChildren($chapter->book);
         Views::add($chapter);
         $this->setPageTitle($chapter->getShortName());
@@ -98,7 +98,7 @@ class ChapterController extends Controller
     public function edit($bookSlug, $chapterSlug)
     {
         $chapter = $this->entityRepo->getBySlug('chapter', $chapterSlug, $bookSlug);
-        $this->checkOwnablePermission('chapter-update', $chapter);
+        isCreator($chapter->book) || $this->checkOwnablePermission('chapter-update', $chapter);
         $this->setPageTitle(trans('entities.chapters_edit_named', ['chapterName' => $chapter->getShortName()]));
         return view('chapters.edit', ['book' => $chapter->book, 'chapter' => $chapter,
             'chapterSel' => true,
@@ -116,7 +116,7 @@ class ChapterController extends Controller
     public function update(Request $request, $bookSlug, $chapterSlug)
     {
         $chapter = $this->entityRepo->getBySlug('chapter', $chapterSlug, $bookSlug);
-        $this->checkOwnablePermission('chapter-update', $chapter);
+        isCreator($chapter->book) || $this->checkOwnablePermission('chapter-update', $chapter);
 
         $this->entityRepo->updateFromInput('chapter', $chapter, $request->all());
         Activity::add($chapter, 'chapter_update', $chapter->book->id);
@@ -133,7 +133,7 @@ class ChapterController extends Controller
     public function showDelete($bookSlug, $chapterSlug)
     {
         $chapter = $this->entityRepo->getBySlug('chapter', $chapterSlug, $bookSlug);
-        $this->checkOwnablePermission('chapter-delete', $chapter);
+        isCreator($chapter->book) || $this->checkOwnablePermission('chapter-delete', $chapter);
         $this->setPageTitle(trans('entities.chapters_delete_named', ['chapterName' => $chapter->getShortName()]));
         return view('chapters.delete', ['book' => $chapter->book, 'chapter' => $chapter, 'current' => $chapter]);
     }
@@ -148,7 +148,7 @@ class ChapterController extends Controller
     {
         $chapter = $this->entityRepo->getBySlug('chapter', $chapterSlug, $bookSlug);
         $book = $chapter->book;
-        $this->checkOwnablePermission('chapter-delete', $chapter);
+        isCreator($book) || $this->checkOwnablePermission('chapter-delete', $chapter);
         Activity::addMessage('chapter_delete', $book->id, $chapter->name);
         $this->entityRepo->destroyChapter($chapter);
         $this->checkIfRedirect($book);
@@ -166,8 +166,8 @@ class ChapterController extends Controller
     {
         $chapter = $this->entityRepo->getBySlug('chapter', $chapterSlug, $bookSlug);
         $this->setPageTitle(trans('entities.chapters_move_named', ['chapterName' => $chapter->getShortName()]));
-        $this->checkOwnablePermission('chapter-update', $chapter);
-        $this->checkOwnablePermission('chapter-delete', $chapter);
+        isCreator($chapter->book) || $this->checkOwnablePermission('chapter-update', $chapter);
+        isCreator($chapter->book) || $this->checkOwnablePermission('chapter-delete', $chapter);
         return view('chapters.move', [
             'chapter' => $chapter,
             'book' => $chapter->book
@@ -185,8 +185,8 @@ class ChapterController extends Controller
     public function move($bookSlug, $chapterSlug, Request $request)
     {
         $chapter = $this->entityRepo->getBySlug('chapter', $chapterSlug, $bookSlug);
-        $this->checkOwnablePermission('chapter-update', $chapter);
-        $this->checkOwnablePermission('chapter-delete', $chapter);
+        isCreator($chapter->book) || $this->checkOwnablePermission('chapter-update', $chapter);
+        isCreator($chapter->book) || $this->checkOwnablePermission('chapter-delete', $chapter);
 
         $entitySelection = $request->get('entity_selection', null);
         if ($entitySelection === null || $entitySelection === '') {
@@ -227,7 +227,8 @@ class ChapterController extends Controller
     public function showPermissions($bookSlug, $chapterSlug)
     {
         $chapter = $this->entityRepo->getBySlug('chapter', $chapterSlug, $bookSlug);
-        $this->checkOwnablePermission('restrictions-manage', $chapter);
+        isCreator($chapter->book) || $this->checkOwnablePermission('chapter-update', $chapter);
+        //isCreator($chapter->book) || $this->checkOwnablePermission('restrictions-manage', $chapter);
         $roles = $this->userRepo->getRestrictableRoles();
         return view('chapters.permissions', [
             'chapter' => $chapter,
@@ -247,7 +248,8 @@ class ChapterController extends Controller
     public function permissions($bookSlug, $chapterSlug, Request $request)
     {
         $chapter = $this->entityRepo->getBySlug('chapter', $chapterSlug, $bookSlug);
-        $this->checkOwnablePermission('restrictions-manage', $chapter);
+        //isCreator($chapter->book) || $this->checkOwnablePermission('restrictions-manage', $chapter);
+        isCreator($chapter->book) || $this->checkOwnablePermission('chapter-update', $chapter);
         $this->entityRepo->updateEntityPermissionsFromRequest($request, $chapter);
         session()->flash('success', trans('entities.chapters_permissions_success'));
         $this->checkIfRedirect($chapter);

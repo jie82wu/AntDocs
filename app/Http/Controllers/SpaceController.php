@@ -135,7 +135,7 @@ class SpaceController extends Controller
      */
     public function store(Request $request)
     {
-        $this->checkPermission('space-create-all');
+        //$this->checkPermission('space-create-all');
         $this->validate($request, [
             'name' => 'required|string|max:255',
             'description' => 'string|max:1000',
@@ -202,8 +202,8 @@ class SpaceController extends Controller
     {
         $space = $this->spaceRepo->find($id);
         $book = $this->entityRepo->getById('book', $oid, true, true);
-        //$this->checkOwnablePermission('book-view', $book);
-    
+        isCreator($book) || $this->checkOwnablePermission('book-view', $book);
+        
         $bookChildren = $this->entityRepo->getBookChildren($book);    
         Views::add($book);  
         $this->setPageTitle($book->getShortName());
@@ -220,7 +220,7 @@ class SpaceController extends Controller
     {
         $space = $this->spaceRepo->find($id);
         $chapter = $this->entityRepo->getById('chapter', $oid, true, true);
-        //$this->checkOwnablePermission('chapter-view', $chapter);
+        isCreator($chapter->book) || $this->checkOwnablePermission('chapter-view', $chapter);
         $sidebarTree = $this->entityRepo->getBookChildren($chapter->book);
         Views::add($chapter);
         $this->setPageTitle($chapter->getShortName());
@@ -239,7 +239,7 @@ class SpaceController extends Controller
     {
         $space = $this->spaceRepo->find($id);
         $page = $this->entityRepo->getById('page', $oid, 1,1);
-        //$this->checkOwnablePermission('page-view', $page);
+        isCreator($page->book) || $this->checkOwnablePermission('page-view', $page);
     
         $page->html = $this->pageRepo->renderPage($page);
         $sidebarTree = $this->pageRepo->getBookChildren($page->book);
@@ -277,7 +277,7 @@ class SpaceController extends Controller
     public function show($slug, Request $request)
     {
         $book = $this->entityRepo->getBySlug('book', $slug);
-        $this->checkOwnablePermission('book-view', $book);
+        isCreator($book) || $this->checkOwnablePermission('book-view', $book);
 
         $bookChildren = $this->entityRepo->getBookChildren($book);
 
@@ -308,9 +308,8 @@ class SpaceController extends Controller
         $user_ids = $this->spaceRepo->getUsersId($space);
         $admin_ids = $this->spaceRepo->getAdminsId($space);
         $book_ids = $this->spaceRepo->getBooksId($space);
-        //如果是共享space管理者
-        $this->spaceRepo->checkUserPermission($space, 'admin') ||
-            $this->checkOwnablePermission('space-update', $space);
+        //space管理者
+        $this->spaceRepo->checkIsAdmin($space);
         $this->setPageTitle(trans('space.books_edit_named', ['spaceName'=>$space->name]));
         return view('space.edit', [
             'current' => $space,
@@ -336,11 +335,8 @@ class SpaceController extends Controller
         if (!$space)
             throw new PermissionsException(trans('errors.space_not_found'));
         
-        //if not creator
-        //if ($space->created_by != user()->id) {
-        $this->spaceRepo->checkUserPermission($space, 'admin') ||
-                $this->checkPermission('space-update-all');
-        //}
+        $this->spaceRepo->checkIsAdmin($space);
+
         $this->validate($request, [
             'name' => 'required|string|max:255',
             'description' => 'string|max:1000',
@@ -362,112 +358,10 @@ class SpaceController extends Controller
     public function showDelete($id)
     {
         $space = $this->spaceRepo->find($id);
-        $this->spaceRepo->checkUserPermission($space, 'admin') ||
-            $this->checkOwnablePermission('space-delete', $space);
+        $this->spaceRepo->checkIsAdmin($space);
         $this->setPageTitle(trans('space.space_delete_named', ['spaceName'=>$space->name]));
         return view('space.delete', [
             'current' => $space]);
-    }
-
-    /**
-     * Shows the view which allows pages to be re-ordered and sorted.
-     * @param string $bookSlug
-     * @return \Illuminate\View\View
-     * @throws \BookStack\Exceptions\NotFoundException
-     */
-    public function sort($bookSlug)
-    {
-        $book = $this->entityRepo->getBySlug('book', $bookSlug);
-        $this->checkOwnablePermission('book-update', $book);
-
-        $bookChildren = $this->entityRepo->getBookChildren($book, true);
-
-        $this->setPageTitle(trans('entities.books_sort_named', ['bookName'=>$book->getShortName()]));
-        return view('books.sort', ['book' => $book, 'current' => $book, 'bookChildren' => $bookChildren]);
-    }
-
-    /**
-     * Shows the sort box for a single book.
-     * Used via AJAX when loading in extra books to a sort.
-     * @param $bookSlug
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function getSortItem($bookSlug)
-    {
-        $book = $this->entityRepo->getBySlug('book', $bookSlug);
-        $bookChildren = $this->entityRepo->getBookChildren($book);
-        return view('books.sort-box', ['book' => $book, 'bookChildren' => $bookChildren]);
-    }
-
-    /**
-     * Saves an array of sort mapping to pages and chapters.
-     * @param  string $bookSlug
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     */
-    public function saveSort($bookSlug, Request $request)
-    {
-        $book = $this->entityRepo->getBySlug('book', $bookSlug);
-        $this->checkOwnablePermission('book-update', $book);
-
-        // Return if no map sent
-        if (!$request->filled('sort-tree')) {
-            return redirect($book->getUrl());
-        }
-
-        // Sort pages and chapters
-        $sortMap = collect(json_decode($request->get('sort-tree')));
-        $bookIdsInvolved = collect([$book->id]);
-
-        // Load models into map
-        $sortMap->each(function ($mapItem) use ($bookIdsInvolved) {
-            $mapItem->type = ($mapItem->type === 'page' ? 'page' : 'chapter');
-            $mapItem->model = $this->entityRepo->getById($mapItem->type, $mapItem->id);
-            // Store source and target books
-            $bookIdsInvolved->push(intval($mapItem->model->book_id));
-            $bookIdsInvolved->push(intval($mapItem->book));
-        });
-
-        // Get the books involved in the sort
-        $bookIdsInvolved = $bookIdsInvolved->unique()->toArray();
-        $booksInvolved = $this->entityRepo->getManyById('book', $bookIdsInvolved, false, true);
-        // Throw permission error if invalid ids or inaccessible books given.
-        if (count($bookIdsInvolved) !== count($booksInvolved)) {
-            $this->showPermissionError();
-        }
-        // Check permissions of involved books
-        $booksInvolved->each(function (Book $book) {
-             $this->checkOwnablePermission('book-update', $book);
-        });
-
-        // Perform the sort
-        $sortMap->each(function ($mapItem) {
-            $model = $mapItem->model;
-
-            $priorityChanged = intval($model->priority) !== intval($mapItem->sort);
-            $bookChanged = intval($model->book_id) !== intval($mapItem->book);
-            $chapterChanged = ($mapItem->type === 'page') && intval($model->chapter_id) !== $mapItem->parentChapter;
-
-            if ($bookChanged) {
-                $this->entityRepo->changeBook($mapItem->type, $mapItem->book, $model);
-            }
-            if ($chapterChanged) {
-                $model->chapter_id = intval($mapItem->parentChapter);
-                $model->save();
-            }
-            if ($priorityChanged) {
-                $model->priority = intval($mapItem->sort);
-                $model->save();
-            }
-        });
-
-        // Rebuild permissions and add activity for involved books.
-        $booksInvolved->each(function (Book $book) {
-            $this->entityRepo->buildJointPermissionsForBook($book);
-            Activity::add($book, 'book_sort', $book->id);
-        });
-
-        return redirect($book->getUrl());
     }
 
     /**
@@ -477,8 +371,7 @@ class SpaceController extends Controller
     public function destroy($id)
     {
         $space = $this->spaceRepo->find($id);
-        $this->spaceRepo->checkUserPermission($space, 'admin') ||
-            $this->checkOwnablePermission('space-delete', $space);
+        $this->spaceRepo->checkIsAdmin($space);
         Activity::addMessage('space_delete', 0, $space->name);
 
         if ($space->cover) {
@@ -497,8 +390,7 @@ class SpaceController extends Controller
     public function showPermissions($id)
     {
         $space = $this->spaceRepo->find($id);
-        $this->spaceRepo->checkUserPermission($space, 'admin') ||
-        $this->checkOwnablePermission('restrictions-manage', $space);
+        $this->spaceRepo->checkIsAdmin($space);
         $roles = $this->userRepo->getRestrictableRoles();
         return view('space.permissions', [
             'roles' => $roles
@@ -516,8 +408,7 @@ class SpaceController extends Controller
     public function permissions($id, Request $request)
     {
         $space = $this->spaceRepo->find($id);
-        $this->spaceRepo->checkUserPermission($space, 'admin') ||
-        $this->checkOwnablePermission('restrictions-manage', $space);
+        $this->spaceRepo->checkIsAdmin($space);
         $this->entityRepo->updateEntityPermissionsFromRequest($request, $space);
         session()->flash('success', trans('space.space_permissions_updated'));
         return redirect($space->getUrl());
@@ -539,7 +430,7 @@ class SpaceController extends Controller
     public function createRole(Request $request, $id)
     {
         $space = $this->spaceRepo->find($id);
-        $this->checkPermission('user-roles-manage');
+        $this->spaceRepo->checkIsAdmin($space);
         return view('space.roles.create',[
         ]);   
     }
@@ -575,7 +466,6 @@ class SpaceController extends Controller
     {
         $space = $this->spaceRepo->find($id);
         $this->spaceRepo->checkIsAdmin($space);
-        //$this->checkPermission('user-roles-manage');
         $this->validate($request, [
             'display_name' => 'required|min:3|max:200',
             'description' => 'max:250'
@@ -588,7 +478,6 @@ class SpaceController extends Controller
     
     public function showDeleteRole($id)
     { 
-        //$this->checkPermission('user-roles-manage');
         $role = $this->permissionsRepo->getRoleById($id);
         $space = $role->space;
         $this->spaceRepo->checkIsAdmin($space);
@@ -603,7 +492,6 @@ class SpaceController extends Controller
 
     public function deleteRole($id, Request $request)
     {
-        //$this->checkPermission('user-roles-manage');
         $role = $this->permissionsRepo->getRoleById($id);
         $this->spaceRepo->checkIsAdmin($role->space);
         try {

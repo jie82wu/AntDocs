@@ -191,7 +191,8 @@ class EntityRepo
      */
     public function getAllPaginated($type, int $count = 10, string $sort = 'name', string $order = 'asc', $queryAddition = null)
     {
-        $query = $this->entityQuery($type);
+        //$query = $this->entityQuery($type);
+        $query = $this->entityProvider->get($type)->whereRaw('1=1');
         $query = $this->addSortToQuery($query, $sort, $order);
         if ($queryAddition) {
             $queryAddition($query);
