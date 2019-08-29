@@ -142,8 +142,10 @@ class BookController extends Controller
             Activity::add($bookshelf, 'bookshelf_update');
         }
     
+        $this->spaceRepo->savePrivateBookToSpace($book);
+        
         $this->checkIfRedirect($book);
-
+        
         return redirect($book->getUrl());
     }
 

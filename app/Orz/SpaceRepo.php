@@ -176,6 +176,7 @@ class SpaceRepo extends Repository
     }
     
     //book select space,will  be effect to [saveBooksToSpace]
+    //book edit page
     public function saveBookToSpace(Book $book, $space = [])
     {
         DB::table('space_book')->where(['book_id' => $book->id])->delete();
@@ -188,6 +189,18 @@ class SpaceRepo extends Repository
                 'user_id' => user()->id,
                 ];
         DB::table('space_book')->insert($all);
+    }
+    
+    //create book will be added into private space
+    public function savePrivateBookToSpace(Book $book)
+    {
+        $space = $this->checkPrivateSpace();       
+        $insert = [
+            'book_id' => $book->id, 
+            'space_id' => $space->id,
+            'user_id' => user()->id,
+            ];
+        DB::table('space_book')->insert($insert);
     }
     
     public function getUsersId(Space $space)
