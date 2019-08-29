@@ -117,7 +117,7 @@ class BookController extends Controller
      */
     public function store(Request $request, string $shelfSlug = null)
     {
-        $this->checkPermission('book-create-all');
+        //$this->checkPermission('book-create-all');
         $this->validate($request, [
             'name' => 'required|string|max:255',
             'description' => 'string|max:1000',
@@ -187,7 +187,7 @@ class BookController extends Controller
     {
         $book = $this->entityRepo->getBySlug('book', $slug);
         $space = $this->spaceRepo->all();
-        $this->checkOwnablePermission('book-update', $book);
+        //$this->checkOwnablePermission('book-update', $book);
         $spaceIds = $this->spaceRepo->getSpaceIdByBook($book);
         $this->setPageTitle(trans('entities.books_edit_named', ['bookName'=>$book->getShortName()]));
         return view('books.edit', [
@@ -238,7 +238,7 @@ class BookController extends Controller
     public function showDelete($bookSlug)
     {
         $book = $this->entityRepo->getBySlug('book', $bookSlug);
-        $this->checkOwnablePermission('book-delete', $book);
+        //$this->checkOwnablePermission('book-delete', $book);
         $this->setPageTitle(trans('entities.books_delete_named', ['bookName'=>$book->getShortName()]));
         return view('books.delete', ['book' => $book, 'current' => $book]);
     }
@@ -252,7 +252,7 @@ class BookController extends Controller
     public function sort($bookSlug)
     {
         $book = $this->entityRepo->getBySlug('book', $bookSlug);
-        $this->checkOwnablePermission('book-update', $book);
+        //$this->checkOwnablePermission('book-update', $book);
 
         $bookChildren = $this->entityRepo->getBookChildren($book, true);
 
@@ -282,7 +282,7 @@ class BookController extends Controller
     public function saveSort($bookSlug, Request $request)
     {
         $book = $this->entityRepo->getBySlug('book', $bookSlug);
-        $this->checkOwnablePermission('book-update', $book);
+        //$this->checkOwnablePermission('book-update', $book);
 
         // Return if no map sent
         if (!$request->filled('sort-tree')) {
@@ -354,7 +354,7 @@ class BookController extends Controller
     public function destroy($bookSlug)
     {
         $book = $this->entityRepo->getBySlug('book', $bookSlug);
-        $this->checkOwnablePermission('book-delete', $book);
+        //$this->checkOwnablePermission('book-delete', $book);
         Activity::addMessage('book_delete', 0, $book->name);
 
         if ($book->cover) {
