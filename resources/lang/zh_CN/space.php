@@ -4,7 +4,7 @@ return [
      * Space
      */
     'space' =>  '空间',
-    'create' =>  '新建空间',
+    'create' =>  '新建共享空间',
     'space_delete' => '删除空间',
     'space_edit' => '编辑空间',
     'save_to_space' => '收藏至空间',

@@ -213,20 +213,27 @@ class SpaceRepo extends Repository
         return DB::table('space_user')->where(['space_id' => $space->id])->where(['is_admin'=>1])->pluck('user_id')->all();
     }
     
-    public function getBooksId(Space $space)
+    public function getBooksId(Space $space, $with_books = false)
     {
-        return DB::table('space_book')->where(['space_id' => $space->id])->pluck('book_id')->all();
+        $ids = DB::table('space_book')->where(['space_id' => $space->id])->pluck('book_id')->all();
+        if (!$with_books) {
+            return $ids;
+        }
+        return Book::whereIn('id',$ids)->get();
     }
     
-    public function getPrivateBooks()
+    public function getPrivateBooks($single = true)
     {
         $space = Space::where('created_by', user()->id)->where('type',2)->first();
         if (!$space)
             return [];
-        return DB::table('space_book')
+        $c = DB::table('space_book')
             ->where(['space_id' => $space->id])
             ->pluck('book_id')
             ->all();
+        if ($single)
+            return $c;
+        return Book::whereIn('id',$c)->get();
     }
     
     public function getSpaceIdByBook(Book $book)
@@ -288,6 +295,33 @@ class SpaceRepo extends Repository
             return false;
         }
         return true;
+    }
+    
+    public function copyDefaultRoles($space)
+    {
+        $roles = DB::table('roles')->where('space_id',0)->get();
+        foreach ($roles as $key=>$role) {
+            $insert_role = [
+                'name' => $role->name,
+                'display_name' => $role->display_name,
+                'description' => $role->description,
+                'system_name' => $role->system_name,
+                'space_id' => $space->id,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ];
+            $insert_role_id = DB::table('roles')->insertGetId($insert_role);
+            
+            $role_permissions = DB::table('permission_role')->where('role_id',$role->id)->get();
+            $insert_new_permissions = [];
+            foreach ($role_permissions as $per) {
+                $insert_new_permissions[] = [
+                    'permission_id' => $per->permission_id,
+                    'role_id' => $insert_role_id,
+                ];
+            }
+            DB::table('permission_role')->insert($insert_new_permissions);
+        }
     }
 
 }

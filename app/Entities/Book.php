@@ -128,7 +128,7 @@ class Book extends Entity
         foreach ($this->chapters as $key=>$value)
             $collect->push($value);
     
-        $collect = $collect->sortBy('priority');
+        $collect = $collect->sortByDesc('priority')->sortBy('created_at');
 
         return $collect->values()->all();
     }

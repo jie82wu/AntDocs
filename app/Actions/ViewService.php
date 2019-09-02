@@ -4,12 +4,14 @@ use BookStack\Auth\Permissions\PermissionService;
 use BookStack\Entities\Entity;
 use BookStack\Entities\EntityProvider;
 use Illuminate\Support\Collection;
+use BookStack\Orz\SpaceRepo;
 
 class ViewService
 {
     protected $view;
     protected $permissionService;
     protected $entityProvider;
+    protected $spaceRepo;
 
     /**
      * ViewService constructor.
@@ -17,11 +19,12 @@ class ViewService
      * @param \BookStack\Auth\Permissions\PermissionService $permissionService
      * @param EntityProvider $entityProvider
      */
-    public function __construct(View $view, PermissionService $permissionService, EntityProvider $entityProvider)
+    public function __construct(View $view, PermissionService $permissionService, EntityProvider $entityProvider,SpaceRepo $spaceRepo)
     {
         $this->view = $view;
         $this->permissionService = $permissionService;
         $this->entityProvider = $entityProvider;
+        $this->spaceRepo = $spaceRepo;
     }
 
     /**
@@ -73,6 +76,21 @@ class ViewService
         }
 
         return $query->with('viewable')->skip($skipCount)->take($count)->get()->pluck('viewable');
+    }
+
+    public function getSpaceEntities(int $count = 10, int $page = 0, $filterModels = null, $space)
+    {
+        $skipCount = $count * $page;
+        $books = $this->spaceRepo->getBooksId($space, true);
+        $collect = collect();
+        foreach ($books as $book) {
+            $collect->push($book);
+            if (in_array('chapter', $filterModels)) {
+                foreach ($book->chapters as $chapter)
+                    $collect->push($chapter);
+            }
+        }
+        return $collect->all();
     }
 
     /**

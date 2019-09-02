@@ -107,7 +107,8 @@ class SearchController extends Controller
             $searchTerm .= ' {type:'. implode('|', $entityTypes) .'}';
             $entities = $this->searchService->searchEntities($searchTerm, 'all', 1, 20, $permission)['results'];
         } else {
-            $entities = $this->viewService->getPopular(20, 0, $entityTypes, $permission);
+            //$entities = $this->viewService->getPopular(20, 0, $entityTypes, $permission);
+            $entities = $this->viewService->getSpaceEntities(20, 0, $entityTypes, cache('current_space'));
         }
 
         return view('search.entity-ajax-list', ['entities' => $entities]);

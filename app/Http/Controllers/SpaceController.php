@@ -109,7 +109,8 @@ class SpaceController extends Controller
                 'sort' => $request->get('sort', 'name'),
             ];
         $users = $this->userRepo->getAllUsersPaginatedAndSorted(20, $listDetails);
-        $books = $this->entityRepo->getAllPaginated('book', 18, 'name', 'asc');
+        $books = $this->spaceRepo->getPrivateBooks(false);
+        //$books = $this->entityRepo->getAllPaginated('book', 18, 'name', 'asc');
         return ['users'=>$users,'books'=>$books];
     }
     /**
@@ -145,6 +146,7 @@ class SpaceController extends Controller
         $input = $request->all();
         $space = $this->spaceRepo->createFromInput($input);
         $this->updateActions($space, $request);
+        $this->spaceRepo->copyDefaultRoles($space);
         Activity::add($space, 'space_create', $space->id);
 
         return redirect($space->getUrl());
@@ -204,7 +206,7 @@ class SpaceController extends Controller
         $book = $this->entityRepo->getById('book', $oid, true, true);
         isCreator($book) || $this->checkOwnablePermission('book-view', $book);
         
-        $bookChildren = $this->entityRepo->getBookChildren($book);    
+        $bookChildren = $book->getChildren();    
         Views::add($book);  
         $this->setPageTitle($book->getShortName());
         return view('space.book-show', [
@@ -532,7 +534,7 @@ class SpaceController extends Controller
             'search' => $request->get('search', ''),
             'sort' => $request->get('sort', 'name'),
         ];
-        $users = $this->userRepo->getAllUsersPaginatedAndSorted(20, $listDetails);
+        $users = $this->userRepo->getSpaceUsersPaginated(20, $id);
         $this->setPageTitle(trans('settings.users'));
         $users->appends($listDetails);
         $user_ids = $this->spaceRepo->getUsersId($space);
@@ -590,6 +592,7 @@ class SpaceController extends Controller
             $user->external_auth_id = $request->get('external_auth_id');
         }
         
+        $user->space_id = $id;
         $user->save();
         
         if ($request->filled('roles')) {

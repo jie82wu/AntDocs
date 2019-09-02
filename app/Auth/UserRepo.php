@@ -77,6 +77,12 @@ class UserRepo
         return $query->paginate($count);
     }
 
+    public function getSpaceUsersPaginated($count, $space_id)
+    {
+        $query = $this->user->with('roles', 'avatar')->where('space_id', $space_id)->orWhere('space_id', 0)->orderBy('space_id');
+        return $query->paginate($count);
+    }
+
      /**
      * Creates a new user and attaches a role to them.
      * @param array $data
@@ -86,7 +92,7 @@ class UserRepo
     public function registerNew(array $data, $verifyEmail = false)
     {
         $user = $this->create($data, $verifyEmail);
-        $this->attachDefaultRole($user);
+        //$this->attachDefaultRole($user);
         $this->downloadAndAssignUserAvatar($user);
 
         return $user;

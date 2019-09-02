@@ -29,9 +29,9 @@ class Chapter extends Entity
      * @param string $dir
      * @return mixed
      */
-    public function pages($dir = 'ASC')
+    public function pages($dir = 'DESC')
     {
-        return $this->hasMany(Page::class)->orderBy('priority', $dir);
+        return $this->hasMany(Page::class)->orderBy('priority', $dir)->orderBy('created_at');
     }
 
     /**

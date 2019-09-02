@@ -2,7 +2,7 @@
     @if(count($entities) > 0)
         @foreach($entities as $index => $entity)
 
-            @include('partials.entity-list-item', ['entity' => $entity, 'showPath' => true])
+            @include('partials.entity-list-item', ['entity' => $entity, 'showPath' => false])
             @if($index !== count($entities) - 1)
                 <hr>
             @endif
