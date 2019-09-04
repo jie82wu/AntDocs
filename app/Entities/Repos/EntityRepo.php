@@ -83,7 +83,8 @@ class EntityRepo
      */
     protected function entityQuery($type, $allowDrafts = false, $permission = 'view')
     {
-        $q = $this->permissionService->enforceEntityRestrictions($type, $this->entityProvider->get($type), $permission);
+        //$q = $this->permissionService->enforceEntityRestrictions($type, $this->entityProvider->get($type), $permission);
+        $q = $this->entityProvider->get($type)->whereRaw('1=1');
         if (strtolower($type) === 'page' && !$allowDrafts) {
             $q = $q->where('draft', '=', false);
         }
@@ -148,7 +149,8 @@ class EntityRepo
      */
     public function getBySlug($type, $slug, $bookSlug = false)
     {
-        $q = $this->entityQuery($type)->where('slug', '=', $slug);
+        $q = $this->entityProvider->get($type)->where('slug', '=', $slug);
+        //$q = $this->entityQuery($type)->where('slug', '=', $slug);
         if (strtolower($type) === 'chapter' || strtolower($type) === 'page') {
             $q = $q->where('book_id', '=', function ($query) use ($bookSlug) {
                 $query->select('id')

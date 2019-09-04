@@ -273,7 +273,8 @@ class UserRepo
      */
     public function getRestrictableRoles()
     {
-        return $this->role->where('system_name', '!=', 'admin')->get();
+        $space = cache('current_space');
+        return $this->role->where('system_name', '!=', 'admin')->where('space_id',$space->id)->get();
     }
 
     /**
