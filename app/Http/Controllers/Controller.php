@@ -50,7 +50,7 @@ abstract class Controller extends BaseController
             //my private space and created by myself
             //$space = Cache::get('all_space');
             //if (!$space) {
-                $space = Space::where(['created_by' => $user->id])->get();
+                $space = Space::where(['created_by' => $user->id])->orderBy('id')->get();
                 //Cache::put('all_space', $space, $this->cache_expire);
             //}
             view()->share('all_space', $space);
@@ -59,9 +59,10 @@ abstract class Controller extends BaseController
             //$invited_space = Cache::get('invited_space');
             //if (!$invited_space) {
                 $ids = DB::table('space_user')->where('user_id', $user->id)->pluck('space_id')->all();
-                $invited_space = Space::whereIn('id', $ids)->get();
+                $invited_space = Space::whereIn('id', $ids)->orderBy('id')->get();
                 //Cache::put('invited_space', $invited_space, $this->cache_expire);
             //}
+            $invited_space = $invited_space->merge($space->where('type',1))->sortBy('id');
             view()->share('invited_space', $invited_space);
             
             

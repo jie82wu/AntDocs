@@ -32,11 +32,11 @@
     <div class="div-loading-tree">
         <img src='{{URL::asset("assets/imgs/loading1.gif")}}' width="20"/>
     </div>
-    @if($all_space)
+    {{--@if($all_space)
     @include('space.list-space-left-share-list',[
         'share'=>$all_space->where('type',1)
     ])
-    @endif
+    @endif--}}
     @if($invited_space)
     @include('space.list-space-left-share-list',[
         'share'=>$invited_space
