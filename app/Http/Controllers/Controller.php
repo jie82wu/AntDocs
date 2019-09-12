@@ -115,6 +115,9 @@ abstract class Controller extends BaseController
      */
     protected function checkPermission($permissionName)
     {
+        if (user()->level == 10)
+            return true;
+        
         if (!user() || !user()->can($permissionName)) {
             $this->showPermissionError();
         }
@@ -129,6 +132,9 @@ abstract class Controller extends BaseController
      */
     protected function checkOwnablePermission($permission, Ownable $ownable)
     {
+        if (user()->level == 10)
+            return true;
+        
         if (userCan($permission, $ownable)) {
             return true;
         }

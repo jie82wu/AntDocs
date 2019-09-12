@@ -31,7 +31,7 @@
     <div class="grid half" permissions-table>
             <div>
                 <label class="setting-list-label">{{ trans('space.space_permissions') }}</label>
-<!--                <a href="#" permissions-table-toggle-all class="text-small text-primary">{{ trans('common.toggle_all') }}</a>-->
+                <a href="#" permissions-table-toggle-all class="text-small text-primary">{{ trans('common.toggle_all') }}</a>
             </div>
         <div class="toggle-switch-list">
                 <div>@include('settings.roles.checkbox', ['permission' => 'space-manage', 'label' => trans('space.space_manage')])</div>
@@ -53,7 +53,7 @@
             <table permissions-table class="table toggle-switch-list compact permissions-table">
                 <tr>
                     <th width="20%">
-                        <a href="#" permissions-table-toggle-all class="text-small text-primary">{{ trans('common.toggle_all') }}</a>
+                        <a href="javascript:void(0);" permissions-table-toggle-all class="text-small text-primary">{{ trans('common.toggle_all') }}</a>
                     </th>
                     <th width="20%" permissions-table-toggle-all-in-column>{{ trans('common.create') }}</th>
                     <th width="20%" permissions-table-toggle-all-in-column>{{ trans('common.view') }}</th>
