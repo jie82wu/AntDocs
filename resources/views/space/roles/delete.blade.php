@@ -12,7 +12,7 @@
 
             <p>{{ trans('settings.role_delete_confirm', ['roleName' => $role->display_name]) }}</p>
 
-            <form action="{{ baseUrl("/space/roles/delete/{$role->id}") }}" method="POST">
+            <form action="{{ baseUrl("/space/{$space->id}/roles/{$role->id}/delete") }}" method="POST">
                 {!! csrf_field() !!}
                 <input type="hidden" name="_method" value="DELETE">
 

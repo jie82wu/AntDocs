@@ -211,8 +211,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/save-space', 'SpaceController@store');
         Route::post('/save-private-book', 'SpaceController@storePrivateBook');
         Route::get('/myspace', 'SpaceController@showMySpace');
-        Route::get('/roles/delete/{id}', 'SpaceController@showDeleteRole');
-        Route::delete('/roles/delete/{id}', 'SpaceController@deleteRole');
+        Route::get('/{id}/roles/{role_id}/delete', 'SpaceController@showDeleteRole');
+        Route::delete('/{id}/roles/{role_id}/delete', 'SpaceController@deleteRole');
         Route::get('/{id}/permissions', 'SpaceController@showPermissions');
         Route::get('/{id}/roles', 'SpaceController@showRoles');
         Route::get('/{id}/roles/new', 'SpaceController@createRole');

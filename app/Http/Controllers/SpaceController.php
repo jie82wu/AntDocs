@@ -478,9 +478,9 @@ class SpaceController extends Controller
         return redirect('/space/'.$role->space_id.'/roles');
     }
     
-    public function showDeleteRole($id)
+    public function showDeleteRole($id, $role_id)
     { 
-        $role = $this->permissionsRepo->getRoleById($id);
+        $role = $this->permissionsRepo->getRoleById($role_id);
         $space = $role->space;
         $this->spaceRepo->checkIsAdmin($space);
         $roles = $this->permissionsRepo->getAllRolesExcept($role, ['space_id'=>$space->id]);
@@ -492,12 +492,12 @@ class SpaceController extends Controller
             ]);
     }
 
-    public function deleteRole($id, Request $request)
+    public function deleteRole(Request $request, $id, $role_id)
     {
-        $role = $this->permissionsRepo->getRoleById($id);
+        $role = $this->permissionsRepo->getRoleById($role_id);
         $this->spaceRepo->checkIsAdmin($role->space);
         try {
-            $role = $this->permissionsRepo->deleteRole($id, $request->get('migrate_role_id'));
+            $role = $this->permissionsRepo->deleteRole($role_id, $request->get('migrate_role_id'));
         } catch (PermissionsException $e) {
             session()->flash('error', $e->getMessage());
             return redirect()->back();
