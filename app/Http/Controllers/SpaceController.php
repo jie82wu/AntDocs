@@ -190,13 +190,12 @@ class SpaceController extends Controller
         $books = collect();
         foreach ($bookIds as $id) {
             $book = $this->entityRepo->getById('book', $id);
-            $books->push($book);
+            if ($book)
+                $books->push($book);
         }
-        $allBooks = $this->entityRepo->getAllPaginated('book', 18, 'name', 'asc');
         return view('space.show-my-space',[
             'books'=>$books,
             'view'=>$view,
-            'allBooks'=>$allBooks,
         ]);
     }
 
