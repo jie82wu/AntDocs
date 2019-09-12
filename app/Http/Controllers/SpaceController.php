@@ -606,18 +606,20 @@ class SpaceController extends Controller
             $user->space_id = $id;
             $user->save();
     
-            if ($request->filled('roles')) {
-                $roles = $request->get('roles');
-                $this->userRepo->setUserRoles($user, $roles);
-            }
-    
             $this->userRepo->downloadAndAssignUserAvatar($user);
             session()->flash('success', trans('space.user_add_success'));
             $status = 1;
         }
     
-        
+        //send invite message
         $this->spaceRepo->saveUserToSpace($space, $user->id, $status);
+    
+        //assign roles
+        if ($request->filled('roles')) {
+            $roles = $request->get('roles');
+            $this->userRepo->setUserRoles($user, $roles);
+        }
+        
         return redirect('/space/'.$space->id.'/users');
     }
     
