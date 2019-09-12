@@ -14,8 +14,9 @@ return [
     'my_space' =>  '我的空间',
     'space_permissions' =>  '空间权限',
     'space_settings' =>  '空间设置',
-    'my_space_is_empty' =>  '您的私有空间还没有收藏过图书',
-    'space_has_no_book' =>  '这个空间还没有收藏过图书',
+    'space_manage' => '管理空间',
+    'my_space_is_empty' =>  '您的私有空间没有图书',
+    'space_has_no_book' =>  '这个空间没有图书',
     'cover_image' =>  '空间图片',
     'space_tags' =>  '空间标签',
     'space_add_user' =>  '添加用户',
@@ -32,6 +33,7 @@ return [
     'space_delete_confirmation' => '您确定要删除此空间吗？',
     'space_edit_named' => '编辑空间「:spaceName」',
     'space_permissions_updated' => '空间权限已更新',
+    'space_remove_user_explain' => '这将从空间「:spaceName」中删除名为「:UserName」的用户。',
     
     //market
     'content_market' => '内容集市',
@@ -44,5 +46,11 @@ return [
     'space_save_users' => '保存空间用户',
     'user_create_success' => '空间用户已创建',
     'user_roles_edit_success' => '空间用户角色已更新',
-    'user_add_success' => '空间用户已更新',
+    'user_add_success' => '空间用户添加成功',
+    'user_remove_success' => '用户已从空间移除',
+    
+    
+    'user_in_space' => '用户已存在于空间中，无法重复添加',
+    'user_not_exists_and_can_create' => '此用户可直接创建',
+    'invite_message_is_send_out' => '用户邀请已发出',
 ];

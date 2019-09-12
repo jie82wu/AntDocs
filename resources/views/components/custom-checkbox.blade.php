@@ -3,6 +3,7 @@ $name
 $value
 $checked
 $label
+$disabled
 --}}
 <label class="toggle-switch @if($errors->has($name)) text-neg @endif">
     <input type="checkbox" name="{{$name}}" value="{{ $value }}" @if($checked) checked="checked" @endif>

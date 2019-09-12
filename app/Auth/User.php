@@ -93,14 +93,17 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      * @param bool $cache
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
-    public function permissions($cache = true)
+    public function permissions($cache = true, $space=null)
     {
         if (isset($this->permissions) && $cache) {
             return $this->permissions;
         }
         $this->load('roles.permissions');
-        $permissions = $this->roles->map(function ($role) {
-            return $role->permissions;
+        $permissions = $this->roles->map(function ($role) use ($space) {
+            if ($space && $role->space_id == $space->id)
+                return $role->permissions;
+            else
+                return $role->permissions;
         })->flatten()->unique();
         $this->permissions = $permissions;
         return $permissions;
@@ -111,12 +114,12 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      * @param $permissionName
      * @return bool
      */
-    public function can($permissionName)
+    public function can($permissionName, $space=null)
     {
         if ($this->email === 'guest') {
             return false;
         }
-        return $this->permissions()->pluck('name')->contains($permissionName);
+        return $this->permissions(true,$space)->pluck('name')->contains($permissionName);
     }
 
     /**

@@ -6,7 +6,7 @@
                 'name' => $name . '[' . str_replace('.', 'DOT', $role->name) . ']',
                 'label' => $role->display_name,
                 'value' => $role->id,
-                'checked' => old($name . '.' . str_replace('.', 'DOT', $role->name)) || (!old('name') && isset($model) && $model->hasRole($role->name))
+                'checked' => old($name . '.' . str_replace('.', 'DOT', $role->name)) || (!old('name') && isset($model) && $model->hasRole($role->name)) || (isset($selectIndex)&&$loop->iteration==$selectIndex)
             ])
         </div>
     @endforeach

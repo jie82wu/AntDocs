@@ -30,14 +30,14 @@
             {!! csrf_field() !!}
                 <input type="hidden" name="_method" value="PUT">          
                 @include('space.add-space-user-list')
-                <div class="form-group text-right">
+                {{--<div class="form-group text-right">
                     <button type="submit" class="button primary">{{ trans('space.space_save_users') }}</button>
-                </div>
+                </div>--}}
             </form>
             
 
             <div>
-                {{ $users->links() }}
+                {{-- $users->links() --}}
             </div>
         </div>
 

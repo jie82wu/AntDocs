@@ -307,7 +307,7 @@ class SpaceController extends Controller
         $list = $this->getUserAndBookList($request);
         $this->setPageTitle(trans('space.create'));
         $space = $this->spaceRepo->find($id);
-        $user_ids = $this->spaceRepo->getUsersId($space);
+        //$user_ids = $this->spaceRepo->getUsersId($space);
         $admin_ids = $this->spaceRepo->getAdminsId($space);
         $book_ids = $this->spaceRepo->getBooksId($space);
         //space管理者
@@ -315,7 +315,7 @@ class SpaceController extends Controller
         $this->setPageTitle(trans('space.books_edit_named', ['spaceName'=>$space->name]));
         return view('space.edit', [
             'current' => $space,
-            'uids' => $user_ids,
+            //'uids' => $user_ids,
             'aids' => $admin_ids,
             'bids' => $book_ids,
             'users'=>$list['users'],
@@ -529,18 +529,12 @@ class SpaceController extends Controller
     {
         $space = $this->spaceRepo->find($id);
         $this->spaceRepo->checkIsAdmin($space);
-        $listDetails = [
-            'order' => $request->get('order', 'asc'),
-            'search' => $request->get('search', ''),
-            'sort' => $request->get('sort', 'name'),
-        ];
-        $users = $this->userRepo->getSpaceUsersPaginated(20, $id);
+        //$users = $this->userRepo->getSpaceUsersPaginated(20, $id);
+        $users = $this->spaceRepo->getInvitedUsers($space);
         $this->setPageTitle(trans('settings.users'));
-        $users->appends($listDetails);
-        $user_ids = $this->spaceRepo->getUsersId($space);
         return view('space.users.index', [
-            'uids'=>$user_ids,
-            'users' => $users, 'listDetails' => $listDetails]);
+            'users' => $users
+        ]);
     }
     
     //select users
@@ -556,12 +550,26 @@ class SpaceController extends Controller
     
     public function createUsers(Request $request, $id)
     {
+        $email = $request->get('email');
         $space = $this->spaceRepo->find($id);
+        $user = $space->users()->where('email',$email)->first();
+        $is_in = $is_exist = true;
+        if (!$user) {
+            $user = $this->userRepo->getByEmail($email);
+            $is_in = false;
+        }    
+        
+        if (!$user)
+            $is_exist = false;
+        
         $this->spaceRepo->checkIsAdmin($space);
         $authMethod = config('auth.method');
         return view('space.users.create', [
             'authMethod' => $authMethod,
-            'roles' => $space->roles
+            'roles' => $space->roles,
+            'model' => $user,
+            'is_in' => $is_in,
+            'is_exist' => $is_exist,
         ]);
     }
     
@@ -570,42 +578,47 @@ class SpaceController extends Controller
     {
         $space = $this->spaceRepo->find($id);
         $this->spaceRepo->checkIsAdmin($space);
-        $validationRules = [
-            'name'             => 'required',
-            'email'            => 'required|email|unique:users,email'
-        ];
+        $email = $request->get('email');
+        $user = $this->userRepo->getByEmail($email);
         
-        $authMethod = config('auth.method');
-        if ($authMethod === 'standard') {
-            $validationRules['password'] = 'required|min:5';
-            $validationRules['password-confirm'] = 'required|same:password';
-        } elseif ($authMethod === 'ldap') {
-            $validationRules['external_auth_id'] = 'required';
-        }
-        $this->validate($request, $validationRules);
-        
-        $user = $this->user->fill($request->all());
-        
-        if ($authMethod === 'standard') {
-            $user->password = bcrypt($request->get('password'));
-        } elseif ($authMethod === 'ldap') {
-            $user->external_auth_id = $request->get('external_auth_id');
-        }
-        
-        $user->space_id = $id;
-        $user->save();
-        
-        if ($request->filled('roles')) {
-            $roles = $request->get('roles');
-            $this->userRepo->setUserRoles($user, $roles);
-        }
-        
-        $this->userRepo->downloadAndAssignUserAvatar($user);
+        if ($user) {
+            $status = 0;
+            session()->flash('success', trans('space.invite_message_is_send_out'));
+        } else {
+            $validationRules = ['name' => 'required', 'email' => 'required|email|unique:users,email'];
     
-        $this->spaceRepo->saveUserToSpace($space, $user->id);
+            $authMethod = config('auth.method');
+            if ($authMethod === 'standard') {
+                $validationRules['password'] = 'required|min:5';
+                $validationRules['password-confirm'] = 'required|same:password';
+            } elseif ($authMethod === 'ldap') {
+                $validationRules['external_auth_id'] = 'required';
+            }
+            $this->validate($request, $validationRules);
+    
+            $user = $this->user->fill($request->all());
+    
+            if ($authMethod === 'standard') {
+                $user->password = bcrypt($request->get('password'));
+            } elseif ($authMethod === 'ldap') {
+                $user->external_auth_id = $request->get('external_auth_id');
+            }
+    
+            $user->space_id = $id;
+            $user->save();
+    
+            if ($request->filled('roles')) {
+                $roles = $request->get('roles');
+                $this->userRepo->setUserRoles($user, $roles);
+            }
+    
+            $this->userRepo->downloadAndAssignUserAvatar($user);
+            session()->flash('success', trans('space.user_add_success'));
+            $status = 1;
+        }
+    
         
-        session()->flash('success', trans('space.user_create_success'));
-        
+        $this->spaceRepo->saveUserToSpace($space, $user->id, $status);
         return redirect('/space/'.$space->id.'/users');
     }
     
@@ -631,6 +644,24 @@ class SpaceController extends Controller
         $this->userRepo->setUserRoles($user, $roles);
         session()->flash('success', trans('space.user_roles_edit_success'));
         session()->flash('select_user_id', $uid);
+        return redirect('/space/'.$space->id.'/users');
+    }
+    
+    //移除空间用户
+    public function showRemoveUser(Request $request, $id, $uid)
+    {
+        $space = $this->spaceRepo->find($id);
+        $user = $this->userRepo->getById($uid);
+        return view('space.users.delete', [
+            'space' => $space,
+            'user' => $user,
+        ]);
+    }
+    public function removeUser(Request $request, $id, $uid)
+    {
+        $space = $this->spaceRepo->find($id);
+        $this->spaceRepo->removeUser($space, $uid);
+        session()->flash('success', trans('space.user_remove_success'));
         return redirect('/space/'.$space->id.'/users');
     }
 }

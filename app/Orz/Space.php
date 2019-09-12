@@ -49,6 +49,11 @@ class Space extends Entity
         return $this->belongsTo(User::class,'space_user','created_by');
     }
     
+    public function users()
+    {
+        return $this->belongsToMany(User::class,'space_user','space_id','user_id');
+    }
+    
     public function getCover($width = 440, $height = 250)
     {
         $default = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';

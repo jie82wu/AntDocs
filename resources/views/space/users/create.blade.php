@@ -20,7 +20,9 @@
 
                 <div class="form-group text-right">
                     <a href="{{  baseUrl("/space/{$space->id}/users") }}" class="button outline">{{ trans('common.cancel') }}</a>
+                    @if(!$is_in)
                     <button class="button primary" type="submit">{{ trans('common.save') }}</button>
+                    @endif
                 </div>
 
             </form>
@@ -29,3 +31,17 @@
     </div>
 
 @stop
+
+@section('scripts')
+<script>
+    function search()
+    {
+        key = $('#email').val();
+        if (key=='')
+            return
+        window.location.href = window.location.pathname + '?email=' + key 
+    }
+</script>
+@endsection
+
+

@@ -43,7 +43,7 @@
     <div class="collapse-content" collapsible-content>
         @include('space.add-space-user-list', ['entity' => $users])
     </div>
-</div>--}}
+</div>
 
 <!--add book-->
 <div class="form-group" collapsible id="select-user-control">
@@ -53,7 +53,7 @@
     <div class="collapse-content" collapsible-content>
         @include('space.add-space-book-list', ['entity' => $books])
     </div>
-</div>
+</div>--}}
 
 <div class="form-group text-right">
     <a href="{{ baseUrl('/space') }}" class="button outline">{{ trans('common.cancel') }}</a>

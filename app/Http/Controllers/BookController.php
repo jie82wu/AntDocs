@@ -117,6 +117,7 @@ class BookController extends Controller
      */
     public function store(Request $request, string $shelfSlug = null)
     {
+        //everybody can create book
         //$this->checkPermission('book-create-all');
         $this->validate($request, [
             'name' => 'required|string|max:255',
@@ -188,15 +189,12 @@ class BookController extends Controller
     public function edit($slug)
     {
         $book = $this->entityRepo->getBySlug('book', $slug);
-        $space = $this->spaceRepo->all();
         isCreator($book) || $this->checkOwnablePermission('book-update', $book);
-        $spaceIds = $this->spaceRepo->getSpaceIdByBook($book);
         $this->setPageTitle(trans('entities.books_edit_named', ['bookName'=>$book->getShortName()]));
         return view('books.edit', [
             'book' => $book, 
             'current' => $book,
-            'spaceIds' => $spaceIds,
-            'options' => $space->all()
+
         ]);
     }
 
@@ -221,12 +219,8 @@ class BookController extends Controller
         $book = $this->entityRepo->updateFromInput('book', $book, $input);
         $this->bookUpdateActions($book, $request);
 
-        Activity::add($book, 'book_update', $book->id);
-    
-        if (isset($input['space'])) {
-            $this->spaceRepo->saveBookToSpace($book, $input['space']);
-        }
-    
+        Activity::add($book, 'book_update', $book->id);    
+  
         $this->checkIfRedirect($book);
         
         return redirect($book->getUrl());
@@ -256,7 +250,8 @@ class BookController extends Controller
         $book = $this->entityRepo->getBySlug('book', $bookSlug);
         isCreator($book) ||  $this->checkOwnablePermission('book-update', $book);
 
-        $bookChildren = $this->entityRepo->getBookChildren($book, true);
+        //$bookChildren = $this->entityRepo->getBookChildren($book, true);
+        $bookChildren = $book->getChildren();
 
         $this->setPageTitle(trans('entities.books_sort_named', ['bookName'=>$book->getShortName()]));
         return view('books.sort', ['book' => $book, 'current' => $book, 'bookChildren' => $bookChildren]);

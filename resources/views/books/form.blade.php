@@ -10,14 +10,6 @@
     @include('form.textarea', ['name' => 'description'])
 </div>
 
-<div class="form-group" collapsible id="space-control">
-    <div class="collapse-title text-primary" collapsible-trigger>
-        <label for="space-manager">{{ trans('space.save_to_space') }}</label>
-    </div>
-    <div class="collapse-content" collapsible-content>
-        @include('form.space-select',['name'=>'space[]','data'=>$options])
-    </div>
-</div>
 
 <div class="form-group" collapsible id="logo-control">
     <div class="collapse-title text-primary" collapsible-trigger>

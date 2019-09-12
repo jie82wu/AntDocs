@@ -76,16 +76,19 @@ function userCan(string $permission, Ownable $ownable = null)
     return isCreator($ownable) || $permissionService->checkOwnableUserAccess($ownable, $permission);
 }
 
-//被邀请用户权限判断 role [viewer,admin]
-function shareCan(\BookStack\Orz\Space $space, $share_role)
+//判断空间管理员
+function userSpaceCan(string $permission, \BookStack\Orz\Space $space)
 {
-    $permissionService = app(\BookStack\Orz\SpaceRepo::class);
-    return $permissionService->checkUserPermission($space, $share_role);
+    return user() && user()->can($permission, $space);
 }
 
 //self entity
 function isCreator($entity)
 {
+    //空间管理者赋与所有权限
+    if(userSpaceCan('space-manage',cache('current_space')))
+        return true;
+    
     if (!($entity instanceof Entity))
         return true;
     
@@ -99,6 +102,9 @@ function isCreator($entity)
 //self private
 function isSpaceCreator($space)
 {
+    //空间管理者赋与所有权限
+    if(userSpaceCan('space-manage',$space))
+        return true;
     if ($space->created_by != user()->id) {
         return false;
     }

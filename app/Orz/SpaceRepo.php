@@ -106,13 +106,15 @@ class SpaceRepo extends Repository
             $this->tagRepo->saveTagsToEntity($space, $input['tags']);
         }
         
-//        if (isset($input['users'])) {
-//            $this->saveUsersToSpace($space, $input['users']);
-//        }
+        /**
+        if (isset($input['users'])) {
+            $this->saveUsersToSpace($space, $input['users']);
+        }
         
         if (isset($input['books'])) {
             $this->saveBooksToSpace($space, $input['books']);
         }
+        */
         
         //$this->permissionService->buildJointPermissionsForSpace($space);
         $this->permissionService->buildJointPermissionsForEntity($space);
@@ -154,9 +156,13 @@ class SpaceRepo extends Repository
     }
     
     //add user
-    public function saveUserToSpace(Space $space, $user_id)
+    public function saveUserToSpace(Space $space, $user_id, $status = 0)
     {
-        $user = ['user_id' => $user_id, 'space_id' => $space->id];        
+        $user = ['user_id' => $user_id, 'space_id' => $space->id];
+        $count = DB::table('space_user')->where($user)->count();
+        if ($count > 0)
+            return ;
+        $user['status'] = $status;
         DB::table('space_user')->insert($user);
     }
     //space select books
@@ -203,9 +209,10 @@ class SpaceRepo extends Repository
         DB::table('space_book')->insert($insert);
     }
     
-    public function getUsersId(Space $space)
+    //获取空间邀请的用户
+    public function getInvitedUsers(Space $space)
     {
-        return DB::table('space_user')->where(['space_id' => $space->id])->pluck('user_id')->all();
+        return $space->users;
     }
     
     public function getAdminsId(Space $space)
@@ -322,6 +329,16 @@ class SpaceRepo extends Repository
             }
             DB::table('permission_role')->insert($insert_new_permissions);
         }
+    }
+    
+    //remove users from spade
+    public function removeUser(Space $space, $uid)
+    {
+        if (!is_array($uid))
+            $uid = [$uid];
+        DB::table('space_user')->where(['space_id' => $space->id])->whereIn('user_id', $uid)->delete();
+        $role_ids = DB::table('roles')->where(['space_id' => $space->id])->pluck('id')->all();
+        DB::table('role_user')->whereIn('user_id', $uid)->whereIn('role_id', $role_ids)->delete();
     }
 
 }

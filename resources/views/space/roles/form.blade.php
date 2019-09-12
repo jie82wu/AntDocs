@@ -28,19 +28,19 @@
             </div>
         </div>
     
-    {{--<div class="grid half" permissions-table>
+    <div class="grid half" permissions-table>
             <div>
-                <label class="setting-list-label">{{ trans('settings.role_system') }}</label>
-                <a href="#" permissions-table-toggle-all class="text-small text-primary">{{ trans('common.toggle_all') }}</a>
+                <label class="setting-list-label">{{ trans('space.space_permissions') }}</label>
+<!--                <a href="#" permissions-table-toggle-all class="text-small text-primary">{{ trans('common.toggle_all') }}</a>-->
             </div>
-            <div class="toggle-switch-list">
-                <div>@include('settings.roles.checkbox', ['permission' => 'users-manage', 'label' => trans('settings.role_manage_users')])</div>
-                <div>@include('settings.roles.checkbox', ['permission' => 'user-roles-manage', 'label' => trans('settings.role_manage_roles')])</div>
+        <div class="toggle-switch-list">
+                <div>@include('settings.roles.checkbox', ['permission' => 'space-manage', 'label' => trans('space.space_manage')])</div>
+                {{--<div>@include('settings.roles.checkbox', ['permission' => 'user-roles-manage', 'label' => trans('settings.role_manage_roles')])</div>
                 <div>@include('settings.roles.checkbox', ['permission' => 'restrictions-manage-all', 'label' => trans('settings.role_manage_entity_permissions')])</div>
                 <div>@include('settings.roles.checkbox', ['permission' => 'restrictions-manage-own', 'label' => trans('settings.role_manage_own_entity_permissions')])</div>
-                <div>@include('settings.roles.checkbox', ['permission' => 'settings-manage', 'label' => trans('settings.role_manage_settings')])</div>
+                <div>@include('settings.roles.checkbox', ['permission' => 'settings-manage', 'label' => trans('settings.role_manage_settings')])</div>--}}
             </div>
-        </div>--}}
+        </div>
 
         <div>
             <label class="setting-list-label">{{ trans('settings.role_asset') }}</label>

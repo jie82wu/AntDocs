@@ -62,7 +62,7 @@
         @if(isSpaceCreator($space))
         <a href="{{ $space->getUrl('/users') }}" class="icon-list-item">
             <span>@icon('settings')</span>
-            <span>{{ trans('settings.settings') }}</span>
+            <span>{{ trans('entities.permissions') }}</span>
         </a>
         @endif
 
