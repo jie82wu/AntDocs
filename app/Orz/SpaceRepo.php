@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use BookStack\Entities\SearchService;
 use BookStack\Auth\Permissions\PermissionService;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class SpaceRepo extends Repository
 {
@@ -249,10 +250,21 @@ class SpaceRepo extends Repository
     
     public function checkIsAdmin(Space $space)
     {
-        if ($space->created_by != user()->id) {
+        if (!isSpaceCreator($space)) {
             $this->showPermissionError();
         }
         return true;
+    }
+    
+    public function showPermissionError()
+    {
+        if (request()->wantsJson()) {
+            $response = response()->json(['error' => trans('errors.permissionJson')], 403);
+        } else {
+            $response = redirect()->back()->withInput();
+            session()->flash('error', trans('errors.permission'));
+        }
+        throw new HttpResponseException($response);
     }
     
     public function checkSelfEntity(Entity $entity)
