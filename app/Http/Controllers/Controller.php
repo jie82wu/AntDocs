@@ -124,6 +124,21 @@ abstract class Controller extends BaseController
         return true;
     }
 
+    protected function checkSpacePermission($permissionName, $space)
+    {
+        //super admin
+        if (user()->level == 10)
+            return true;
+        
+        if (isSpaceCreator($space))
+            return true;
+        
+        if (!user() || !user()->can($permissionName, $space)) {
+            $this->showPermissionError();
+        }
+        return true;
+    }
+
     /**
      * Check the current user's permissions against an ownable item.
      * @param $permission

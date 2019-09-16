@@ -98,7 +98,7 @@ class BookController extends Controller
         }
     
         $space = Space::where(['created_by'=>user()->id])->orderBy('type','desc')->get();
-        //$this->checkPermission('book-create-own');
+        $this->checkSpacePermission('book-create-own', $space);
         $this->setPageTitle(trans('entities.books_create'));
         return view('books.create', [
             'bookshelf' => $bookshelf,
@@ -118,8 +118,11 @@ class BookController extends Controller
      */
     public function store(Request $request, string $shelfSlug = null)
     {
-        //everybody can create book
-        //$this->checkPermission('book-create-all');
+        //share space need create permission
+        $space = cache(cacheKey());
+        if ($space)
+            $this->checkSpacePermission('book-create-all', $space);
+        
         $this->validate($request, [
             'name' => 'required|string|max:255',
             'description' => 'string|max:1000',
@@ -143,6 +146,8 @@ class BookController extends Controller
         }
     
         $space = $this->spaceRepo->saveBookToSpace($book);
+        $book->space_id = $space->id;
+        $book->save();
         
         $this->checkIfRedirect($book);
         
@@ -162,7 +167,7 @@ class BookController extends Controller
     
         $this->checkIfRedirect($book);
     
-        isCreator($book) || $this->checkOwnablePermission('book-view', $book);
+        isCreator($book) ||  $this->checkOwnablePermission('book-view', $book);
 
         $bookChildren = $this->entityRepo->getBookChildren($book);
         

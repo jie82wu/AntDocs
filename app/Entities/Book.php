@@ -3,6 +3,8 @@
 use BookStack\Uploads\Image;
 use BookStack\Auth\Permissions\PermissionService;
 use BookStack\Entities\EntityProvider;
+use BookStack\Orz\Space;
+use Illuminate\Support\Facades\DB;
 
 class Book extends Entity
 {
@@ -97,6 +99,11 @@ class Book extends Entity
     public function shelves()
     {
         return $this->belongsToMany(Bookshelf::class, 'bookshelves_books', 'book_id', 'bookshelf_id');
+    }
+
+    public function space()
+    {
+        return $this->belongsTo(Space::class, 'space_id');
     }
 
     /**

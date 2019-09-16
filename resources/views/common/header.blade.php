@@ -71,10 +71,11 @@
                                 <a href="{{ $book->getUrl('/create-page') }}">{{ trans('common.new_page') }}</a>
                             </li>
                             @endif
-                            <li><hr class="hr-no-margin"></li>
+                            {{-- <li>
+                              <hr class="hr-no-margin"></li>
                             <li>
                                 <a href="{{ baseUrl('/logout') }}">{{ trans('common.import') }}</a>
-                            </li>
+                            </li>--}}
                         </ul>
                     </div>
                 

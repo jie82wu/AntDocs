@@ -76,7 +76,7 @@ function userCan(string $permission, Ownable $ownable = null)
     return isCreator($ownable) || $permissionService->checkOwnableUserAccess($ownable, $permission);
 }
 
-//判断空间管理员
+//判断空间权限
 function userSpaceCan(string $permission, \BookStack\Orz\Space $space)
 {
     return user() && user()->can($permission, $space);
@@ -86,8 +86,7 @@ function userSpaceCan(string $permission, \BookStack\Orz\Space $space)
 function isCreator($entity)
 {
     //空间管理者赋与所有权限
-
-    if(userSpaceCan('space-manage',cache(cacheKey())))
+    if(isSpaceCreator(cache(cacheKey())))
         return true;
     
     if (!($entity instanceof Entity))
@@ -103,13 +102,16 @@ function isCreator($entity)
 //self private
 function isSpaceCreator($space)
 {
+    if (user()->level == 10)
+        return true;
     //空间管理者赋与所有权限
     if(userSpaceCan('space-manage',$space))
         return true;
-    if ($space->created_by != user()->id) {
-        return false;
+    if ($space->created_by == user()->id) {
+        return true;
     }
-    return true;
+    
+    return false;
 }
 
 function getSpace()
