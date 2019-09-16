@@ -1,10 +1,10 @@
 @php
-$cspace = cache('current_space');
+$cspace = cache(cacheKey());
 $page_id = 0;
 if(isset($page)) $page_id = $page->id;
 if(request()->has('oid')) $page_id = request()->get('oid');
 @endphp
-<li icon="true" data-jstree='{@if( $cspace->id==$entity->id && isset($bookSel)
+<li icon="true" data-jstree='{@if( $cspace && $cspace->id==$entity->id && isset($bookSel)
     && ( request()->oid==$left_book->id || isset($book) && $book->id==$left_book->id ) ) "selected":true,"opened":true,@endif "icon":"{{URL::asset("assets/imgs")}}/{{count($left_book->chapters)>0?"book_color.png":"book_empty.png"}}"}'>
     <a href="{{ baseUrl("/space/$entity->id/book/$left_book->id") }}" title="{{ $left_book->name }}">{{ $left_book->getShortName() }}</a>
 

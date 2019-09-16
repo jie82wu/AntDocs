@@ -86,9 +86,6 @@ class SpaceRepo extends Repository
 //            $this->saveUsersToSpace($space, $input['users']);
 //        }
         
-        if (isset($input['books'])) {
-            $this->saveBooksToSpace($space, $input['books']);
-        }
         
         //$this->permissionService->buildJointPermissionsForSpace($space);
         $this->permissionService->buildJointPermissionsForEntity($space);
@@ -119,13 +116,6 @@ class SpaceRepo extends Repository
         //$this->permissionService->buildJointPermissionsForSpace($space);
         $this->permissionService->buildJointPermissionsForEntity($space);
         $this->searchService->indexEntity($space);
-        return $space;
-    }
-    
-    public function storePrivateBook($books)
-    {
-        $space = $this->checkPrivateSpace();
-        $this->saveBooksToSpace($space, $books);
         return $space;
     }
     
@@ -165,48 +155,18 @@ class SpaceRepo extends Repository
         $user['status'] = $status;
         DB::table('space_user')->insert($user);
     }
-    //space select books
-    public function saveBooksToSpace(Space $space, $books = [])
+   
+    //create book save to space 
+    public function saveBookToSpace(Book $book)
     {
-        DB::table('space_book')->where(['space_id' => $space->id])->delete();
-        
-        $all = [];
-        foreach ($books as $key => $value) 
-            $all[] = [
-                'book_id' => $value, 
-                'space_id' => $space->id,
-                'user_id' => user()->id,
-            ];
-        
-        DB::table('space_book')->insert($all);
-    }
-    
-    //book select space,will  be effect to [saveBooksToSpace]
-    //book edit page
-    public function saveBookToSpace(Book $book, $space = [])
-    {
-        DB::table('space_book')->where(['book_id' => $book->id])->delete();
-        
-        $all = [];
-        foreach ($space as $key => $value) 
-            $all[] = [
-                'book_id' => $book->id, 
-                'space_id' => $value,
-                'user_id' => user()->id,
-                ];
-        DB::table('space_book')->insert($all);
-    }
-    
-    //create book will be added into private space
-    public function savePrivateBookToSpace(Book $book)
-    {
-        $space = $this->checkPrivateSpace();       
-        $insert = [
+        $space = getSpace();
+        $all = [
             'book_id' => $book->id, 
             'space_id' => $space->id,
             'user_id' => user()->id,
             ];
-        DB::table('space_book')->insert($insert);
+        DB::table('space_book')->insert($all);
+        return $space;
     }
     
     //获取空间邀请的用户

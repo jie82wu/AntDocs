@@ -102,7 +102,8 @@ class BookController extends Controller
         $this->setPageTitle(trans('entities.books_create'));
         return view('books.create', [
             'bookshelf' => $bookshelf,
-            'options' => $space
+            'options' => $space,
+            'spaceSel'=>true,
         ]);
     }
 
@@ -135,19 +136,17 @@ class BookController extends Controller
         $book = $this->entityRepo->createFromInput('book', $input);
         $this->bookUpdateActions($book, $request);
         Activity::add($book, 'book_create', $book->id);
-        if (isset($input['space'])) {
-            $this->spaceRepo->saveBookToSpace($book, $input['space']);
-        }
+
         if ($bookshelf) {
             $this->entityRepo->appendBookToShelf($bookshelf, $book);
             Activity::add($bookshelf, 'bookshelf_update');
         }
     
-        $this->spaceRepo->savePrivateBookToSpace($book);
+        $space = $this->spaceRepo->saveBookToSpace($book);
         
         $this->checkIfRedirect($book);
         
-        return redirect($book->getUrl());
+        return redirect($book->getSpaceUrl($space));
     }
 
     /**

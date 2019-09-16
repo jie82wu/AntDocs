@@ -86,7 +86,8 @@ function userSpaceCan(string $permission, \BookStack\Orz\Space $space)
 function isCreator($entity)
 {
     //空间管理者赋与所有权限
-    if(userSpaceCan('space-manage',cache('current_space')))
+
+    if(userSpaceCan('space-manage',cache(cacheKey())))
         return true;
     
     if (!($entity instanceof Entity))
@@ -109,6 +110,16 @@ function isSpaceCreator($space)
         return false;
     }
     return true;
+}
+
+function getSpace()
+{
+    $spaceRepo = app(\BookStack\Orz\SpaceRepo::class);
+    return cache(cacheKey())?: $spaceRepo->checkPrivateSpace();
+}
+function cacheKey($key = 'current_space_')
+{
+    return $key . user()->id;
 }
 /**
  * Check if the current user has the given permission

@@ -10,7 +10,7 @@
             </div>
             <div class="left-tree-div" style="display: none;">
                 <ul>
-                    <li icon="true" data-jstree='{"selected":{{isset($spaceSel)&&request()->id==$private->id?"true":"false"}},"icon":"{{URL::asset("assets/imgs/lock.png")}}"}'>
+                    <li icon="true" data-jstree='{"selected":{{!(cache()->has(cacheKey()))||isset($spaceSel)&&request()->id==$private->id?"true":"false"}},"icon":"{{URL::asset("assets/imgs/lock.png")}}"}'>
                         <a href="{{ baseUrl('/space/myspace') }}" title="{{ $private->name }}">{{ $private->name }}</a>
                 <ul>
                     @foreach($private->books as $private_item_book)

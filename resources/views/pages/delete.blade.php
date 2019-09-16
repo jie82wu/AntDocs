@@ -33,7 +33,7 @@
                         {!! csrf_field() !!}
                         <input type="hidden" name="_method" value="DELETE">
                         <div class="form-group text-right">
-                            <a href="{{ $page->getSpaceUrl(cache('current_space')) }}" class="button outline">{{ trans('common.cancel') }}</a>
+                            <a href="{{ $page->getSpaceUrl(cache(cacheKey())) }}" class="button outline">{{ trans('common.cancel') }}</a>
                             <button type="submit" class="button primary">{{ trans('common.confirm') }}</button>
                         </div>
                     </form> 

@@ -66,12 +66,17 @@ class SpaceController extends Controller
         $this->permissionsRepo = $permissionsRepo;
         $this->user = $user;
         $space_id=request('id');
-        if ($space_id) {
-            $space = $this->spaceRepo->find($space_id);
-            $this->space = $space;
-            view()->share('space', $space);
-            Cache::forever('current_space', $space);
-        }
+        $this->middleware(function ($request, $next) use($space_id) {
+            if ($space_id) {
+                $space = $this->spaceRepo->find($space_id);
+                $this->space = $space;
+                view()->share('space', $space);                
+                    Cache::forever(cacheKey(), $space);                    
+            } else {
+                Cache::forget(cacheKey());
+            }
+            return $next($request);
+        });
         parent::__construct();
     }
 
@@ -149,23 +154,6 @@ class SpaceController extends Controller
         $this->spaceRepo->copyDefaultRoles($space);
         Activity::add($space, 'space_create', $space->id);
 
-        return redirect($space->getUrl());
-    }
-    
-    /**
-     * Store private book
-     */
-    public function storePrivateBook(Request $request)
-    {
-        $this->validate($request, [
-            'books' => 'required',
-            ]
-        );
-        $input = $request->all();        
-        if (isset($input['books'])) {
-            $space = $this->spaceRepo->storePrivateBook($input['books']);
-            Activity::add($space, 'book_add_favorite', $space->id);
-        }
         return redirect($space->getUrl());
     }
     
