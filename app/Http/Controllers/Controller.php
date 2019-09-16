@@ -126,10 +126,6 @@ abstract class Controller extends BaseController
 
     protected function checkSpacePermission($permissionName, $space)
     {
-        //super admin
-        if (user()->level == 10)
-            return true;
-        
         if (isSpaceCreator($space))
             return true;
         

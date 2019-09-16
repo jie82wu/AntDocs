@@ -97,8 +97,9 @@ class BookController extends Controller
             //$this->checkOwnablePermission('bookshelf-update', $bookshelf);
         }
     
-        $space = Space::where(['created_by'=>user()->id])->orderBy('type','desc')->get();
-        $this->checkSpacePermission('book-create-own', $space);
+        $space = cache(cacheKey());
+        if ($space)
+            $this->checkSpacePermission('book-create-all', $space);
         $this->setPageTitle(trans('entities.books_create'));
         return view('books.create', [
             'bookshelf' => $bookshelf,
