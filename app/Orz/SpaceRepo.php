@@ -3,6 +3,7 @@
 use BookStack\Actions\Tag;
 use BookStack\Entities\Book;
 use BookStack\Entities\Entity;
+use BookStack\Entities\Page;
 use BookStack\Orz\Repos\Repository;
 use BookStack\Actions\TagRepo;
 use Illuminate\Support\Collection;
@@ -221,13 +222,27 @@ class SpaceRepo extends Repository
     public function recordReadHistory($space_id, $page_id)
     {
         $url = route('space.page', ['id' => $space_id, 'oid' => $page_id], false);
-        DB::table('spacext')->updateOrInsert(['user_id' => user()->id, 'key' => 'current_read',], ['value' => $url]);
+        DB::table('spacext')->updateOrInsert(['user_id' => user()->id, 'key' => 'current_read',], ['value' => $url,'page_id'=>$page_id]);
     }
     
     public function checkReadHistory()
     {
-        $read = DB::table('spacext')->where('user_id', user()->id)->where('key', 'current_read')->first();
-        return $read && $read->value ? $read->value : false;
+        $read = DB::table('spacext')
+            ->where('user_id', user()->id)
+            ->where('key', 'current_read')
+            ->first();
+        if ($read) {
+            $page = Page::find($read->page_id);
+            if ($page && $read->value)
+                return $read->value;
+            else {
+                DB::table('spacext')
+                    ->where('user_id', user()->id)
+                    ->where('key', 'current_read')
+                    ->delete();
+            }
+        }
+        return false;
     }
 
 

@@ -63,7 +63,7 @@
                             <li>
                                 <a href="{{ baseUrl("/create-book") }}">{{ trans('common.new_book') }}</a>
                             </li>
-                            @if(isset($book) && ($book->created_by == $currentUser->id || cache()->has(cacheKey())&&cache(cacheKey())->type==1 && userCan('book-update', $book)) )
+                            @if(!isset($spaceSel)&& isset($book) && (isCreator($book)||cache()->has(cacheKey())&&cache(cacheKey())->type==1 && userSpaceCan('book-update-all',cache(cacheKey()) )))
                             <li>
                                 <a href="{{ $book->getUrl('/create-chapter')  }}">{{ trans('common.new_chapter') }}</a>
                             </li>

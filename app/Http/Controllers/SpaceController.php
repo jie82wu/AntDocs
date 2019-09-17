@@ -184,6 +184,7 @@ class SpaceController extends Controller
         return view('space.show-my-space',[
             'books'=>$books,
             'view'=>$view,
+            'spaceSel'=>true,
         ]);
     }
 
