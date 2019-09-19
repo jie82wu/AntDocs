@@ -87,6 +87,10 @@ class PermissionsRepo
     public function updateRole($roleId, $roleData)
     {
         $role = $this->role->findOrFail($roleId);
+        
+        //admin不能编辑
+        if ($role->name=='admin' || $role->system_name == 'admin')
+            return $role;
 
         $permissions = isset($roleData['permissions']) ? array_keys($roleData['permissions']) : [];
         if ($role->system_name === 'admin') {

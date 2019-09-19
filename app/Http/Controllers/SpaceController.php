@@ -152,6 +152,10 @@ class SpaceController extends Controller
         $space = $this->spaceRepo->createFromInput($input);
         $this->updateActions($space, $request);
         $this->spaceRepo->copyDefaultRoles($space);
+        
+        //add creator to invited users
+        $this->spaceRepo->saveUserToSpace($space, user()->id, ['status'=>1, 'is_admin'=>1]);
+        
         Activity::add($space, 'space_create', $space->id);
 
         return redirect($space->getUrl());
@@ -163,8 +167,10 @@ class SpaceController extends Controller
     public function showSpace(Request $request, $id)
     {
         $space = $this->spaceRepo->find($id);
+        $view = setting()->getUser($this->currentUser, 'books_view_type', config('app.views.books'));
         return view('space.show',[
             'spaceSel'=>true,
+            'view'=>$view,
         ]);
     }
 
@@ -194,8 +200,8 @@ class SpaceController extends Controller
         $book = $this->entityRepo->getById('book', $oid, true, true);
         isCreator($book) || $this->checkOwnablePermission('book-view', $book);
         
-        $bookChildren = $book->getChildren();    
-        Views::add($book);  
+        $bookChildren = $book->getChildren();
+        Views::add($book);
         $this->setPageTitle($book->getShortName());
         return view('space.book-show', [
             'book' => $book,
@@ -601,7 +607,7 @@ class SpaceController extends Controller
         }
     
         //send invite message
-        $this->spaceRepo->saveUserToSpace($space, $user->id, $status);
+        $this->spaceRepo->saveUserToSpace($space, $user->id, ['status'=>$status]);
     
         //assign roles
         if ($request->filled('roles')) {

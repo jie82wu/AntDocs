@@ -51,7 +51,9 @@ class Space extends Entity
     
     public function users()
     {
-        return $this->belongsToMany(User::class,'space_user','space_id','user_id');
+        return $this->belongsToMany(User::class,'space_user','space_id','user_id')
+            ->where('status','=','1')
+            ->orderBy('is_admin','desc');
     }
     
     public function getCover($width = 440, $height = 250)

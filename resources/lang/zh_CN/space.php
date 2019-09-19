@@ -5,6 +5,7 @@ return [
      */
     'space' =>  '空间',
     'create' =>  '新建共享空间',
+    'creator' =>  'Admin',
     'space_delete' => '删除空间',
     'space_edit' => '编辑空间',
     'save_to_space' => '收藏至空间',
@@ -53,4 +54,5 @@ return [
     'user_in_space' => '用户已存在于空间中，无法重复添加',
     'user_not_exists_and_can_create' => '此用户可直接创建',
     'invite_message_is_send_out' => '用户邀请已发出',
+    
 ];

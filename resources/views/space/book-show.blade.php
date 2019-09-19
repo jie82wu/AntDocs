@@ -111,7 +111,7 @@
                     <span>{{ trans('common.sort') }}</span>
                 </a>
             @endif
-            @if(userCan('restrictions-manage', $book))
+            @if(userCan('restrictions-manage', $book) && $space->type==1)
                 <a href="{{ $book->getUrl('/permissions') }}" class="icon-list-item">
                     <span>@icon('lock')</span>
                     <span>{{ trans('entities.permissions') }}</span>

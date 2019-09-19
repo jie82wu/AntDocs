@@ -31,8 +31,8 @@
                         {{--@if(userCanOnAny('view', \BookStack\Entities\Bookshelf::class) || userCan('bookshelf-view-all') || userCan('bookshelf-view-own'))
                             <a href="{{ baseUrl('/shelves') }}">@icon('bookshelf'){{ trans('entities.shelves') }}</a>
                         @endif--}}
-                        <a href="{{ baseUrl('/books') }}">@icon('books'){{ trans('space.content_market') }}</a>
-                    {{--<a href="{{ baseUrl('/books') }}">@icon('books'){{ trans('entities.books') }}</a>
+                    {{--   <a href="{{ baseUrl('/books') }}">@icon('books'){{ trans('space.content_market') }}</a>
+                    <a href="{{ baseUrl('/books') }}">@icon('books'){{ trans('entities.books') }}</a>
                         @if(signedInUser() && userCan('settings-manage'))--}}
                         @if(strtolower(user()->name)=='admin')
                             <a href="{{ baseUrl('/settings') }}">@icon('settings'){{ trans('settings.settings') }}</a>
@@ -54,21 +54,21 @@
                     <!--  quick operation   -->
                     <div class="dropdown-container" dropdown>
                         <span class="user-name hide-under-l" dropdown-toggle>
-                            <span class="name">{{ trans('common.quick_operation') }}</span> @icon('caret-down')
+                            <span class="name">{{ trans('space.new') }}</span> @icon('caret-down')
                         </span>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="{{ baseUrl("/space/create-space") }}">{{ trans('common.new_space') }}</a>
+                                <a href="{{ baseUrl("/space/create-space") }}">{{ trans('space.public') }}</a>
                             </li>
                             <li>
-                                <a href="{{ baseUrl("/create-book") }}">{{ trans('common.new_book') }}</a>
+                                <a href="{{ baseUrl("/create-book") }}">{{ trans('entities.book') }}</a>
                             </li>
                             @if(!isset($spaceSel)&& isset($book) && (isCreator($book)||cache()->has(cacheKey())&&cache(cacheKey())->type==1 && userSpaceCan('book-update-all',cache(cacheKey()) )))
                             <li>
-                                <a href="{{ $book->getUrl('/create-chapter')  }}">{{ trans('common.new_chapter') }}</a>
+                                <a href="{{ $book->getUrl('/create-chapter')  }}">{{ trans('entities.chapter') }}</a>
                             </li>
                             <li>
-                                <a href="{{ $book->getUrl('/create-page') }}">{{ trans('common.new_page') }}</a>
+                                <a href="{{ $book->getUrl('/create-page') }}">{{ trans('entities.page') }}</a>
                             </li>
                             @endif
                             {{-- <li>

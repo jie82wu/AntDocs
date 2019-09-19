@@ -59,7 +59,7 @@
     <h5>{{ trans('common.actions') }}</h5>
     <div class="icon-list text-primary">
 
-        @if(userCan('book-create-all'))
+        {{--@if(userCan('book-create-all'))
         <a href="{{ baseUrl('/create-book') }}" class="icon-list-item">
             <span class="icon">@icon('add')</span>
             <span>{{ trans('entities.books_create') }}</span>
@@ -73,7 +73,7 @@
             <span>@icon('delete')</span>
             <span>{{ trans('common.delete') }}</span>
         </a>
-        @endif
+        @endif--}}
         @include('partials.view-toggle', ['view' => $view, 'type' => 'book'])
     </div>
 </div>

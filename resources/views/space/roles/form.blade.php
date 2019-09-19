@@ -4,7 +4,6 @@
     <h1 class="list-heading">{{ $title }}</h1>
 
     <div class="setting-list">
-
         <div class="grid half">
             <div>
                 <label class="setting-list-label">{{ trans('settings.role_details') }}</label>
@@ -31,7 +30,7 @@
     <div class="grid half" permissions-table>
             <div>
                 <label class="setting-list-label">{{ trans('space.space_permissions') }}</label>
-                <a href="#" permissions-table-toggle-all class="text-small text-primary">{{ trans('common.toggle_all') }}</a>
+                <a href="javascript:void(0)" permissions-table-toggle-all class="text-small text-primary">{{ trans('common.toggle_all') }}</a>
             </div>
         <div class="toggle-switch-list">
                 <div>@include('settings.roles.checkbox', ['permission' => 'space-manage', 'label' => trans('space.space_manage')])</div>
@@ -111,7 +110,7 @@
                 <tr>
                     <td>
                         <div>{{ trans('entities.books') }}</div>
-                        <a href="#" permissions-table-toggle-all-in-row class="text-small text-primary">{{ trans('common.toggle_all') }}</a>
+                        <a href="javascript:void(0)" permissions-table-toggle-all-in-row class="text-small text-primary">{{ trans('common.toggle_all') }}</a>
                     </td>
                     <td>
                         @include('settings.roles.checkbox', ['permission' => 'book-create-all', 'label' => trans('settings.role_all')])
@@ -135,7 +134,7 @@
                 <tr>
                     <td>
                         <div>{{ trans('entities.chapters') }}</div>
-                        <a href="#" permissions-table-toggle-all-in-row class="text-small text-primary">{{ trans('common.toggle_all') }}</a>
+                        <a href="javascript:void(0)" permissions-table-toggle-all-in-row class="text-small text-primary">{{ trans('common.toggle_all') }}</a>
                     </td>
                     <td>
                         @include('settings.roles.checkbox', ['permission' => 'chapter-create-own', 'label' => trans('settings.role_own')])
@@ -161,7 +160,7 @@
                 <tr>
                     <td>
                         <div>{{ trans('entities.pages') }}</div>
-                        <a href="#" permissions-table-toggle-all-in-row class="text-small text-primary">{{ trans('common.toggle_all') }}</a>
+                        <a href="javascript:void(0)" permissions-table-toggle-all-in-row class="text-small text-primary">{{ trans('common.toggle_all') }}</a>
                     </td>
                     <td>
                         @include('settings.roles.checkbox', ['permission' => 'page-create-own', 'label' => trans('settings.role_own')])
@@ -187,7 +186,7 @@
                 <tr>
                     <td>
                         <div>{{ trans('entities.images') }}</div>
-                        <a href="#" permissions-table-toggle-all-in-row class="text-small text-primary">{{ trans('common.toggle_all') }}</a>
+                        <a href="javascript:void(0)" permissions-table-toggle-all-in-row class="text-small text-primary">{{ trans('common.toggle_all') }}</a>
                     </td>
                     <td>@include('settings.roles.checkbox', ['permission' => 'image-create-all', 'label' => ''])</td>
                     <td style="line-height:1.2;"><small class="faded">{{ trans('settings.role_controlled_by_asset') }}</small></td>
@@ -205,7 +204,7 @@
                 <tr>
                     <td>
                         <div>{{ trans('entities.attachments') }}</div>
-                        <a href="#" permissions-table-toggle-all-in-row class="text-small text-primary">{{ trans('common.toggle_all') }}</a>
+                        <a href="javascript:void(0)" permissions-table-toggle-all-in-row class="text-small text-primary">{{ trans('common.toggle_all') }}</a>
                     </td>
                     <td>@include('settings.roles.checkbox', ['permission' => 'attachment-create-all', 'label' => ''])</td>
                     <td style="line-height:1.2;"><small class="faded">{{ trans('settings.role_controlled_by_asset') }}</small></td>
@@ -223,7 +222,7 @@
                 <tr>
                     <td>
                         <div>{{ trans('entities.comments') }}</div>
-                        <a href="#" permissions-table-toggle-all-in-row class="text-small text-primary">{{ trans('common.toggle_all') }}</a>
+                        <a href="javascript:void(0)" permissions-table-toggle-all-in-row class="text-small text-primary">{{ trans('common.toggle_all') }}</a>
                     </td>
                     <td>@include('settings.roles.checkbox', ['permission' => 'comment-create-all', 'label' => ''])</td>
                     <td style="line-height:1.2;"><small class="faded">{{ trans('settings.role_controlled_by_asset') }}</small></td>
@@ -244,10 +243,12 @@
 
     <div class="form-group text-right">
         <a href="{{ baseUrl("/space/{$space->id}/roles") }}" class="button outline">{{ trans('common.cancel') }}</a>
+        @if ($role->name != 'admin')
         @if (isset($role) && $role->id)
             <a href="{{ baseUrl("/space/{$space->id}/roles/{$role->id}/delete") }}" class="button outline">{{ trans('settings.role_delete') }}</a>
         @endif
         <button type="submit" class="button primary">{{ trans('settings.role_save') }}</button>
+        @endif
     </div>
 
 </div>
@@ -279,3 +280,14 @@
         </p>
     @endif
 </div>
+
+@if ($role->name == 'admin')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
+<script>
+    $('div.setting-list input').prop('disabled',true);
+    $('span.text-primary').removeClass('text-primary');
+    $('a[permissions-table-toggle-all]').removeAttr('permissions-table-toggle-all')
+    //$('a[permissions-table-toggle-all-in-row]').prop("disabled",true);
+
+</script>
+@endif

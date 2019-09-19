@@ -148,13 +148,16 @@ class SpaceRepo extends Repository
     }
     
     //add user
-    public function saveUserToSpace(Space $space, $user_id, $status = 0)
+    public function saveUserToSpace(Space $space, $user_id, $extra = [])
     {
         $user = ['user_id' => $user_id, 'space_id' => $space->id];
         $count = DB::table('space_user')->where($user)->count();
         if ($count > 0)
             return ;
-        $user['status'] = $status;
+        
+        if ($extra)
+            $user = array_merge($user, $extra);
+        
         DB::table('space_user')->insert($user);
     }
    
@@ -314,6 +317,8 @@ class SpaceRepo extends Repository
                     'role_id' => $insert_role_id,
                 ];
             }
+            if ($role->name=='admin')
+                $insert_new_permissions[] = ['permission_id'=> 82, 'role_id'=>$insert_role_id];
             DB::table('permission_role')->insert($insert_new_permissions);
         }
     }

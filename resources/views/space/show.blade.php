@@ -20,11 +20,19 @@
     <div class="book-content">
 <!--        <p class="text-muted">@{{ !! nl2br(e($space->description)) !!}}</p>-->
         @if(count($space->books) > 0)
-        <div class="entity-list">
-            @foreach($space->books as $book)
-            @include('books.list-item', ['book' => $book,'space'=>$space])
-            @endforeach
-        </div>
+            @if($view === 'list')
+            <div class="entity-list">
+                @foreach($space->books as $book)
+                @include('books.list-item', ['book' => $book,'space'=>$space])
+                @endforeach
+            </div>
+            @else
+            <div class="grid third">
+                @foreach($space->books as $book)
+                @include('books.grid-item', ['book' => $book,'space'=>$space])
+                @endforeach
+            </div>
+            @endif
         @else
         <div class="mt-xl">
             <hr>
@@ -45,10 +53,11 @@
     <h5>{{ trans('common.actions') }}</h5>
     <div class="icon-list text-primary">
 
-        <a href="{{ baseUrl('/space/create-space') }}" class="icon-list-item">
+        {{--<a href="{{ baseUrl('/space/create-space') }}" class="icon-list-item">
             <span class="icon">@icon('add')</span>
             <span>{{ trans('space.new') }}</span>
-        </a>
+        </a>--}}
+        @include('partials.view-toggle', ['view' => $view, 'type' => 'book'])
 
         <hr class="primary-background">
 
