@@ -160,6 +160,9 @@ class SpaceRepo extends Repository
         
         DB::table('space_user')->insert($user);
     
+        if (user()->id == $user_id)
+            return ;
+        
         $message = [
             'type'=>'space_invite',
             'from'=>user()->id,
