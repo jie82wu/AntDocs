@@ -57,7 +57,7 @@
     <label for="role" class="setting-list-label">{{ trans('settings.users_role') }}</label>
     <p class="small">{{ trans('settings.users_role_desc') }}</p>
     <div class="mt-m">
-        @include('form.role-checkboxes', ['name' => 'roles', 'roles' => $roles, 'selectIndex'=>2, 'disabled'=>$is_in])
+        @include('form.role-checkboxes', ['name' => 'roles', 'roles' => $roles, 'selectName'=>'editor', 'disabled'=>$is_in])
     </div>
 </div>
 @endif
