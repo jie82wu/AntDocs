@@ -114,7 +114,7 @@
                     <span>{{ trans('common.move') }}</span>
                 </a>
             @endif
-            @if(userCan('restrictions-manage', $chapter))
+            @if(userCan('restrictions-manage', $chapter)&&$space->type!=2)
                 <a href="{{ $chapter->getUrl('/permissions') }}" class="icon-list-item">
                     <span>@icon('lock')</span>
                     <span>{{ trans('entities.permissions') }}</span>

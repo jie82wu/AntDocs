@@ -151,9 +151,9 @@ class UserRepo
      */
     public function setUserRoles(User $user, array $roles)
     {
-        if ($this->demotingLastAdmin($user, $roles)) {
-            throw new UserUpdateException(trans('errors.role_cannot_remove_only_admin'), $user->getEditUrl());
-        }
+        //if ($this->demotingLastAdmin($user, $roles)) {
+        //    throw new UserUpdateException(trans('errors.role_cannot_remove_only_admin'), $user->getEditUrl());
+        //}
 
         $user->roles()->sync($roles);
     }

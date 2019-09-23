@@ -159,6 +159,16 @@ class SpaceRepo extends Repository
             $user = array_merge($user, $extra);
         
         DB::table('space_user')->insert($user);
+    
+        $message = [
+            'type'=>'space_invite',
+            'from'=>user()->id,
+            'to'=>$user_id,
+            'content_key'=>'message.add_as_normal',
+            'status'=>0,
+            'rel_id'=>$space->id . '|' . $user_id,            
+        ];
+        DB::table('messages')->insert($message);
     }
    
     //create book save to space 

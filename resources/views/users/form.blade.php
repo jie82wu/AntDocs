@@ -37,7 +37,7 @@
     </div>
 @endif
 
-@if(userCan('users-manage'))
+{{--@if(userCan('users-manage'))
     <div>
         <label for="role" class="setting-list-label">{{ trans('settings.users_role') }}</label>
         <p class="small">{{ trans('settings.users_role_desc') }}</p>
@@ -45,7 +45,7 @@
             @include('form.role-checkboxes', ['name' => 'roles', 'roles' => $roles])
         </div>
     </div>
-@endif
+@endif--}}
 
 @if($authMethod === 'standard')
     <div>

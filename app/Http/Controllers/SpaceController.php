@@ -571,7 +571,7 @@ class SpaceController extends Controller
     public function storeUsers(Request $request, $id)
     {
         $space = $this->spaceRepo->find($id);
-        $this->spaceRepo->checkIsAdmin($space);
+        //$this->spaceRepo->checkIsAdmin($space);
         $email = $request->get('email');
         $user = $this->userRepo->getByEmail($email);
         

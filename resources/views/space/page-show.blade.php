@@ -132,7 +132,7 @@
                     <span>{{ trans('entities.revisions') }}</span>
                 </a>
             @endif
-            @if(userCan('restrictions-manage', $page))
+            @if(userCan('restrictions-manage', $page)&&$space->type!=2)
                 <a href="{{ $page->getUrl('/permissions') }}" class="icon-list-item">
                     <span>@icon('lock')</span>
                     <span>{{ trans('entities.permissions') }}</span>

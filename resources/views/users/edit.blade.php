@@ -2,7 +2,7 @@
 
 @section('body')
     <div class="container small">
-
+        
         <div class="py-m">
             @include('settings.navbar', ['selected' => 'users'])
         </div>
@@ -55,9 +55,9 @@
 
                 <div class="text-right">
                     <a href="{{  baseUrl($currentUser->can('users-manage') ? "/settings/users" : "/") }}" class="button outline">{{ trans('common.cancel') }}</a>
-                    @if($authMethod !== 'system')
+                    {{--@if($authMethod !== 'system')
                         <a href="{{ baseUrl("/settings/users/{$user->id}/delete") }}" class="button outline">{{ trans('settings.users_delete') }}</a>
-                    @endif
+                    @endif--}}
                     <button class="button primary" type="submit">{{ trans('common.save') }}</button>
                 </div>
             </form>
