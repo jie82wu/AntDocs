@@ -10,20 +10,3 @@
     @endif
 </div>
 
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
-<script src="{{ versioned_asset('assets/js/jstree/jstree.js') }}"></script>
-<script>
-    $('div.left-tree-div').jstree({
-        'core': {
-            'themes': {
-                'dots': false
-            }            
-        }
-    }).ready(function () {
-        $('div.div-loading-tree').hide();
-        $('div.left-tree-div').show();
-    });
-
-</script>
-
