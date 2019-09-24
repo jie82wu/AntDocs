@@ -82,7 +82,13 @@ class MessageController extends Controller
                 $message->status = 1;
                 $message->save();
                 $spaceIdAndUserId = explode('|', $message->rel_id);
-                DB::update('update space_user set status = ? where space_id = ? and user_id=?', [$status, $spaceIdAndUserId[0], $spaceIdAndUserId[1]]);
+                if ($status==1)
+                    DB::update('update space_user set status = 1 where space_id = ? and user_id=?', [$spaceIdAndUserId[0], $spaceIdAndUserId[1]]);
+                else {
+                    $space = $this->spaceRepo->find($spaceIdAndUserId[0]);
+                    $this->spaceRepo->removeUser($space, $spaceIdAndUserId[1]);
+                }
+                
                 Activity::add($message, 'message_handle', $message->id);
                 break;
         }

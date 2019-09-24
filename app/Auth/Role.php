@@ -4,6 +4,7 @@ use BookStack\Auth\Permissions\JointPermission;
 use BookStack\Auth\Permissions\RolePermission;
 use BookStack\Model;
 use BookStack\Orz\Space;
+use Illuminate\Support\Facades\DB;
 
 class Role extends Model
 {
@@ -101,5 +102,25 @@ class Role extends Model
     public static function visible()
     {
         return static::where('hidden', '=', false)->orderBy('name')->get();
+    }
+    
+    public function getUsers()
+    {
+        $space = $this->space;
+        $space_users = DB::table('space_user')
+            ->where('space_id',$space->id)
+            ->where('status', 1)
+            ->pluck('user_id')->all();
+        $users = $this->users;
+        $all = [];
+        foreach ($users as $user)
+            if (in_array($user->id, $space_users))
+                $all[] = $user;
+        
+        if ($this->name=='admin' && in_array($space->created_by, $space_users)) {
+            $user = User::find($space->created_by);
+            array_unshift($all,$user);
+        }
+        return $all;
     }
 }

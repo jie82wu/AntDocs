@@ -28,7 +28,7 @@
             <tr>
                 <td><a href="{{ baseUrl("/space/".$space->id."/roles/{$role->id}") }}">{{ $role->display_name }}</a></td>
                 <td>{{ $role->description }}</td>
-                <td class="text-center">{{ $role->users->count() }}</td>
+                <td class="text-center">{{ count($role->getUsers()) }}</td>
             </tr>
             @endforeach
         </table>

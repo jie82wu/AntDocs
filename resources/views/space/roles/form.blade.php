@@ -255,21 +255,21 @@
 
 <div class="card content-wrap auto-height">
     <h2 class="list-heading">{{ trans('settings.role_users') }}</h2>
-    @if(isset($role) && count($role->users) > 0)
+    @if(isset($role) && count($users=$role->getUsers()) > 0)
         <div class="grid third">
-            @foreach($role->users as $user)
+            @foreach($users as $user)
                 <div class="user-list-item">
                     <div>
                         <img class="avatar small" src="{{ $user->getAvatar(40) }}" alt="{{ $user->name }}">
                     </div>
-                    <div>
-                        @if(userCan('users-manage') || $currentUser->id == $user->id)
+                    <div>{{ $user->name }}
+                        {{--@if(userCan('users-manage') || $currentUser->id == $user->id)
                             <a href="{{ baseUrl("/settings/users/{$user->id}") }}">
                                 @endif
                                 {{ $user->name }}
                                 @if(userCan('users-manage') || $currentUser->id == $user->id)
                             </a>
-                        @endif
+                        @endif--}}
                     </div>
                 </div>
             @endforeach
