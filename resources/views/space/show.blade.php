@@ -66,19 +66,25 @@
             <span>@icon('edit')</span>
             <span>{{ trans('common.edit') }}</span>
         </a>
-        @endif
 
-        @if(isSpaceCreator($space))
+
         <a href="{{ $space->getUrl('/users') }}" class="icon-list-item">
             <span>@icon('settings')</span>
             <span>{{ trans('entities.permissions') }}</span>
         </a>
-        @endif
 
-        @if(isSpaceCreator($space))
+
         <a href="{{ $space->getUrl('/delete') }}" class="icon-list-item">
             <span>@icon('delete')</span>
             <span>{{ trans('common.delete') }}</span>
+        </a>
+        @endif
+
+        @if(isUserInSpace($space,user()))
+        <hr class="primary-background">
+        <a href='{{ baseUrl("/space/{$space->id}/exit") }}' class="icon-list-item">
+            <span class="icon">@icon('logout')</span>
+            <span>{{ trans('space.exit') }}</span>
         </a>
         @endif
 

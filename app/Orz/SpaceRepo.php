@@ -346,4 +346,37 @@ class SpaceRepo extends Repository
         DB::table('role_user')->whereIn('user_id', $uid)->whereIn('role_id', $role_ids)->delete();
     }
 
+    // users exit from spade
+    public function userExit(Space $space, $user)
+    {
+        $role = DB::table('roles')->where('name','admin')->where('space_id',$space->id)->first();
+        $admin = DB::table('role_user')->where('role_id',$role->id)->pluck('user_id')->all();
+        //管理员count
+        $admin_count = count($admin);
+        //creator是否存在
+        $creator_exist = DB::table('space_user')
+            ->where('space_id',$space->id)
+            ->where('user_id',$space->created_by)
+            ->count();
+        //creator退出
+        if ($space->created_by==$user->id) {
+            if ($admin_count==0)
+                return false;
+        } else { //admin退出
+            if (!$creator_exist && $admin_count <=1)
+                return false;
+        }         
+        
+        $this->removeUser($space, $user->id);
+        return true;
+
+    }
+    
+    public function isUserInSpace($space,$user)
+    {
+        $user = ['user_id' => $user->id, 'space_id' => $space->id];
+        $count = DB::table('space_user')->where($user)->count();
+        return  $count > 0;
+    }
+
 }

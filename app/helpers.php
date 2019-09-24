@@ -102,16 +102,22 @@ function isCreator($entity)
 //self private
 function isSpaceCreator($space)
 {
-    if (user()->level == 10)
-        return true;
     //空间管理者赋与所有权限
     if(userSpaceCan('space-manage',$space))
         return true;
-    if ($space->created_by == user()->id) {
+    if ($space->created_by == user()->id)
         return true;
-    }
+    if (user()->level == 10)
+        return true;
     
     return false;
+}
+
+//is in space
+function isUserInSpace($space,$user)
+{
+    $spaceRepo = app(\BookStack\Orz\SpaceRepo::class);
+    return $spaceRepo->isUserInSpace($space,$user);
 }
 
 function getSpace()

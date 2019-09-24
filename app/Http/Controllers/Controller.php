@@ -58,11 +58,11 @@ abstract class Controller extends BaseController
             //invited space
             //$invited_space = Cache::get('invited_space');
             //if (!$invited_space) {
-                $ids = DB::table('space_user')->where('user_id', $user->id)->pluck('space_id')->all();
+                $ids = DB::table('space_user')->where('user_id', $user->id)->where('status',1)->pluck('space_id')->all();
                 $invited_space = Space::whereIn('id', $ids)->orderBy('id')->get();
                 //Cache::put('invited_space', $invited_space, $this->cache_expire);
             //}
-            $invited_space = $invited_space->merge($space->where('type',1))->sortBy('id');
+            //$invited_space = $invited_space->merge($space->where('type',1))->sortBy('id');
             view()->share('invited_space', $invited_space);
             
             

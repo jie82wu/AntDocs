@@ -228,6 +228,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/{id}/book/{oid}', 'SpaceController@showSpaceBook');
         Route::get('/{id}/chapter/{oid}', 'SpaceController@showSpaceChapter');
         Route::get('/{id}/page/{oid}', ['uses'=>'SpaceController@showSpacePage', 'as'=>'space.page']);
+        Route::get('/{id}/exit', 'SpaceController@showExitPage');
+        Route::delete('/{id}/exit', 'SpaceController@exitSpace');
         Route::get('/{id}', 'SpaceController@showSpace');
         Route::get('/{id}/user/{uid}/delete', 'SpaceController@showRemoveUser');
         Route::delete('/{id}/user/{uid}/delete', 'SpaceController@removeUser');

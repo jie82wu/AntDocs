@@ -35,6 +35,12 @@ return [
     'space_edit_named' => '编辑空间「:spaceName」',
     'space_permissions_updated' => '空间权限已更新',
     'space_remove_user_explain' => '这将从空间「:spaceName」中删除名为「:UserName」的用户。',
+    'exit' =>  '退出',
+    'users_exit' =>  '退出空间',
+    'space_users_exit_explain' => '这将从空间「:spaceName」中退出',
+    'space_exit_confirmation' => '您确定要退出此空间吗？',
+    'space_users_exit_success' => '已退出选定的空间',
+    'space_users_exit_error' => '退出失败，请先维护其他管理员',
     
     //market
     'content_market' => '内容集市',

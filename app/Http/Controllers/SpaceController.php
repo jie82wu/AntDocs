@@ -660,4 +660,23 @@ class SpaceController extends Controller
         session()->flash('success', trans('space.user_remove_success'));
         return redirect('/space/'.$space->id.'/users');
     }
+    public function showExitPage(Request $request, $id)
+    {
+        $space = $this->spaceRepo->find($id);
+        return view('space.users.exit', [
+            'space' => $space,
+        ]);
+    }
+    public function exitSpace(Request $request, $id)
+    {
+        $space = $this->spaceRepo->find($id);
+        $result = $this->spaceRepo->userExit($space,user());
+        if ($result) {
+            session()->flash('success', trans('space.space_users_exit_success'));
+            return redirect('/space/myspace');
+        } else {
+            session()->flash('error', trans('space.space_users_exit_error'));
+            return redirect('/space/'.$space->id);
+        }
+    }
 }
