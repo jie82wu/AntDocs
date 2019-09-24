@@ -19,12 +19,6 @@
 -- Current Database: `bookstack`
 --
 
-/*!40000 DROP DATABASE IF EXISTS `bookstack`*/;
-
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `bookstack` /*!40100 DEFAULT CHARACTER SET utf8 */;
-
-USE `bookstack`;
-
 --
 -- Table structure for table `activities`
 --
