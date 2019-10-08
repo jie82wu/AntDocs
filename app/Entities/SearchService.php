@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
+use BookStack\Orz\SpaceRepo;
 
 class SearchService
 {
@@ -35,6 +36,8 @@ class SearchService
      * @var array
      */
     protected $queryOperators = ['<=', '>=', '=', '<', '>', 'like', '!='];
+    
+    protected $spaceRepo;
 
     /**
      * SearchService constructor.
@@ -43,12 +46,13 @@ class SearchService
      * @param Connection $db
      * @param PermissionService $permissionService
      */
-    public function __construct(SearchTerm $searchTerm, EntityProvider $entityProvider, Connection $db, PermissionService $permissionService)
+    public function __construct(SearchTerm $searchTerm, EntityProvider $entityProvider, Connection $db, PermissionService $permissionService, SpaceRepo $spaceRepo)
     {
         $this->searchTerm = $searchTerm;
         $this->entityProvider = $entityProvider;
         $this->db = $db;
         $this->permissionService = $permissionService;
+        $this->spaceRepo = $spaceRepo;
     }
 
     /**
@@ -175,7 +179,10 @@ class SearchService
     {
         $entity = $this->entityProvider->get($entityType);
         $entitySelect = $entity->newQuery();
-
+        
+        $allSpaceId = $this->spaceRepo->getAllSpaceId();    
+        $entitySelect->whereIn('space_id', $allSpaceId);
+        
         // Handle normal search terms
         if (count($terms['search']) > 0) {
             $subQuery = $this->db->table('search_terms')->select('entity_id', 'entity_type', \DB::raw('SUM(score) as score'));
@@ -216,7 +223,8 @@ class SearchService
             }
         }
 
-        return $this->permissionService->enforceEntityRestrictions($entityType, $entitySelect, $action);
+        return $entitySelect;
+        //return $this->permissionService->enforceEntityRestrictions($entityType, $entitySelect, $action);
     }
 
 

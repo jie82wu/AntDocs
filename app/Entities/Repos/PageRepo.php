@@ -305,6 +305,9 @@ class PageRepo extends EntityRepo
         $draftPage->text = $this->pageToPlainText($draftPage);
         $draftPage->draft = false;
         $draftPage->revision_count = 1;
+    
+        $space = getSpace();
+        $draftPage->space_id = $space->id;
 
         $draftPage->save();
         $this->savePageRevision($draftPage, trans('entities.pages_initial_revision'));

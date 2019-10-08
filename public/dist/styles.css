@@ -1018,7 +1018,8 @@ body.flexbox {
     min-width: 0; }
   .tri-layout-container .tri-layout-left {
     grid-area: a;
-    min-width: 0; }
+    min-width: 0;
+    overflow: auto; }
   .tri-layout-container .tri-layout-middle {
     grid-area: b;
     padding-top: 16px; }
@@ -1067,6 +1068,10 @@ body.flexbox {
     .tri-layout-left-contents::-webkit-scrollbar, .tri-layout-right-contents::-webkit-scrollbar {
       display: none; }
 
+  .tri-layout-left-contents {
+    width: fit-content;
+    max-height: none; }
+
   .tri-layout-middle-contents {
     max-width: 940px;
     margin: 0 auto; }
@@ -1083,6 +1088,8 @@ body.flexbox {
     .tri-layout-container .tri-layout-left-contents, .tri-layout-container .tri-layout-right-contents {
       padding-left: 16px;
       padding-right: 16px; }
+    .tri-layout-container .tri-layout-left-contents {
+      width: fit-content; }
     .tri-layout-container .tri-layout-left > *, .tri-layout-container .tri-layout-right > * {
       display: none;
       pointer-events: none; }

@@ -220,7 +220,8 @@ class SpaceController extends Controller
         $sidebarTree = $this->entityRepo->getBookChildren($chapter->book);
         Views::add($chapter);
         $this->setPageTitle($chapter->getShortName());
-        $pages = $this->entityRepo->getChapterChildren($chapter);
+        //$pages = $this->entityRepo->getChapterChildren($chapter);
+        $pages = $chapter->pages;
         return view('space.chapter-show', [
             'chapterSel' => true,
             'book' => $chapter->book,

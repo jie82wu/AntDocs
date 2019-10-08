@@ -32,12 +32,11 @@ class SpaceRepo extends Repository
     protected $tagRepo;
     
     
-    public function __construct(App $app, Collection $collection, PermissionService $permissionService, TagRepo $tagRepo, SearchService $searchService)
+    public function __construct(App $app, Collection $collection, PermissionService $permissionService, TagRepo $tagRepo)
     {
         parent::__construct($app, $collection);
         $this->permissionService = $permissionService;
         $this->tagRepo = $tagRepo;
-        $this->searchService = $searchService;
     }
     
     /**
@@ -91,7 +90,7 @@ class SpaceRepo extends Repository
         
         //$this->permissionService->buildJointPermissionsForSpace($space);
         $this->permissionService->buildJointPermissionsForEntity($space);
-        $this->searchService->indexEntity($space);
+        //$this->searchService->indexEntity($space);
         return $space;
     }
     
@@ -117,7 +116,7 @@ class SpaceRepo extends Repository
         
         //$this->permissionService->buildJointPermissionsForSpace($space);
         $this->permissionService->buildJointPermissionsForEntity($space);
-        $this->searchService->indexEntity($space);
+        //$this->searchService->indexEntity($space);
         return $space;
     }
     
@@ -336,7 +335,7 @@ class SpaceRepo extends Repository
         }
     }
     
-    //remove users from spade
+    //remove users from space
     public function removeUser(Space $space, $uid)
     {
         if (!is_array($uid))
@@ -346,7 +345,7 @@ class SpaceRepo extends Repository
         DB::table('role_user')->whereIn('user_id', $uid)->whereIn('role_id', $role_ids)->delete();
     }
 
-    // users exit from spade
+    // users exit from space
     public function userExit(Space $space, $user)
     {
         $role = DB::table('roles')->where('name','admin')->where('space_id',$space->id)->first();
@@ -365,13 +364,14 @@ class SpaceRepo extends Repository
         } else { //admin退出
             if (!$creator_exist && $admin_count <=1)
                 return false;
-        }         
+        }
         
         $this->removeUser($space, $user->id);
         return true;
 
     }
     
+    //判断user是否在空间中
     public function isUserInSpace($space,$user)
     {
         $user = ['user_id' => $user->id, 'space_id' => $space->id];
@@ -379,4 +379,12 @@ class SpaceRepo extends Repository
         return  $count > 0;
     }
 
+    public function getAllSpaceId()
+    {
+        $user = user();
+        $private_space = Space::where(['created_by' => $user->id])->where('type',2)->first();
+        $ids = DB::table('space_user')->where('user_id', $user->id)->where('status',1)->pluck('space_id')->all();
+        $ids[] = $private_space->id;
+        return array_unique($ids);
+    }
 }

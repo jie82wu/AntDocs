@@ -525,6 +525,10 @@ class EntityRepo
         $entityModel->slug = $this->findSuitableSlug($type, $entityModel->name, false, $isChapter ? $book->id : false);
         $entityModel->created_by = user()->id;
         $entityModel->updated_by = user()->id;
+        
+        $space = getSpace();
+        $entityModel->space_id = $space->id;
+        
         $isChapter ? $book->chapters()->save($entityModel) : $entityModel->save();
 
         if (isset($input['tags'])) {

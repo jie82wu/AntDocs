@@ -147,8 +147,8 @@ class BookController extends Controller
         }
     
         $space = $this->spaceRepo->saveBookToSpace($book);
-        $book->space_id = $space->id;
-        $book->save();
+        //$book->space_id = $space->id;
+        //$book->save();
         
         $this->checkIfRedirect($book);
         

@@ -618,6 +618,7 @@ class PermissionService
      */
     protected function entityRestrictionQuery($query)
     {
+        return $query;
         $q = $query->where(function ($parentQuery) {
             $parentQuery->whereHas('jointPermissions', function ($permissionQuery) {
                 $permissionQuery->whereIn('role_id', $this->getRoles())

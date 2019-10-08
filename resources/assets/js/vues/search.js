@@ -8,7 +8,6 @@ let data = {
             page: true,
             chapter: true,
             book: true,
-            bookshelf: true,
         },
         exactTerms: [],
         tagTerms: [],
@@ -102,20 +101,22 @@ let methods = {
         let match = searchString.match(typeFilter);
         let type = this.search.type;
         if (!match) {
-            type.page = type.book = type.chapter = type.bookshelf = true;
+            //type.page = type.book = type.chapter = type.bookshelf = true;
+            type.page = type.book = type.chapter = true;
             return;
         }
         let splitTypes = match[1].replace(/ /g, '').split('|');
         type.page = (splitTypes.indexOf('page') !== -1);
         type.chapter = (splitTypes.indexOf('chapter') !== -1);
         type.book = (splitTypes.indexOf('book') !== -1);
-        type.bookshelf = (splitTypes.indexOf('bookshelf') !== -1);
+        //type.bookshelf = (splitTypes.indexOf('bookshelf') !== -1);
     },
 
     typeChange() {
         let typeFilter = /{\s?type:\s?(.*?)\s?}/;
         let type = this.search.type;
-        if (type.page === type.chapter === type.book === type.bookshelf) {
+        //if (type.page === type.chapter === type.book === type.bookshelf) {
+        if (type.page && type.chapter && type.book || !type.page && !type.chapter && !type.book) {
             this.termString = this.termString.replace(typeFilter, '');
             return;
         }
