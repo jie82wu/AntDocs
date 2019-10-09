@@ -194,8 +194,6 @@ class SearchService
             })->selectRaw($entity->getTable().'.*, s.score')->orderBy('score', 'desc');
             $entitySelect->mergeBindings($subQuery);
     
-            $allSpaceId = $this->spaceRepo->getAllSpaceId();
-            $entitySelect->whereIn('space_id', $allSpaceId);
         }
 
         // Handle exact term matching
@@ -209,7 +207,7 @@ class SearchService
                 }
             });
         }
-
+    
         // Handle tag searches
         foreach ($terms['tags'] as $inputTerm) {
             $this->applyTagSearch($entitySelect, $inputTerm);
@@ -222,6 +220,9 @@ class SearchService
                 $this->$functionName($entitySelect, $entity, $filterValue);
             }
         }
+    
+        $allSpaceId = $this->spaceRepo->getAllSpaceId();
+        $entitySelect->whereIn('space_id', $allSpaceId);
 
         return $entitySelect;
         //return $this->permissionService->enforceEntityRestrictions($entityType, $entitySelect, $action);
