@@ -178,10 +178,7 @@ class SearchService
     protected function buildEntitySearchQuery($terms, $entityType = 'page', $action = 'view')
     {
         $entity = $this->entityProvider->get($entityType);
-        $entitySelect = $entity->newQuery();
-        
-        $allSpaceId = $this->spaceRepo->getAllSpaceId();    
-        $entitySelect->whereIn('space_id', $allSpaceId);
+        $entitySelect = $entity->newQuery();                
         
         // Handle normal search terms
         if (count($terms['search']) > 0) {
@@ -196,6 +193,9 @@ class SearchService
                 $join->on('id', '=', 'entity_id');
             })->selectRaw($entity->getTable().'.*, s.score')->orderBy('score', 'desc');
             $entitySelect->mergeBindings($subQuery);
+    
+            $allSpaceId = $this->spaceRepo->getAllSpaceId();
+            $entitySelect->whereIn('space_id', $allSpaceId);
         }
 
         // Handle exact term matching

@@ -67,7 +67,7 @@ class EntityProvider
     public function all()
     {
         return [
-            'bookshelf' => $this->bookshelf,
+            //'bookshelf' => $this->bookshelf,
             'book' => $this->book,
             'chapter' => $this->chapter,
             'page' => $this->page,
