@@ -78,19 +78,24 @@ class ViewService
         return $query->with('viewable')->skip($skipCount)->take($count)->get()->pluck('viewable');
     }
 
-    public function getSpaceEntities(int $count = 10, int $page = 0, $filterModels = null, $space)
+    public function getSpaceEntities(int $count = 10, int $pageNum = 0, $filterModels = null, $space)
     {
-        $skipCount = $count * $page;
+        $skipCount = $count * $pageNum;
         $books = $this->spaceRepo->getBooksId($space, true);
         $collect = collect();
         foreach ($books as $book) {
             $collect->push($book);
             if (in_array('chapter', $filterModels)) {
-                foreach ($book->chapters as $chapter)
+                foreach ($book->chapters as $chapter) {
                     $collect->push($chapter);
+                    if (in_array('page', $filterModels)) {
+                        foreach ($chapter->pages as $page)
+                            $collect->push($page);
+                    }
+                }
             }
         }
-        return $collect->all();
+        return $collect->slice($skipCount, $count)->all();
     }
 
     /**
