@@ -248,7 +248,8 @@ class SpaceRepo extends Repository
             ->first();
         if ($read) {
             $page = Page::find($read->page_id);
-            if ($page && $read->value)
+            $space = Space::find($read->space_id);
+            if ($space && $page && $read->value)
                 return $read->value;
             else {
                 DB::table('spacext')

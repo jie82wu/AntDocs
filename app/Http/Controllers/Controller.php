@@ -226,7 +226,9 @@ abstract class Controller extends BaseController
     public function checkIfRedirect(Entity $entity = null)
     {
         $url = '';
-        $space = getSpace();
+        $space = $entity->space;
+        if (!$space)
+            $space = getSpace();
         if ($space) {
             $url .= '/space/'.$space->id;
             if ($entity) 

@@ -9,6 +9,7 @@ use BookStack\Auth\Permissions\JointPermission;
 use BookStack\Ownable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use BookStack\Orz\Space;
 
 /**
  * Class Entity
@@ -261,5 +262,10 @@ class Entity extends Ownable
         if ($space)
             return baseUrl('/space/' . $space->id . '/'.static::getClassName().'/' . $this->id);
         return $this->getUrl();
+    }
+    
+    public function space()
+    {
+        return $this->belongsTo(Space::class, 'space_id');
     }
 }
