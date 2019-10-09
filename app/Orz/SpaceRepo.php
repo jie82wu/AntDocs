@@ -237,7 +237,7 @@ class SpaceRepo extends Repository
     public function recordReadHistory($space_id, $page_id)
     {
         $url = route('space.page', ['id' => $space_id, 'oid' => $page_id], false);
-        DB::table('spacext')->updateOrInsert(['user_id' => user()->id, 'key' => 'current_read',], ['value' => $url,'page_id'=>$page_id]);
+        DB::table('spacext')->updateOrInsert(['user_id' => user()->id, 'key' => 'current_read',], ['value' => $url,'page_id'=>$page_id, 'space_id'=>$space_id]);
     }
     
     public function checkReadHistory()
