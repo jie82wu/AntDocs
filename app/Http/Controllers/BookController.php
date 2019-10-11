@@ -333,11 +333,11 @@ class BookController extends Controller
                 $model->chapter_id = intval($mapItem->parentChapter);
                 $model->save();
             }
-            if ($priorityChanged) {
+            //if ($priorityChanged) {
                 $model->priority = intval(date('Ymd'))-$itemKey;
                 //$model->priority = intval($mapItem->sort);
                 $model->save();
-            }
+            //}
             
         });
 
