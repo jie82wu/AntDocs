@@ -277,6 +277,8 @@ class BookController extends Controller
 
     /**
      * Saves an array of sort mapping to pages and chapters.
+     * once sort in a book
+     * 
      * @param  string $bookSlug
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
@@ -316,8 +318,8 @@ class BookController extends Controller
              $this->checkOwnablePermission('book-update', $book);
         });
 
-        // Perform the sort
-        $sortMap->each(function ($mapItem) {
+        // Perform the sort        
+        $sortMap->each(function ($mapItem, $itemKey) {
             $model = $mapItem->model;
 
             $priorityChanged = intval($model->priority) !== intval($mapItem->sort);
@@ -332,9 +334,11 @@ class BookController extends Controller
                 $model->save();
             }
             if ($priorityChanged) {
-                $model->priority = intval($mapItem->sort);
+                $model->priority = intval(date('Ymd'))-$itemKey;
+                //$model->priority = intval($mapItem->sort);
                 $model->save();
             }
+            
         });
 
         // Rebuild permissions and add activity for involved books.
