@@ -231,6 +231,9 @@ class SpaceRepo extends Repository
         DB::table('space_user')->where(['space_id' => $space->id])->delete();
         //delete books
         DB::table('space_book')->where(['space_id' => $space->id])->delete();
+        //delete read history
+        DB::table('spacext')->where(['space_id' => $space->id])->delete();
+        
         $space->delete();
     }
     
