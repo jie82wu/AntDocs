@@ -46,7 +46,8 @@ class GalleryImageController extends Controller
      */
     public function create(Request $request)
     {
-        $this->checkPermission('image-create-all');
+        //$this->checkPermission('image-create-all');
+        $this->checkSpacePermission('image-create-all', cache(cacheKey()));
         $this->validate($request, [
             'file' => $this->imageRepo->getImageValidationRules()
         ]);
