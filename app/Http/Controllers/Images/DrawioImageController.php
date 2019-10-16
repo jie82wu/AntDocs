@@ -51,7 +51,8 @@ class DrawioImageController extends Controller
             'uploaded_to' => 'required|integer'
         ]);
 
-        $this->checkPermission('image-create-all');
+        //$this->checkPermission('image-create-all');
+        $this->checkSpacePermission('image-create-all', cache(cacheKey()));
         $imageBase64Data = $request->get('image');
 
         try {
