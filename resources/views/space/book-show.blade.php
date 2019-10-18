@@ -139,6 +139,14 @@
                 </ul>
             </div>
             @endif
+
+            @if(isOwnBook($book))
+            <a href="{{ $book->getUrl('/publish') }}" class="icon-list-item">
+                <span>@icon('publish')</span>
+                <span>{{ trans('market.publish_to_market') }}</span>
+            </a>
+            @endif
+            
         </div>
     </div>
     @endif

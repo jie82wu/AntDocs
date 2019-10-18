@@ -82,6 +82,10 @@ function userSpaceCan(string $permission, \BookStack\Orz\Space $space)
     return user() && user()->can($permission, $space);
 }
 
+function isOwnBook($book)
+{
+    return $book->created_by == user()->id;
+}
 //self entity
 function isCreator($entity)
 {

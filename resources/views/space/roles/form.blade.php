@@ -243,7 +243,7 @@
 
     <div class="form-group text-right">
         <a href="{{ baseUrl("/space/{$space->id}/roles") }}" class="button outline">{{ trans('common.cancel') }}</a>
-        @if ($role->name != 'admin')
+        @if (isset($role) && $role->name != 'admin')
         @if (isset($role) && $role->id)
             <a href="{{ baseUrl("/space/{$space->id}/roles/{$role->id}/delete") }}" class="button outline">{{ trans('settings.role_delete') }}</a>
         @endif
@@ -281,7 +281,7 @@
     @endif
 </div>
 
-@if ($role->name == 'admin')
+@if (isset($role) && $role->name == 'admin')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
 <script>
     $('div.setting-list input').prop('disabled',true);
