@@ -55,34 +55,17 @@ class MarketController extends Controller
     public function publish($slug, Request $request)
     {
         $book = $this->entityRepo->getBySlug('book', $slug);
-        dd($book);
-        $view = setting()->getUser($this->currentUser, 'books_view_type', config('app.views.books'));
-        $sort = setting()->getUser($this->currentUser, 'books_sort', 'name');
-        $order = setting()->getUser($this->currentUser, 'books_sort_order', 'asc');
-        $sortOptions = [
-            'name' => trans('common.sort_name'),
-            'created_at' => trans('common.sort_created_at'),
-            'updated_at' => trans('common.sort_updated_at'),
-        ];
+        
+        //if not own, then check an not exists permission
+        isOwnBook($book) || $this->checkOwnablePermission('book-publish', $book);
 
-        $books = $this->entityRepo->getAllPaginated('book', 18, $sort, $order);
-        $recents = $this->signedIn ? $this->entityRepo->getRecentlyViewed('book', 4, 0) : false;
-        $popular = $this->entityRepo->getPopular('book', 4, 0);
-        $new = $this->entityRepo->getRecentlyCreated('book', 4, 0);
-
-        $this->entityContextManager->clearShelfContext();
-
-        $this->setPageTitle(trans('entities.books'));
-        return view('books.index', [
-            'books' => $books,
-            'recents' => $recents,
-            'popular' => $popular,
-            'new' => $new,
-            'view' => $view,
-            'sort' => $sort,
-            'order' => $order,
-            'sortOptions' => $sortOptions,
-        ]);
+        $this->setPageTitle($book->getShortName());
+        return view('space.market.publish', [
+            'book' => $book,
+            'model' => $book,
+            'bookSel' => true,
+            'space' => $book->space,
+         ]);
     }
 
 }

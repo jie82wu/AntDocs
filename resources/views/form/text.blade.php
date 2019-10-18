@@ -3,7 +3,7 @@
        @if(isset($placeholder)) placeholder="{{$placeholder}}" @endif
        @if(isset($tabindex)) tabindex="{{$tabindex}}" @endif
        @if(isset($disabled)&&$disabled) disabled @endif
-       value="{{ (old($name) ?: (isset($model)?$model->$name:'') ) ?: request()->get($name)}}">
+       value="{{ isset($value) ?$value: ((old($name) ?: (isset($model)?$model->$name:'') ) ?: request()->get($name)) }}">
 @if($errors->has($name))
     <div class="text-neg text-small">{{ $errors->first($name) }}</div>
 @elseif(request()->has('email')&&isset($extra))
