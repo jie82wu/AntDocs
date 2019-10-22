@@ -13,6 +13,7 @@ use BookStack\Entities\SearchService;
 use BookStack\Auth\Permissions\PermissionService;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use function Sodium\crypto_box_keypair;
 
 class MarketRepo extends Repository
 {
@@ -73,5 +74,23 @@ class MarketRepo extends Repository
     
         DB::table('category')->insert($insert);
         return true;
+    }
+    
+    function publish(Book $book, $market_data)
+    {
+        $book->status = 1;
+        $book->save();
+    
+        DB::table('market')->updateOrInsert(
+            [
+                'book_id'   => $book->id
+            ],
+            [
+                'category'   => $market_data['category'],
+                'description'   => $market_data['description'],
+                'price'   => $market_data['price'],
+                'created_at'   => date('Y-m-d H:i:s'),
+            ]
+        );
     }
 }

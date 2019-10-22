@@ -9,7 +9,7 @@
     div.publish label {
         display:inline-block;
     }
-    #book_describe {
+    #description {
         width:90%;
     }
     </style>
@@ -46,15 +46,15 @@
                 </div>
                 <div>
                     <label for="name">{{ trans('market.book_category') }}：</label>
-                    @include('form.select', ['name' => 'book_category','options'=>$categories])
+                    @include('form.select', ['name' => 'category','options'=>$categories,'value'=>$book->market->category])
                 </div>
                 <div>
-                    <label for="name" style="vertical-align:top;">{{ trans('market.book_describe') }}：</label>
-                    @include('form.textarea', ['name' => 'book_describe'])
+                    <label for="name" style="vertical-align:top;">{{ trans('market.book_description') }}：</label>
+                    @include('form.textarea', ['name' => 'description', 'value'=>$book->market->description])
                 </div>
                 <div class="child-width">
                     <label for="name">{{ trans('market.book_price') }}：</label>
-                    @include('form.number-text', ['name' => 'book_price']) （蚂蚁币）
+                    @include('form.number-text', ['name' => 'price', 'value'=>$book->market->price]) （蚂蚁币）
                 </div>
             </div>
             <br>

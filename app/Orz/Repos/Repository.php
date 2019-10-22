@@ -7,6 +7,7 @@ use Illuminate\Container\Container as App;
 use BookStack\Orz\Contract\RepositoryInterface;
 use BookStack\Orz\Contract\CriteriaInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 abstract class Repository implements RepositoryInterface, CriteriaInterface {
     
@@ -186,5 +187,12 @@ abstract class Repository implements RepositoryInterface, CriteriaInterface {
         }
         
         return $this;
+    }
+    
+    public function showError($error_lang)
+    {
+        $response = redirect()->back()->withInput();
+        session()->flash('error', trans($error_lang));
+        throw new HttpResponseException($response);
     }
 }

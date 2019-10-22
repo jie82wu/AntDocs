@@ -101,6 +101,7 @@ Route::group(['middleware' => 'auth'], function () {
         
         //publish
         Route::get('/{bookSlug}/publish', 'MarketController@publish');
+        Route::post('/{bookSlug}/publish', 'MarketController@store');
     });
 
     // User Profile routes

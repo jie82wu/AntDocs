@@ -4,6 +4,7 @@ use BookStack\Uploads\Image;
 use BookStack\Auth\Permissions\PermissionService;
 use BookStack\Entities\EntityProvider;
 use BookStack\Orz\Space;
+use BookStack\Orz\Market;
 use Illuminate\Support\Facades\DB;
 
 class Book extends Entity
@@ -138,5 +139,10 @@ class Book extends Entity
         $collect = $collect->sortBy('created_at')->sortByDesc('priority');
 
         return $collect->values()->all();
+    }
+    
+    public function market()
+    {
+        return $this->hasOne(Market::class, 'book_id');
     }
 }

@@ -5,7 +5,7 @@
        @if(isset($disabled)&&$disabled) disabled @endif
        value="{{ isset($value) ?$value: 1 }}">
 @if($errors->has($name))
-    <div class="text-neg text-small">{{ $errors->first($name) }}</div>
+    <div class="text-neg text-small" style="display: inline;">{{ $errors->first($name) }}</div>
 @elseif(request()->has('email')&&isset($extra))
     <div class="text-pos text-small">{{ trans($extra) }}</div>
 @endif

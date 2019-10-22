@@ -59,6 +59,8 @@ class MarketController extends Controller
     public function publish($slug, Request $request)
     {
         $book = $this->entityRepo->getBySlug('book', $slug);
+        //if ($book->status != 0) 
+        //    $this->marketRepo->showError('market.publish_error');
         
         //if not own, then check an not exists permission
         isOwnBook($book) || $this->checkOwnablePermission('book-publish', $book);
@@ -72,6 +74,32 @@ class MarketController extends Controller
             'space' => $book->space,
             'categories' => $categories,
          ]);
+    }
+    
+    /**
+     * put book into content-market
+     * 
+     * @param Request $request
+     * @param $slug
+     * 
+     * @return response
+     */
+    public function store(Request $request, $slug)
+    {
+        $this->validate($request, [
+            'category' => 'required|string|max:100',
+            'description' => 'string|max:1000',
+            'price' => 'required|integer|min:0',
+        ]);
+        
+        $book = $this->entityRepo->getBySlug('book', $slug);
+        //if ($book->status != 0)
+        //    $this->marketRepo->showError('market.publish_error');
+        
+        $this->marketRepo->publish($book, $request->all());
+    
+        session()->flash('success', trans('market.publish_success'));
+        return redirect($book->getSpaceUrl($book->space));
     }
 
 }
