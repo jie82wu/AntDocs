@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Views;
 use BookStack\Orz\SpaceRepo;
+use BookStack\Orz\MarketRepo;
 
 class MarketController extends Controller
 {
@@ -22,6 +23,7 @@ class MarketController extends Controller
     protected $entityContextManager;
     protected $imageRepo;
     protected $spaceRepo;
+    protected $marketRepo;
 
     /**
      * BookController constructor.
@@ -37,7 +39,8 @@ class MarketController extends Controller
         ExportService $exportService,
         EntityContextManager $entityContextManager,
         ImageRepo $imageRepo,
-        SpaceRepo $spaceRepo
+        SpaceRepo $spaceRepo,
+        MarketRepo $marketRepo
     ) {
         $this->entityRepo = $entityRepo;
         $this->userRepo = $userRepo;
@@ -45,6 +48,7 @@ class MarketController extends Controller
         $this->entityContextManager = $entityContextManager;
         $this->imageRepo = $imageRepo;
         $this->spaceRepo = $spaceRepo;
+        $this->marketRepo = $marketRepo;
         parent::__construct();
     }
 
@@ -59,12 +63,14 @@ class MarketController extends Controller
         //if not own, then check an not exists permission
         isOwnBook($book) || $this->checkOwnablePermission('book-publish', $book);
 
+        $categories = $this->marketRepo->getAllCategories();
         $this->setPageTitle($book->getShortName());
         return view('space.market.publish', [
             'book' => $book,
             'model' => $book,
             'bookSel' => true,
             'space' => $book->space,
+            'categories' => $categories,
          ]);
     }
 

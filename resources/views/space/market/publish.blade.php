@@ -9,6 +9,9 @@
     div.publish label {
         display:inline-block;
     }
+    #book_describe {
+        width:90%;
+    }
     </style>
 @section('body')
 
@@ -27,20 +30,40 @@
     </div>
 
     <div class="content-wrap card">
-        <h5 class="break-text" v-pre>{{ trans('market.publish_to_market') }}</h5>
-        <hr>
-        
-        <div class="grid mt-m gap-xl publish">
-            <div>
-                <label for="name">{{ trans('entities.books_form_book_name') }}：</label>
-                @include('form.text', ['name' => 'name', 'disabled'=>true])
+        <form action="{{ $book->getUrl('/publish') }}" method="post" enctype="multipart/form-data">    
+            {!! csrf_field() !!}
+            <h5 class="break-text" v-pre>{{ trans('market.publish_to_market') }}</h5>
+            <hr>
+            
+            <div class="grid mt-m gap-xl publish">
+                <div>
+                    <label for="name">{{ trans('entities.books_form_book_name') }}：</label>
+                    @include('form.text', ['name' => 'name', 'disabled'=>true])
+                </div>
+                <div>
+                    <label for="name">{{ trans('market.book_author') }}：</label>
+                    @include('form.text', ['name' => 'book_author', 'disabled'=>true,'value'=>$book->createdBy->email])
+                </div>
+                <div>
+                    <label for="name">{{ trans('market.book_category') }}：</label>
+                    @include('form.select', ['name' => 'book_category','options'=>$categories])
+                </div>
+                <div>
+                    <label for="name" style="vertical-align:top;">{{ trans('market.book_describe') }}：</label>
+                    @include('form.textarea', ['name' => 'book_describe'])
+                </div>
+                <div class="child-width">
+                    <label for="name">{{ trans('market.book_price') }}：</label>
+                    @include('form.number-text', ['name' => 'book_price']) （蚂蚁币）
+                </div>
             </div>
-            <div>
-                <label for="name">{{ trans('market.book_author') }}：</label>
-                @include('form.text', ['name' => 'created_by', 'disabled'=>true,'value'=>$book->createdBy->email])
+            <br>
+            <hr>
+            <div class="text-right" style="padding-right:5%;">
+                <a href="{{  $book->getUrl() }}" class="button outline">{{ trans('common.cancel') }}</a>
+                <button class="button primary" type="submit">{{ trans('market.publish') }}</button>
             </div>
-        </div>
-        
+        </form>    
     </div>
 @stop
 
