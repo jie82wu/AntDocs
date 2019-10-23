@@ -32,7 +32,7 @@
     <div class="content-wrap card">
         <form action="{{ $book->getUrl('/publish') }}" method="post" enctype="multipart/form-data">    
             {!! csrf_field() !!}
-            <h5 class="break-text" v-pre>{{ trans('market.publish_to_market') }}</h5>
+            <h5 class="break-text" v-pre>@if($book->status==0){{ trans('market.publish_to_market') }}@else{{ trans('market.edit_to_market') }}@endif</h5>
             <hr>
             
             <div class="grid mt-m gap-xl publish">

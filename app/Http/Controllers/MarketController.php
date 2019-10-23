@@ -51,7 +51,44 @@ class MarketController extends Controller
         $this->marketRepo = $marketRepo;
         parent::__construct();
     }
-
+    
+    /**
+     * market.
+     * @return Response
+     */
+    public function index(Request $request)
+    {
+        $view = setting()->getUser($this->currentUser, 'books_view_type', config('app.views.books'));
+        $sort = setting()->getUser($this->currentUser, 'books_sort', 'name');
+        $order = setting()->getUser($this->currentUser, 'books_sort_order', 'asc');
+        $sortOptions = [
+            'name' => trans('common.sort_name'),
+            'created_at' => trans('common.sort_created_at'),
+            'updated_at' => trans('common.sort_updated_at'),
+        ];
+    
+        $books = $this->entityRepo->getAllPaginated('book', 18, $sort, $order);
+        $recents = $this->signedIn ? $this->entityRepo->getRecentlyViewed('book', 4, 0) : false;
+        $popular = $this->entityRepo->getPopular('book', 4, 0);
+        $new = $this->entityRepo->getRecentlyCreated('book', 4, 0);
+    
+        $this->entityContextManager->clearShelfContext();
+    
+        $categories = $this->marketRepo->getAllCategories();
+        $this->setPageTitle(trans('market.discovery'));
+        return view('space.market.index', [
+            'books' => $books,
+            'recents' => $recents,
+            'popular' => $popular,
+            'new' => $new,
+            'view' => $view,
+            'sort' => $sort,
+            'order' => $order,
+            'sortOptions' => $sortOptions,
+            'categories' => $categories,
+        ]);
+    }
+    
     /**
      * publish book.
      * @return Response

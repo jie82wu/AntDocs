@@ -207,6 +207,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/', 'MessageController@index');
         Route::get('/{id}/status/{status}', 'MessageController@handleMessage');
     });
+    
+    //market
+    Route::group(['prefix'=>'market'],function () {
+        Route::get('/', 'MarketController@index');
+    });
 
     //space
     Route::group(['prefix'=>'space'],function () {
