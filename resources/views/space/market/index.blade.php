@@ -5,14 +5,17 @@
         line-height: 2em;
         text-decoration: underline;
     }
+    .tri-layout-left-contents {
+        margin:auto;
+    }
 </style>
 
 @section('body')
-@include('books.list', ['books' => $books, 'view' => $view])
+@include('space.market.list', ['books' => $books, 'view' => $view])
 @stop
 @section('left')
     <div id="discovery" class="mb-xl">
-        <h5>{{ trans('market.discovery') }}</h5>
+        <h5>{{ trans('common.sort') }}</h5>
         <div>
             <a href="#recent-pages" class="text-page">{{ trans('market.sort_by_buy') }}</a>
         </div>

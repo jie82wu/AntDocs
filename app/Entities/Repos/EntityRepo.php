@@ -201,6 +201,14 @@ class EntityRepo
         }
         return $query->paginate($count);
     }
+    
+    public function getMarketBookPaginated(int $count = 10, string $sort = 'name', string $order = 'asc')
+    {
+        //$query = $this->entityQuery($type);
+        $query = $this->entityProvider->get('book')->whereRaw('status=1');
+        $query = $this->addSortToQuery($query, $sort, $order);
+        return $query->paginate($count);
+    }
 
     /**
      * Add sorting operations to an entity query.

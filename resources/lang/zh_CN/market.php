@@ -22,5 +22,9 @@ return [
     'sort_by_buy' =>  '最多购买',
     'sort_by_price' =>  '最多免费',
     'sort_by_datetime' =>  '最新上架',
+    
+    //buy
+    'purchase' =>  '购买',
+    'search_market' =>  '在集市中搜索内容',
 
 ];
