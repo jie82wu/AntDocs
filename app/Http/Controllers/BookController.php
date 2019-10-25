@@ -166,7 +166,7 @@ class BookController extends Controller
     {
         $book = $this->entityRepo->getBySlug('book', $slug);
     
-        //$this->checkIfRedirect($book);
+        $this->checkIfRedirect($book);
     
         isCreator($book) ||  $this->checkOwnablePermission('book-view', $book);
 

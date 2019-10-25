@@ -2,10 +2,11 @@
 <div class="content-wrap mt-m card">
     <div class="grid half v-center no-row-gap">
         <h1 class="list-heading">{{ trans('market.discovery') }}</h1>
-        <div style="margin-top: 20px;padding-left: 10em;">
+        <div style="margin-top: 20px;">
             <form class="search-box flexible" method="get">
-                <input type="text" name="term" value="{{request()->get('term')}}" placeholder="{{ trans('market.search_market') }}">
-                <button style="right: 8px;left:auto;" type="submit">@icon('search')</button>
+                <input type="text" style="width:70%;display: inline-block;" name="term" value="{{request()->get('term')}}" placeholder="{{ trans('market.search_market') }}">
+                <button type="submit">@icon('search')</button>
+                <a href="/market" style="float:right;margin:0;" class="button outline">{{ trans('common.search_clear') }}</a>
             </form>
         </div>
     </div>
