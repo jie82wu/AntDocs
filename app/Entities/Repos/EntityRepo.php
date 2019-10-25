@@ -202,11 +202,32 @@ class EntityRepo
         return $query->paginate($count);
     }
     
-    public function getMarketBookPaginated(int $count = 10, string $sort = 'name', string $order = 'asc')
+    public function getMarketBookPaginated(int $count = 10, $conditions = [], string $sort = 'name', string $order = 'asc')
     {
         //$query = $this->entityQuery($type);
         $query = $this->entityProvider->get('book')->whereRaw('status=1');
-        $query = $this->addSortToQuery($query, $sort, $order);
+        if (empty($conditions))
+            $query = $this->addSortToQuery($query, $sort, $order);
+        else {
+            if (isset($conditions['like']))
+                $query = $query->where('name','like','%'.$conditions['like'].'%');
+            
+            if (isset($conditions['category']))
+                $query = $query
+                    ->join('market', 'books.id', '=', 'market.book_id')
+                    ->where('market.category',$conditions['category']);
+            
+            if (isset($conditions['sort'])) {
+                $map = [
+                    'buy' => ['copy_count', 'desc'],
+                    'price' => ['price', 'asc'],
+                    'publish' => ['market.created_at', 'desc'],
+                ];
+                $query = $query
+                    ->join('market', 'books.id', '=', 'market.book_id')
+                    ->orderBy( $map[$conditions['sort']][0], $map[$conditions['sort']][1] );
+            }
+        }
         return $query->paginate($count);
     }
 

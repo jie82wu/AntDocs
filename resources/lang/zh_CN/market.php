@@ -20,7 +20,7 @@ return [
     
     //sort
     'sort_by_buy' =>  '最多购买',
-    'sort_by_price' =>  '最多免费',
+    'sort_by_price' =>  '最低价格',
     'sort_by_datetime' =>  '最新上架',
     
     //buy

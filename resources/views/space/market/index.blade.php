@@ -17,20 +17,20 @@
     <div id="discovery" class="mb-xl">
         <h5>{{ trans('common.sort') }}</h5>
         <div>
-            <a href="#recent-pages" class="text-page">{{ trans('market.sort_by_buy') }}</a>
+            <a href="?sort=buy" class="text-page">{{ trans('market.sort_by_buy') }}</a>
         </div>
         <div>
-            <a href="#recent-pages" class="text-page">{{ trans('market.sort_by_price') }}</a>
+            <a href="?sort=price" class="text-page">{{ trans('market.sort_by_price') }}</a>
         </div>
         <div>
-            <a href="#recent-pages" class="text-page">{{ trans('market.sort_by_datetime') }}</a>
+            <a href="?sort=publish" class="text-page">{{ trans('market.sort_by_datetime') }}</a>
         </div>            
     </div>
     <div id="category" class="mb-xl">
         <h5>{{ trans('market.book_category') }}</h5>
         @foreach($categories as $cate)
         <div>
-            <a href="#recent-pages" class="text-page">{{ $cate->name }}</a>
+            <a href="?category={{$cate->name}}" class="text-page">{{ $cate->name }}</a>
         </div>
         @endforeach         
     </div>

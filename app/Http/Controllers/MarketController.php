@@ -59,23 +59,20 @@ class MarketController extends Controller
     public function index(Request $request)
     {
         $view = setting()->getUser($this->currentUser, 'books_view_type', config('app.views.books'));
-
-        $sortOptions = [
-            'name' => trans('common.sort_name'),
-            'created_at' => trans('common.sort_created_at'),
-            'updated_at' => trans('common.sort_updated_at'),
-        ];
-    
-        //$books = $this->entityRepo->getAllPaginated('book', 18, $sort, $order);
-        $books = $this->entityRepo->getMarketBookPaginated(10);
-    
-    
+        $conditions = [];
+        if ($request->has('term'))
+            $conditions['like'] = $request->get('term');
+        if ($request->has('category'))
+            $conditions['category'] = $request->get('category');
+        if ($request->has('sort')) {
+            $conditions['sort'] = $request->get('sort');
+        }
+        $books = $this->entityRepo->getMarketBookPaginated(12, $conditions); 
         $categories = $this->marketRepo->getAllCategories();
         $this->setPageTitle(trans('market.discovery'));
         return view('space.market.index', [
             'books' => $books,
             'view' => $view,
-            'sortOptions' => $sortOptions,
             'categories' => $categories,
         ]);
     }
