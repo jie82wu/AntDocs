@@ -8,7 +8,7 @@ return [
     'creator' =>  'Admin',
     'space_delete' => '删除空间',
     'space_edit' => '编辑空间',
-    'save_to_space' => '收藏至空间',
+    'save_to_space' => '保存到空间',
     'new' =>  '新建',
     'private' =>  '私有空间',
     'public' =>  '共享空间',

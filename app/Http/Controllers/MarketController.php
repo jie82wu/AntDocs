@@ -69,11 +69,13 @@ class MarketController extends Controller
         }
         $books = $this->entityRepo->getMarketBookPaginated(12, $conditions); 
         $categories = $this->marketRepo->getAllCategories();
+        $allSpace = $this->spaceRepo->getAllSpace();
         $this->setPageTitle(trans('market.discovery'));
         return view('space.market.index', [
             'books' => $books,
             'view' => $view,
             'categories' => $categories,
+            'allSpace' => $allSpace,
         ]);
     }
     

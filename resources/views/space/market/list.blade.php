@@ -20,6 +20,15 @@
             <div>
                 {!! $books->render() !!}
             </div>
+    @include('space.entity-selector-popup', ['entityTypes' => 'page'])
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
+    <script>
+        $('[space-picker-select]').on('click',function (e) {
+            $('#space-selector-wrap div[overlay]').show();
+        });
+
+    </script>    
     @else
     <p class="text-muted">{{ trans('common.no_items') }}</p>
     @endif
