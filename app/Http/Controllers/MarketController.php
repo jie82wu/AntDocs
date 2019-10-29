@@ -128,5 +128,34 @@ class MarketController extends Controller
         session()->flash('success', trans('market.publish_success'));
         return redirect($book->getSpaceUrl($book->space));
     }
+    
+    //confirm
+    public function purchase(Request $request, $space_id, $book_id)
+    {
+        $book = $this->entityRepo->getById('book', $book_id);
+        $space = $this->spaceRepo->find($space_id);
+        return view('space.market.purchase-confirm', [
+            'book' => $book,
+            'space' => $space,
+        ]);
+    }
+    
+    //purchase copy book
+    public function copyBook(Request $request, $space_id, $book_id)
+    {
+        $book = $this->entityRepo->getById('book', $book_id);
+        $space = $this->spaceRepo->find($space_id);
+        $user = user();
+        if ( !$space || !$book || $book->status!=1 )
+            $this->marketRepo->showError('market.purchase_resource_error','/market');
+        if ( $user->ant_coin< $book->market->price )
+            $this->marketRepo->showError('market.purchase_coin_error','/market');
+        
+        //begin copy
+        $this->marketRepo->beginCopy($space, $book, $this->spaceRepo);
+        
+        session()->flash('success', trans('market.purchase_success'));
+        return redirect('/market');
+    }
 
 }

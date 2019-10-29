@@ -211,6 +211,8 @@ Route::group(['middleware' => 'auth'], function () {
     //market
     Route::group(['prefix'=>'market'],function () {
         Route::get('/', 'MarketController@index');
+        Route::get('/purchase/{space_id}/{book_id}', 'MarketController@purchase');
+        Route::post('/purchase/{space_id}/{book_id}', 'MarketController@copyBook');
     });
 
     //space

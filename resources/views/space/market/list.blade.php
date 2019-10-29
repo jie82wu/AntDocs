@@ -18,6 +18,8 @@
                 @endforeach
             </div>
             <div>
+                <input type="hidden" name="book_id" id="book_id">
+                <input type="hidden" name="space_id" id="space_id">
                 {!! $books->render() !!}
             </div>
     @include('space.entity-selector-popup', ['entityTypes' => 'page'])
@@ -26,8 +28,19 @@
     <script>
         $('[space-picker-select]').on('click',function (e) {
             $('#space-selector-wrap div[overlay]').show();
+            $('#book_id').val($(this).attr('book-id'));
         });
-
+        $('[entity-list-item]').on('click',function (e) {
+            $(this).addClass('select-item-background').siblings().removeClass('select-item-background')
+            $('#space_id').val($(this).attr('data-entity-id'));
+        })
+        $('[select-button]').on('click',function (e) {
+            var space_id = $('#space_id').val()
+            var book_id  = $('#book_id').val()
+            if (space_id=='' || book_id=='')
+                return
+            window.location.href = '/market/purchase/'+$('#space_id').val()+'/'+$('#book_id').val()
+        })
     </script>    
     @else
     <p class="text-muted">{{ trans('common.no_items') }}</p>

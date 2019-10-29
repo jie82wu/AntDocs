@@ -26,7 +26,7 @@
             </div>
             
             <div class="popup-footer">
-                <button type="button" disabled="true" class="button entity-link-selector-confirm primary corner-button">{{ trans('common.select') }}</button>
+                <button type="button" select-button class="button entity-link-selector-confirm primary corner-button">{{ trans('common.select') }}</button>
             </div>
         </div>
     </div>

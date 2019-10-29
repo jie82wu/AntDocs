@@ -26,5 +26,10 @@ return [
     //buy
     'purchase' =>  '购买',
     'search_market' =>  '在集市中搜索内容',
-
+    'purchase_content' =>  '购买内容',
+    'purchase_content_explain' => '您正在为空间「:spaceName」购买内容「:bookName」。此内容将花费「:price」蚂蚁币。',
+    'purchase_content_confirmation' => '您确定要购买此内容吗？',
+    'purchase_resource_error' => '此内容不符合购买条件',
+    'purchase_coin_error' => '购买失败，蚂蚁币不足',
+    'purchase_success' => '您已成功购买内容',
 ];

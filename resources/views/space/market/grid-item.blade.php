@@ -12,7 +12,7 @@
     </a>
     <div class="grid-card-footer" style="padding-bottom:24px;padding-top: 0;">
         <span style="line-height: 2em;"><b style="color:darkred;font-size: 1.2em;">{{$book->market->price}}</b> 蚂蚁币 
-            <button space-picker-select style="padding:1px 5px;float:right;" class="button outline">{{ trans('market.purchase') }}</button>
+            <button book-id="{{$book->id}}" space-picker-select style="padding:1px 5px;float:right;" class="button outline">{{ trans('market.purchase') }}</button>
         </span>
     </div>
 </div>

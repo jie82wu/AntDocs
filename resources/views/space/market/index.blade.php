@@ -8,6 +8,10 @@
     .tri-layout-left-contents {
         margin:auto;
     }
+    .select-item-background {
+        border:1px solid #00a0e9 !important;
+        border-radius: 4px;
+    }
 </style>
 
 @section('body')

@@ -174,9 +174,10 @@ class SpaceRepo extends Repository
     }
    
     //create book save to space 
-    public function saveBookToSpace(Book $book)
+    public function saveBookToSpace(Book $book, $space = null)
     {
-        $space = getSpace();
+        if (!$space)
+            $space = getSpace();
         $all = [
             'book_id' => $book->id, 
             'space_id' => $space->id,
