@@ -46,15 +46,15 @@
                 </div>
                 <div>
                     <label for="name">{{ trans('market.book_category') }}：</label>
-                    @include('form.select', ['name' => 'category','options'=>$categories,'value'=>$book->market->category])
+                    @include('form.select', ['name' => 'category','options'=>$categories,'value'=>isset($book->market)?$book->market->category:''])
                 </div>
                 <div>
                     <label for="name" style="vertical-align:top;">{{ trans('market.book_description') }}：</label>
-                    @include('form.textarea', ['name' => 'description', 'value'=>$book->market->description])
+                    @include('form.textarea', ['name' => 'description', 'value'=>isset($book->market)?$book->market->description:''])
                 </div>
                 <div class="child-width">
                     <label for="name">{{ trans('market.book_price') }}：</label>
-                    @include('form.number-text', ['name' => 'price', 'value'=>$book->market->price]) （蚂蚁币）
+                    @include('form.number-text', ['name' => 'price', 'value'=>isset($book->market)?$book->market->price:null]) （蚂蚁币）
                 </div>
             </div>
             <br>
