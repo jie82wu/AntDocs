@@ -98,6 +98,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::put('/{bookSlug}/chapter/{chapterSlug}/permissions', 'ChapterController@permissions');
         Route::get('/{bookSlug}/chapter/{chapterSlug}/delete', 'ChapterController@showDelete');
         Route::delete('/{bookSlug}/chapter/{chapterSlug}', 'ChapterController@destroy');
+        
+        //publish
+        Route::get('/{bookSlug}/publish', 'MarketController@publish');
+        Route::post('/{bookSlug}/publish', 'MarketController@store');
     });
 
     // User Profile routes
@@ -202,6 +206,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix'=>'message'],function () {
         Route::get('/', 'MessageController@index');
         Route::get('/{id}/status/{status}', 'MessageController@handleMessage');
+    });
+    
+    //market
+    Route::group(['prefix'=>'market'],function () {
+        Route::get('/', 'MarketController@index');
+        Route::get('/purchase/{space_id}/{book_id}', 'MarketController@purchase');
+        Route::post('/purchase/{space_id}/{book_id}', 'MarketController@copyBook');
     });
 
     //space

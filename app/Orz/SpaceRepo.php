@@ -174,9 +174,10 @@ class SpaceRepo extends Repository
     }
    
     //create book save to space 
-    public function saveBookToSpace(Book $book)
+    public function saveBookToSpace(Book $book, $space = null)
     {
-        $space = getSpace();
+        if (!$space)
+            $space = getSpace();
         $all = [
             'book_id' => $book->id, 
             'space_id' => $space->id,
@@ -390,5 +391,16 @@ class SpaceRepo extends Repository
         $ids = DB::table('space_user')->where('user_id', $user->id)->where('status',1)->pluck('space_id')->all();
         $ids[] = $private_space->id;
         return array_unique($ids);
+    }
+    
+    //all space
+    public function getAllSpace()
+    {
+        $user = user();
+        $private_space = Space::where(['created_by' => $user->id])->where('type',2)->first();
+        $ids = DB::table('space_user')->where('user_id', $user->id)->where('status',1)->pluck('space_id')->all();
+        $share_space = Space::whereIn('id',$ids)->get();
+        $share_space->prepend($private_space);
+        return $share_space;
     }
 }

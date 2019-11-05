@@ -45,9 +45,9 @@
                                         <span>@icon('book')</span>
                                         <span>{{ trans_choice('entities.x_books', $assetCounts['books']) }}</span>
                                     </a>
-                                    <a href="#recent-shelves" class="text-bookshelf icon-list-item">
+                                    <a href="#recent-shelves" style="visibility: hidden;" class="text-bookshelf icon-list-item">
                                         <span>@icon('bookshelf')</span>
-                                        <span>{{ trans_choice('entities.x_shelves', $assetCounts['shelves']) }}</span>
+                                        <span>{{ trans_choice('entities.x_shelves', 0) }}</span>
                                     </a>
                                 </div>
                             </div>
@@ -98,19 +98,19 @@
                     @endif
                 </div>
 
-                <div class="card content-wrap auto-height book-contents">
+                {{--<div class="card content-wrap auto-height book-contents">
                     <h2 id="recent-shelves" class="list-heading">
                         {{ trans('entities.recently_created_shelves') }}
                         @if (count($recentlyCreated['shelves']) > 0)
                             <a href="{{ baseUrl('/search?term=' . urlencode('{created_by:'.$user->id.'} {type:bookshelf}') ) }}" class="text-small ml-s">{{ trans('common.view_all') }}</a>
-                        @endif
+                        @endif--}}
                     </h2>
-                    @if (count($recentlyCreated['shelves']) > 0)
+                    {{--@if (count($recentlyCreated['shelves']) > 0)
                         @include('partials.entity-list', ['entities' => $recentlyCreated['shelves'], 'showPath' => true])
                     @else
                         <p class="text-muted">{{ trans('entities.profile_not_created_shelves', ['userName' => $user->name]) }}</p>
                     @endif
-                </div>
+                </div>--}}
             </div>
 
         </div>

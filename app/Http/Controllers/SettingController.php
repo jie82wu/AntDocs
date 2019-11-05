@@ -6,18 +6,21 @@ use BookStack\Uploads\ImageService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Setting;
+use BookStack\Orz\MarketRepo;
 
 class SettingController extends Controller
 {
     protected $imageRepo;
+    protected $marketRepo;
 
     /**
      * SettingController constructor.
      * @param $imageRepo
      */
-    public function __construct(ImageRepo $imageRepo)
+    public function __construct(ImageRepo $imageRepo, MarketRepo $marketRepo)
     {
         $this->imageRepo = $imageRepo;
+        $this->marketRepo = $marketRepo;
         parent::__construct();
     }
 
@@ -33,9 +36,10 @@ class SettingController extends Controller
 
         // Get application version
         $version = trim(file_get_contents(base_path('version')));
-
+        $categories = $this->marketRepo->getAllCategories();
         return view('settings.index', [
             'version' => $version,
+            'categories' => implode('，', $categories->pluck('name')->all()),
             'guestUser' => User::getDefault()
         ]);
     }
@@ -74,6 +78,11 @@ class SettingController extends Controller
         if ($request->get('app_logo_reset', null)) {
             $this->imageRepo->destroyByType('system');
             setting()->remove('app-logo');
+        }
+        
+        //update content market categories
+        if ($request->has('market_category')) {
+            $this->marketRepo->saveCategoriesByString($request->get('market_category'));
         }
 
         session()->flash('success', trans('settings.settings_save_success'));

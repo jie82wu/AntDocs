@@ -98,6 +98,17 @@
                             ])
                         </div>
                     </div>
+                    
+                    <div class="grid half gap-xl">
+                        <div>
+                            <label for="setting-app-name" class="setting-list-label">{{ trans('market.market_category') }}</label>
+                            <p class="small">{{ trans('market.market_category_desc') }}</p>
+                        </div>
+                        <div>
+                            <input type="text" name="market_category" id="market_category" value="{{ $categories }}">
+                            <label class="toggle-switch" style="display: block;">{{ trans('market.market_category_notice') }}</label>
+                        </div>
+                    </div>
 
                     <div class="grid half gap-xl">
                         <div>
@@ -149,7 +160,7 @@
                             <select name="setting-app-homepage-type" id="setting-app-homepage-type">
                                 <option @if(setting('app-homepage-type') === 'default') selected @endif value="default">{{ trans('common.default') }}</option>
                                 <option @if(setting('app-homepage-type') === 'books') selected @endif value="books">{{ trans('entities.books') }}</option>
-                                <option @if(setting('app-homepage-type') === 'bookshelves') selected @endif value="bookshelves">{{ trans('entities.shelves') }}</option>
+                                {{--<option @if(setting('app-homepage-type') === 'bookshelves') selected @endif value="bookshelves">{{ trans('entities.shelves') }}</option>--}}
                                 <option @if(setting('app-homepage-type') === 'page') selected @endif value="page">{{ trans('entities.pages_specific') }}</option>
                             </select>
 

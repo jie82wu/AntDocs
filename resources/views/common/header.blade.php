@@ -28,10 +28,13 @@
                     @if (hasAppAccess())
                         <a class="hide-over-l" href="{{ baseUrl('/search') }}">@icon('search'){{ trans('common.search') }}</a>
                             <a href="{{ baseUrl('/space') }}">@icon('file'){{ trans('space.space') }}</a>
+                    <a href="{{ baseUrl('/market') }}">@icon('search'){{ trans('market.discovery') }}</a>
                         {{--@if(userCanOnAny('view', \BookStack\Entities\Bookshelf::class) || userCan('bookshelf-view-all') || userCan('bookshelf-view-own'))
                             <a href="{{ baseUrl('/shelves') }}">@icon('bookshelf'){{ trans('entities.shelves') }}</a>
                         @endif--}}
                     {{--   <a href="{{ baseUrl('/books') }}">@icon('books'){{ trans('space.content_market') }}</a>
+                    
+                    
                     <a href="{{ baseUrl('/books') }}">@icon('books'){{ trans('entities.books') }}</a>
                         @if(signedInUser() && userCan('settings-manage'))--}}
                         @if(strtolower(user()->name)=='admin')

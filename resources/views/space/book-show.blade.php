@@ -19,7 +19,7 @@
     </div>
 
     <div class="content-wrap card">
-        <h1 class="break-text" v-pre>{{$book->name}}</h1>
+        <h1 class="break-text" v-pre>{{$book->name}} </h1>
         <div class="book-content" v-show="!searching">
             <p class="text-muted" v-pre>{!! nl2br(e($book->description)) !!}</p>
             @if(count($bookChildren) > 0)
@@ -139,6 +139,21 @@
                 </ul>
             </div>
             @endif
+
+            @if(isOwnBook($book) && $book->status==0)
+            <a href="{{ $book->getUrl('/publish') }}" class="icon-list-item">
+                <span>@icon('publish')</span>
+                <span>{{ trans('market.publish_to_market') }}</span>
+            </a>
+            @endif
+            
+            @if(isOwnBook($book) && $book->status==1)
+            <a href="{{ $book->getUrl('/publish') }}" class="icon-list-item">
+                <span>@icon('publish')</span>
+                <span>{{ trans('market.edit_to_market') }}</span>
+            </a>
+            @endif
+            
         </div>
     </div>
     @endif

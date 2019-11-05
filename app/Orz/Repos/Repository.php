@@ -3,10 +3,12 @@
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use BookStack\Orz\Criteria\Criteria;
+use BookStack\Orz\CoinLog;
 use Illuminate\Container\Container as App;
 use BookStack\Orz\Contract\RepositoryInterface;
 use BookStack\Orz\Contract\CriteriaInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 abstract class Repository implements RepositoryInterface, CriteriaInterface {
     
@@ -186,5 +188,36 @@ abstract class Repository implements RepositoryInterface, CriteriaInterface {
         }
         
         return $this;
+    }
+    
+    public function showError($error_lang, $back_url='')
+    {
+        if ($back_url)
+            $response = redirect($back_url)->withInput();
+        else            
+            $response = redirect()->back()->withInput();
+        session()->flash('error', trans($error_lang));
+        throw new HttpResponseException($response);
+    }
+    
+    protected function slug($name)
+    {
+        $slug = preg_replace('/[\+\/\\\?\@\}\{\.\,\=\[\]\#\&\!\*\'\;\:\$\%]/', '', mb_strtolower($name));
+        $slug = preg_replace('/\s{2,}/', ' ', $slug);
+        $slug = str_replace(' ', '-', $slug);
+        if ($slug === "") {
+            $slug = substr(md5(rand(1, 500)), 0, 5);
+        }
+        $slug .= '-' . substr(md5(rand(1, 500)), 0, 5);
+        return $slug;
+    }
+    
+    public function logCoin($number, $type=2, $action='market')
+    {
+        $coin = new CoinLog;
+        $coin->number = $number;
+        $coin->type = $type;
+        $coin->action = $action;
+        $coin->save();
     }
 }

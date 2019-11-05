@@ -238,7 +238,7 @@ class UserRepo
             'pages'    => $this->entityRepo->getRecentlyCreated('page', $count, 0, $createdByUserQuery),
             'chapters' => $this->entityRepo->getRecentlyCreated('chapter', $count, 0, $createdByUserQuery),
             'books'    => $this->entityRepo->getRecentlyCreated('book', $count, 0, $createdByUserQuery),
-            'shelves'  => $this->entityRepo->getRecentlyCreated('bookshelf', $count, 0, $createdByUserQuery)
+            //'shelves'  => $this->entityRepo->getRecentlyCreated('bookshelf', $count, 0, $createdByUserQuery)
         ];
     }
 
@@ -253,7 +253,7 @@ class UserRepo
             'pages'    => $this->entityRepo->getUserTotalCreated('page', $user),
             'chapters' => $this->entityRepo->getUserTotalCreated('chapter', $user),
             'books'    => $this->entityRepo->getUserTotalCreated('book', $user),
-            'shelves'    => $this->entityRepo->getUserTotalCreated('bookshelf', $user),
+            //'shelves'    => $this->entityRepo->getUserTotalCreated('bookshelf', $user),
         ];
     }
 
